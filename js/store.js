@@ -1,4 +1,4 @@
-const PRICES = [100, 149, 199, 249, 279, 299, 329, 349, 379, 399, 429, 449, 479, 499, 549, 579, 649, 699, 749, 799, 849, 899, 949, 999, 1000, 1000];
+const PRICES = [100, 149, 199, 249, 279, 299, 329, 349, 379, 399, 429, 449, 479, 499, 549, 579, 649, 699, 749, 799, 849, 899, 949, 999, 1000, 1000, 149, 199, 249, 279, 299, 329, 349, 379];
 
 const SIZE_RANGES = {
   men: { min: 5, max: 11, label: "Men" },
@@ -6,40 +6,68 @@ const SIZE_RANGES = {
   kids: { min: 2, max: 5, label: "Kids" },
 };
 
+const SUBCATEGORY_DEFS = {
+  casual: "Casual",
+  formal: "Formal",
+  "daily-wear": "Daily Wear",
+  "occasional-wear": "Occasional Wear",
+  "flip-flops": "Flip Flops",
+  slippers: "Slippers",
+  slides: "Slides",
+  "school-wear": "School Wear",
+  "party-wear": "Party Wear",
+  sports: "Sports",
+};
+
+const CATEGORY_TREE = {
+  men: ["casual", "formal", "daily-wear", "occasional-wear", "flip-flops", "slippers", "slides"],
+  women: ["casual", "formal", "daily-wear", "occasional-wear", "flip-flops", "slippers", "slides"],
+  kids: ["casual", "daily-wear", "flip-flops", "slippers", "school-wear", "party-wear", "sports"],
+};
+
 const PRODUCT_META = [
-  { id: "0381", name: "Classic Flip Flops : Blue", category: "men", badge: "New", bestseller: true },
-  { id: "0374", name: "Classic Flip Flops : Terracotta", category: "men", badge: "New", bestseller: true },
-  { id: "0363", name: "Floral Comfort Flips : Green", category: "women", badge: "New", bestseller: true },
-  { id: "0380", name: "Everyday Comfort : Black", category: "men", badge: "Best Seller", bestseller: true },
-  { id: "0378", name: "Soft Walk Slides : Navy", category: "men", bestseller: true },
-  { id: "0386", name: "Premium Flips : Brown", category: "men", badge: "New", bestseller: true },
-  { id: "0362", name: "Urban Comfort : Grey", category: "men" },
-  { id: "0364", name: "Floral Comfort : Pink", category: "women" },
-  { id: "0365", name: "Daily Wear : Olive", category: "men" },
-  { id: "0366", name: "Breeze Flips : Lavender", category: "women" },
-  { id: "0367", name: "Comfort Plus : Charcoal", category: "men" },
-  { id: "0368", name: "Style Flips : Coral", category: "women" },
-  { id: "0369", name: "Classic Walk : Tan", category: "men" },
-  { id: "0370", name: "Soft Sole : Beige", category: "men" },
-  { id: "0371", name: "Floral Flips : Mint", category: "women" },
-  { id: "0372", name: "Everyday Basic : Black", category: "men" },
-  { id: "0373", name: "Comfort Walk : Slate", category: "men" },
-  { id: "0375", name: "Premium Comfort : Maroon", category: "men" },
-  { id: "0376", name: "Floral Style : Peach", category: "women" },
-  { id: "0377", name: "Urban Flips : Dark Blue", category: "men" },
-  { id: "0379", name: "Soft Touch : Rose", category: "women" },
-  { id: "0382", name: "Bold Comfort : Red", category: "men" },
-  { id: "0383", name: "Floral Grace : Yellow", category: "women" },
-  { id: "0384", name: "Easy Walk : White", category: "women" },
-  { id: "0385", name: "Comfort Zone : Teal", category: "women" },
-  { id: "0387", name: "Classic Style : Burgundy", category: "men" },
+  { id: "0381", name: "Classic Flip Flops : Blue", category: "men", subcategory: "flip-flops", badge: "New", bestseller: true },
+  { id: "0374", name: "Classic Flip Flops : Terracotta", category: "men", subcategory: "flip-flops", badge: "New", bestseller: true },
+  { id: "0363", name: "Floral Comfort Flips : Green", category: "women", subcategory: "flip-flops", badge: "New", bestseller: true },
+  { id: "0380", name: "Everyday Comfort : Black", category: "men", subcategory: "daily-wear", badge: "Best Seller", bestseller: true },
+  { id: "0378", name: "Soft Walk Slides : Navy", category: "men", subcategory: "slides", bestseller: true },
+  { id: "0386", name: "Premium Flips : Brown", category: "men", subcategory: "formal", badge: "New", bestseller: true },
+  { id: "0362", name: "Urban Comfort : Grey", category: "men", subcategory: "casual" },
+  { id: "0364", name: "Floral Comfort : Pink", category: "women", subcategory: "casual" },
+  { id: "0365", name: "Daily Wear : Olive", category: "men", subcategory: "daily-wear" },
+  { id: "0366", name: "Breeze Flips : Lavender", category: "women", subcategory: "flip-flops" },
+  { id: "0367", name: "Comfort Plus : Charcoal", category: "men", subcategory: "daily-wear" },
+  { id: "0368", name: "Style Flips : Coral", category: "women", subcategory: "occasional-wear" },
+  { id: "0369", name: "Classic Walk : Tan", category: "men", subcategory: "casual" },
+  { id: "0370", name: "Soft Sole : Beige", category: "men", subcategory: "slippers" },
+  { id: "0371", name: "Floral Flips : Mint", category: "women", subcategory: "casual" },
+  { id: "0372", name: "Everyday Basic : Black", category: "men", subcategory: "daily-wear" },
+  { id: "0373", name: "Comfort Walk : Slate", category: "men", subcategory: "casual" },
+  { id: "0375", name: "Premium Comfort : Maroon", category: "men", subcategory: "formal" },
+  { id: "0376", name: "Floral Style : Peach", category: "women", subcategory: "occasional-wear" },
+  { id: "0377", name: "Urban Flips : Dark Blue", category: "men", subcategory: "flip-flops" },
+  { id: "0379", name: "Soft Touch : Rose", category: "women", subcategory: "slippers" },
+  { id: "0382", name: "Bold Comfort : Red", category: "men", subcategory: "occasional-wear" },
+  { id: "0383", name: "Floral Grace : Yellow", category: "women", subcategory: "occasional-wear" },
+  { id: "0384", name: "Easy Walk : White", category: "women", subcategory: "daily-wear" },
+  { id: "0385", name: "Comfort Zone : Teal", category: "women", subcategory: "daily-wear" },
+  { id: "0387", name: "Classic Style : Burgundy", category: "men", subcategory: "formal" },
+  { id: "K001", name: "Kids Fun Flips : Blue", category: "kids", subcategory: "flip-flops", imageId: "0381", badge: "New" },
+  { id: "K002", name: "Kids Comfy Slippers : Pink", category: "kids", subcategory: "slippers", imageId: "0364" },
+  { id: "K003", name: "School Day Flips : Navy", category: "kids", subcategory: "school-wear", imageId: "0378" },
+  { id: "K004", name: "Kids Party Flips : Gold", category: "kids", subcategory: "party-wear", imageId: "0383", badge: "New" },
+  { id: "K005", name: "Little Walk Daily : Green", category: "kids", subcategory: "daily-wear", imageId: "0363" },
+  { id: "K006", name: "Kids Casual Slides : Grey", category: "kids", subcategory: "casual", imageId: "0362" },
+  { id: "K007", name: "Tiny Tots Flips : Coral", category: "kids", subcategory: "flip-flops", imageId: "0368" },
+  { id: "K008", name: "Kids Sports Flips : Red", category: "kids", subcategory: "sports", imageId: "0382", bestseller: true },
 ];
 
 const PRODUCTS = PRODUCT_META.map((item, index) => {
   const price = PRICES[index];
+  const imageId = item.imageId || item.id;
   return {
     ...item,
-    image: `images/gallery/${item.id}-800.jpg`,
+    image: `images/gallery/${imageId}-800.jpg`,
     price,
     mrp: Math.round(price * 1.35),
   };
@@ -61,6 +89,8 @@ const categoryLabel = (category) => {
   return category;
 };
 
+const subcategoryLabel = (sub) => SUBCATEGORY_DEFS[sub] || sub;
+
 const getSizesForCategory = (category) => {
   const r = SIZE_RANGES[category];
   if (!r) return [];
@@ -71,16 +101,31 @@ const getSizesForCategory = (category) => {
 
 const getProductById = (id) => PRODUCTS.find((p) => p.id === id);
 
-const searchProducts = (query) => {
-  const q = query.trim().toLowerCase();
-  if (!q) return PRODUCTS;
-  return PRODUCTS.filter(
-    (p) =>
-      p.name.toLowerCase().includes(q) ||
-      p.category.toLowerCase().includes(q) ||
-      categoryLabel(p.category).toLowerCase().includes(q)
-  );
+const filterProducts = ({ gender, subcategory, query, special } = {}) => {
+  let items = [...PRODUCTS];
+
+  if (query) {
+    const q = query.trim().toLowerCase();
+    items = items.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.category.includes(q) ||
+        categoryLabel(p.category).toLowerCase().includes(q) ||
+        subcategoryLabel(p.subcategory).toLowerCase().includes(q)
+    );
+  }
+
+  if (special === "bestsellers") items = items.filter((p) => p.bestseller);
+  else if (special === "new") items = items.filter((p) => p.badge === "New");
+  else if (special === "deals") items = [...items].sort((a, b) => discount(b.price, b.mrp) - discount(a.price, a.mrp)).slice(0, 16);
+
+  if (gender && gender !== "all") items = items.filter((p) => p.category === gender);
+  if (subcategory) items = items.filter((p) => p.subcategory === subcategory);
+
+  return items;
 };
+
+const searchProducts = (query) => filterProducts({ query });
 
 const productRating = (id) => {
   const num = parseInt(String(id).replace(/\D/g, ""), 10) || 1;
@@ -117,18 +162,31 @@ const sortProducts = (items, sort) => {
 
 const freeDelivery = (price) => price >= 499;
 
+const shopUrl = (gender, subcategory) => {
+  const params = new URLSearchParams();
+  if (gender) params.set("cat", gender);
+  if (subcategory) params.set("sub", subcategory);
+  const qs = params.toString();
+  return qs ? `index.html?${qs}` : "index.html";
+};
+
 window.JFFStore = {
   PRODUCTS,
   SIZE_RANGES,
+  CATEGORY_TREE,
+  SUBCATEGORY_DEFS,
   formatPrice,
   discount,
   sizeRangeText,
   categoryLabel,
+  subcategoryLabel,
   getSizesForCategory,
   getProductById,
   searchProducts,
+  filterProducts,
   productRating,
   renderStars,
   sortProducts,
   freeDelivery,
+  shopUrl,
 };

@@ -3,6 +3,7 @@ const {
   discount,
   sizeRangeText,
   categoryLabel,
+  subcategoryLabel,
   getSizesForCategory,
   productRating,
   renderStars,
@@ -29,6 +30,7 @@ const renderProductCard = (product, opts = {}) => {
       </div>
       <div class="product-info">
         <a href="product.html?id=${product.id}" class="product-name">${product.name}</a>
+        <p class="product-subcat">${categoryLabel(product.category)} › ${subcategoryLabel(product.subcategory)}</p>
         <div class="product-rating-row">
           ${renderStars(rating.stars)}
           <span class="rating-count">${rating.count}</span>
@@ -200,6 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateHeader = initStoreHeader();
   bindMobileNav();
   bindSearch();
+  window.JFFCatalog?.bindMegaMenu?.();
   bindProductCards(document);
 
   const yearEl = document.getElementById("year");

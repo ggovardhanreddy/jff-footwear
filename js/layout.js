@@ -45,6 +45,7 @@ const headerHtml = (active = "") => `
         <a href="index.html?cat=deals" class="${active === "deals" ? "active" : ""}">Today's Deals</a>
         <a href="index.html?cat=men">Men's</a>
         <a href="index.html?cat=women">Women's</a>
+        <a href="index.html?cat=kids">Kids</a>
         <a href="index.html?cat=bestsellers">Best Sellers</a>
         <a href="index.html?cat=new">New Arrivals</a>
         <a href="index.html#sizes">Size Guide</a>
@@ -52,6 +53,7 @@ const headerHtml = (active = "") => `
         <a href="login.html" class="show-mobile" id="mobile-auth-link">Sign In</a>
       </div>
     </nav>
+    ${window.JFFCatalog?.megaMenuHtml?.() || ""}
   </header>`;
 
 const footerHtml = () => `

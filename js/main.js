@@ -1,10 +1,9 @@
 const {
   PRODUCTS,
-  formatPrice,
-  getSizesForCategory,
-  searchProducts,
+  filterProducts,
   sortProducts,
   categoryLabel,
+  subcategoryLabel,
 } = window.JFFStore;
 
 const productGrid = document.getElementById("product-grid");
@@ -13,23 +12,37 @@ const dealsGrid = document.getElementById("deals-grid");
 const filterTabs = document.querySelectorAll(".filter-tab");
 const sortSelect = document.getElementById("sort-select");
 const resultsTitle = document.getElementById("results-title");
+const resultsMeta = document.getElementById("results-meta");
 
 const params = new URLSearchParams(window.location.search);
 const query = params.get("q") || "";
 const cat = params.get("cat") || "";
+const sub = params.get("sub") || "";
 
 const searchInput = document.getElementById("search-input");
 if (searchInput && query) searchInput.value = query;
 
-const getFilteredProducts = () => {
-  let items = query ? searchProducts(query) : [...PRODUCTS];
+const isSpecialCat = ["bestsellers", "new", "deals"].includes(cat);
+const activeGender = isSpecialCat ? "" : cat;
 
-  if (cat === "men") items = items.filter((p) => p.category === "men");
-  else if (cat === "women") items = items.filter((p) => p.category === "women");
-  else if (cat === "kids") items = items.filter((p) => p.category === "kids");
-  else if (cat === "bestsellers") items = items.filter((p) => p.bestseller);
-  else if (cat === "new") items = items.filter((p) => p.badge === "New");
-  else if (cat === "deals") items = [...items].sort((a, b) => b.price - a.price).slice(0, 12);
+window.JFFCatalog?.renderShopSidebar?.("category-sidebar", activeGender, sub);
+
+const getFilteredProducts = () => {
+  let items;
+
+  if (query) {
+    items = filterProducts({ query });
+  } else if (cat === "bestsellers") {
+    items = filterProducts({ special: "bestsellers" });
+  } else if (cat === "new") {
+    items = filterProducts({ special: "new" });
+  } else if (cat === "deals") {
+    items = filterProducts({ special: "deals" });
+  } else if (cat || sub) {
+    items = filterProducts({ gender: cat || undefined, subcategory: sub || undefined });
+  } else {
+    items = filterProducts({});
+  }
 
   const sort = sortSelect?.value || "featured";
   return sortProducts(items, sort);
@@ -38,65 +51,72 @@ const getFilteredProducts = () => {
 const renderGrid = (el, items, emptyMessage = "") => {
   if (!el) return;
   if (!items.length && emptyMessage) {
-    el.innerHTML = `<p class="grid-empty">${emptyMessage}</p>`;
+    el.innerHTML = `<p class="grid-empty animate-in">${emptyMessage}</p>`;
+    window.JFFAnimations?.observeReveal?.();
     return;
   }
   el.innerHTML = items.map((p) => window.JFFUI.renderProductCard(p)).join("");
   window.JFFUI.bindProductCards(el);
+  window.JFFAnimations?.staggerCards?.(el);
+  window.JFFAnimations?.bindImageZoom?.(el);
+};
+
+const buildTitle = () => {
+  if (query) return `Results for "${query}"`;
+  if (cat === "bestsellers") return "Best Sellers";
+  if (cat === "new") return "New Arrivals";
+  if (cat === "deals") return "Today's Deals";
+  if (cat && sub) return `${categoryLabel(cat)}'s ${subcategoryLabel(sub)}`;
+  if (cat) return `${categoryLabel(cat)}'s Footwear`;
+  return "All Footwear";
+};
+
+const buildMeta = (count) => {
+  if (cat && sub) return `${count} products in ${subcategoryLabel(sub)}`;
+  if (cat && !isSpecialCat) return `${count} products for ${categoryLabel(cat).toLowerCase()}`;
+  return `${count} products`;
 };
 
 const updateMainGrid = () => {
   const items = getFilteredProducts();
-  let title = "Results";
-  let empty = "No products found.";
+  const title = buildTitle();
+  let empty = "No products in this category yet. Try another style or contact us on WhatsApp.";
 
-  if (query) {
-    title = `Results for "${query}"`;
-    empty = "No products found for your search.";
-  } else if (cat === "men") title = "Men's Flip Flops";
-  else if (cat === "women") title = "Women's Flip Flops";
-  else if (cat === "bestsellers") title = "Best Sellers";
-  else if (cat === "new") title = "New Arrivals";
-  else if (cat === "deals") title = "Today's Deals";
-  else title = "All Flip Flops";
+  if (query) empty = "No products found for your search.";
 
   if (resultsTitle) resultsTitle.textContent = title;
+  if (resultsMeta) resultsMeta.textContent = buildMeta(items.length);
+
+  if (cat && !isSpecialCat) {
+    filterTabs.forEach((tab) => {
+      const match = tab.dataset.filter === cat;
+      tab.classList.toggle("is-active", match);
+      tab.setAttribute("aria-selected", match ? "true" : "false");
+    });
+  }
+
   renderGrid(productGrid, items, empty);
+
+  const shopSection = document.getElementById("shop");
+  if (shopSection && (cat || sub || query)) {
+    shopSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 };
 
 updateMainGrid();
-renderGrid(bestsellerGrid, PRODUCTS.filter((p) => p.bestseller).slice(0, 8));
-renderGrid(dealsGrid, sortProducts([...PRODUCTS], "discount").slice(0, 8));
+renderGrid(bestsellerGrid, filterProducts({ special: "bestsellers" }).slice(0, 8));
+renderGrid(dealsGrid, sortProducts(filterProducts({ special: "deals" }), "discount").slice(0, 8));
 
-if (sortSelect) {
-  sortSelect.addEventListener("change", updateMainGrid);
-}
+if (sortSelect) sortSelect.addEventListener("change", updateMainGrid);
 
 filterTabs.forEach((tab) => {
   tab.addEventListener("click", () => {
-    filterTabs.forEach((t) => {
-      t.classList.remove("is-active");
-      t.setAttribute("aria-selected", "false");
-    });
-    tab.classList.add("is-active");
-    tab.setAttribute("aria-selected", "true");
-
     const filter = tab.dataset.filter;
-    let filtered = PRODUCTS;
-    let emptyMessage = "";
-
-    if (filter === "kids") {
-      filtered = PRODUCTS.filter((p) => p.category === "kids");
-      emptyMessage = "Kids flip flops coming soon. Contact us on WhatsApp for kids sizes 2–5 inch.";
-    } else if (filter !== "all") {
-      filtered = PRODUCTS.filter((p) => p.category === filter);
+    if (filter === "all") {
+      window.location.href = "index.html#shop";
+      return;
     }
-
-    if (resultsTitle) {
-      resultsTitle.textContent =
-        filter === "all" ? "All Flip Flops" : `${categoryLabel(filter)}'s Flip Flops`;
-    }
-    renderGrid(productGrid, filtered, emptyMessage);
+    window.location.href = `index.html?cat=${filter}#shop`;
   });
 });
 
@@ -104,34 +124,51 @@ const renderSizeChips = (containerId, category) => {
   const el = document.getElementById(containerId);
   const range = window.JFFStore.SIZE_RANGES[category];
   if (!el || !range) return;
-
   const sizes = [];
   for (let i = range.min; i <= range.max; i += 1) sizes.push(i);
-
-  el.innerHTML = sizes
-    .map((size) => `<span class="size-chip">${size}"</span>`)
-    .join("");
+  el.innerHTML = sizes.map((size) => `<span class="size-chip">${size}"</span>`).join("");
 };
 
 renderSizeChips("size-chips-men", "men");
 renderSizeChips("size-chips-women", "women");
 renderSizeChips("size-chips-kids", "kids");
 
-// Hero mini banners
 const heroBanners = document.getElementById("hero-banners");
 if (heroBanners) {
   const banners = [
-    { title: "Up to 35% off", sub: "Men's comfort flips", img: "images/showcase/craft-960.jpg", href: "index.html?cat=men" },
-    { title: "New arrivals", sub: "Women's floral styles", img: "images/showcase/comfort-960.jpg", href: "index.html?cat=women" },
-    { title: "Best sellers", sub: "Top rated this week", img: "images/gallery/0380-800.jpg", href: "index.html?cat=bestsellers" },
-    { title: "Under ₹499", sub: "Free delivery eligible", img: "images/gallery/0374-800.jpg", href: "index.html?cat=deals" },
+    { title: "Men's Casual", sub: "Everyday comfort", img: "images/showcase/craft-960.jpg", href: "index.html?cat=men&sub=casual" },
+    { title: "Women's Flip Flops", sub: "Floral & stylish", img: "images/showcase/comfort-960.jpg", href: "index.html?cat=women&sub=flip-flops" },
+    { title: "Kids Collection", sub: "Sizes 2–5 inch", img: "images/showcase/style-960.jpg", href: "index.html?cat=kids" },
+    { title: "Today's Deals", sub: "Up to 35% off", img: "images/gallery/0374-800.jpg", href: "index.html?cat=deals" },
   ];
   heroBanners.innerHTML = banners
     .map(
-      (b) => `
-    <a href="${b.href}" class="hero-banner-card">
+      (b, i) => `
+    <a href="${b.href}" class="hero-banner-card animate-in" style="--stagger:${i * 0.08}s">
       <img src="${b.img}" alt="" loading="lazy" />
       <div><strong>${b.title}</strong><span>${b.sub}</span></div>
+    </a>`
+    )
+    .join("");
+  window.JFFAnimations?.observeReveal?.();
+}
+
+const browseGrid = document.getElementById("browse-categories");
+if (browseGrid) {
+  const cards = [
+    { g: "men", sub: "flip-flops", label: "Men's Flip Flops", img: "images/gallery/0381-800.jpg" },
+    { g: "men", sub: "formal", label: "Men's Formal", img: "images/gallery/0386-800.jpg" },
+    { g: "women", sub: "casual", label: "Women's Casual", img: "images/gallery/0364-800.jpg" },
+    { g: "women", sub: "slippers", label: "Women's Slippers", img: "images/gallery/0379-800.jpg" },
+    { g: "kids", sub: "school-wear", label: "Kids School Wear", img: "images/gallery/0378-800.jpg" },
+    { g: "kids", sub: "party-wear", label: "Kids Party Wear", img: "images/gallery/0383-800.jpg" },
+  ];
+  browseGrid.innerHTML = cards
+    .map(
+      (c, i) => `
+    <a href="index.html?cat=${c.g}&sub=${c.sub}#shop" class="browse-card animate-in" style="--stagger:${i * 0.06}s">
+      <img src="${c.img}" alt="${c.label}" loading="lazy" />
+      <span>${c.label}</span>
     </a>`
     )
     .join("");

@@ -13,7 +13,7 @@
   <div id="jff-header" data-active="home"></div>
 
   <main>
-    <section class="amazon-hero">
+    <section class="amazon-hero animate-in">
       <div class="amazon-hero-main" style="background-image: linear-gradient(to right, rgba(234,237,237,0.95), rgba(234,237,237,0.4)), url('images/hero/hero-1280.jpg')">
         <div class="amazon-hero-copy">
           <h1>Luxury for Every Step</h1>
@@ -22,6 +22,15 @@
         </div>
       </div>
       <div class="hero-banners" id="hero-banners"></div>
+    </section>
+
+    <section class="amazon-row animate-in">
+      <div class="container">
+        <div class="amazon-row-head">
+          <h2>Shop by Style</h2>
+        </div>
+        <div class="browse-grid" id="browse-categories"></div>
+      </div>
     </section>
 
     <section class="amazon-row">
@@ -58,8 +67,12 @@
             <img src="images/showcase/comfort-960.jpg" alt="Women's slippers" width="720" height="960" loading="lazy" />
             <div class="category-label"><span>Women's Flip Flops</span><small>Sizes 5 – 10 inch</small></div>
           </a>
+          <a href="index.html?cat=kids" class="category-card">
+            <img src="images/showcase/style-960.jpg" alt="Kids slippers" width="720" height="960" loading="lazy" />
+            <div class="category-label"><span>Kids Footwear</span><small>Sizes 2 – 5 inch</small></div>
+          </a>
           <a href="index.html?cat=deals" class="category-card">
-            <img src="images/showcase/style-960.jpg" alt="Deals" width="720" height="960" loading="lazy" />
+            <img src="images/gallery/0374-800.jpg" alt="Deals" width="720" height="960" loading="lazy" />
             <div class="category-label"><span>Today's Deals</span><small>Up to 35% off</small></div>
           </a>
         </div>
@@ -67,14 +80,20 @@
     </section>
 
     <section class="products amazon-shop" id="shop">
-      <div class="container">
+      <div class="container shop-with-sidebar">
+        <div id="category-sidebar"></div>
+        <div class="shop-main">
         <div class="shop-toolbar">
-          <h2 id="results-title">All Flip Flops</h2>
+          <div>
+            <h2 id="results-title">All Footwear</h2>
+            <p id="results-meta" class="results-meta"></p>
+          </div>
           <div class="shop-toolbar-right">
             <div class="filter-tabs" role="tablist" aria-label="Filter products">
               <button class="filter-tab is-active" data-filter="all" role="tab" aria-selected="true">All</button>
               <button class="filter-tab" data-filter="men" role="tab" aria-selected="false">Men</button>
               <button class="filter-tab" data-filter="women" role="tab" aria-selected="false">Women</button>
+              <button class="filter-tab" data-filter="kids" role="tab" aria-selected="false">Kids</button>
             </div>
             <label class="sort-label">Sort by
               <select id="sort-select">
@@ -88,6 +107,7 @@
           </div>
         </div>
         <div class="product-grid amazon-product-grid" id="product-grid"></div>
+        </div>
       </div>
     </section>
 
@@ -119,10 +139,12 @@
   </a>
 
   <script src="js/store.js"></script>
+  <script src="js/catalog.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/wishlist.js"></script>
   <script src="js/layout.js"></script>
+  <script src="js/animations.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/main.js" defer></script>
 </body>

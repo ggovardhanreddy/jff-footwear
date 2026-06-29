@@ -4,6 +4,7 @@ const {
   discount,
   sizeRangeText,
   categoryLabel,
+  subcategoryLabel,
   getSizesForCategory,
   productRating,
   renderStars,
@@ -37,6 +38,8 @@ if (!product) {
     <span aria-hidden="true">›</span>
     <a href="index.html?cat=${product.category}">${categoryLabel(product.category)}</a>
     <span aria-hidden="true">›</span>
+    <a href="index.html?cat=${product.category}&sub=${product.subcategory}">${subcategoryLabel(product.subcategory)}</a>
+    <span aria-hidden="true">›</span>
     <span>${product.name}</span>`;
 
   content.innerHTML = `
@@ -48,6 +51,7 @@ if (!product) {
     </div>
     <div class="pdp-buybox">
       <h1 class="pdp-title">${product.name}</h1>
+      <p class="pdp-subcat"><a href="index.html?cat=${product.category}&sub=${product.subcategory}">${categoryLabel(product.category)} › ${subcategoryLabel(product.subcategory)}</a></p>
       <div class="pdp-rating-row">
         ${renderStars(rating.stars, "md")}
         <a href="#reviews" class="pdp-rating-link">${rating.count} ratings</a>
@@ -132,6 +136,8 @@ if (!product) {
   const related = PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 6);
   relatedEl.innerHTML = related.map((p) => window.JFFUI.renderProductCard(p, { compact: true })).join("");
   window.JFFUI.bindProductCards(relatedEl);
+  window.JFFAnimations?.staggerCards?.(relatedEl);
+  document.getElementById("pdp-content")?.classList.add("animate-in", "is-visible");
 
   document.getElementById("pdp-add-cart").addEventListener("click", () => {
     try {
