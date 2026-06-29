@@ -23,7 +23,7 @@ cd ~/Projects/jff-footwear
 git add .
 git commit -m "Add JFF Footwear landing page"
 git branch -M main
-git remote add origin https://github.com/ggovardhanreddy/jff-footwear.git
+git remote add origin https://github.com/govardhanreddy66/jff-footwear.git
 git push -u origin main
 ```
 
@@ -33,7 +33,7 @@ git push -u origin main
 
 4. Your site will be live at:
 
-**https://ggovardhanreddy.github.io/jff-footwear/**
+**https://govardhanreddy66.github.io/jff-footwear/**
 
 (Replace `jff-footwear` if you used a different repo name.)
 

@@ -3,133 +3,222 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="JFF Footwear — Luxury for Every Step. Premium footwear crafted for comfort, style, and lasting quality." />
-  <title>JFF Footwear | Luxury for Every Step</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <meta name="description" content="JFF Footwear — Shop premium slippers and flip flops for men and women. Lightweight, non-slip, and built for everyday comfort." />
+  <meta name="theme-color" content="#ffffff" />
+  <title>JFF Footwear | Shop Slippers &amp; Flip Flops Online</title>
+  <link rel="preload" as="image" href="images/hero/hero-1280.jpg" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <header class="header">
-    <nav class="nav container">
-      <a href="#" class="logo">JFF <span>Footwear</span></a>
-      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
+  <div class="announcement">
+    <p>Prices from ₹100 &nbsp;·&nbsp; Free delivery above ₹999 &nbsp;·&nbsp; Call <a href="tel:+918106407372">+91 81064 07372</a></p>
+  </div>
+
+  <header class="header" data-scrolled="false">
+    <div class="header-inner">
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span></button>
+      <a href="#" class="logo">JFF <em>Footwear</em></a>
+      <nav class="nav" aria-label="Main">
+        <a href="#men">Men</a>
+        <a href="#women">Women</a>
+        <a href="#shop">Flip Flops</a>
+        <a href="#about">Our Story</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <a href="https://wa.me/918106407372" class="icon-btn" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.01-1.37l-.36-.214-3.015 1.012 1.012-3.015-.214-.36A9.818 9.818 0 1112 21.818z"/></svg>
+        </a>
+        <a href="tel:+918106407372" class="btn btn-sm">Order Now</a>
+      </div>
+    </div>
   </header>
 
   <main>
-    <section class="hero">
-      <div class="hero-bg"></div>
-      <div class="container hero-content">
-        <p class="eyebrow">Premium Footwear</p>
-        <h1>JFF Footwear</h1>
-        <p class="tagline">Luxury for Every Step</p>
-        <p class="hero-text">
-          Discover refined craftsmanship and timeless design — footwear made to elevate every moment, from everyday walks to special occasions.
-        </p>
-        <div class="hero-actions">
-          <a href="#contact" class="btn btn-primary">Get in Touch</a>
-          <a href="#services" class="btn btn-ghost">Our Services</a>
+    <section class="hero-slider" aria-label="Featured collections">
+      <div class="hero-track" id="hero-track">
+        <article class="hero-slide is-active" style="--slide-img: url('images/hero/hero-1280.jpg')">
+          <div class="hero-slide-content">
+            <span class="badge">New Arrivals</span>
+            <h1>Luxury for Every Step</h1>
+            <p>Premium flip flops crafted for all-day comfort.</p>
+            <a href="#shop" class="btn">Shop Collection</a>
+          </div>
+        </article>
+        <article class="hero-slide" style="--slide-img: url('images/showcase/craft-1600.jpg')">
+          <div class="hero-slide-content">
+            <span class="badge">Men's</span>
+            <h1>Step Into Comfort</h1>
+            <p>Textured footbeds, durable straps, bold colours.</p>
+            <a href="#men" class="btn">Shop Men</a>
+          </div>
+        </article>
+        <article class="hero-slide" style="--slide-img: url('images/showcase/comfort-1600.jpg')">
+          <div class="hero-slide-content">
+            <span class="badge">Women's</span>
+            <h1>Style Meets Softness</h1>
+            <p>Floral patterns and cushioned support for every day.</p>
+            <a href="#women" class="btn">Shop Women</a>
+          </div>
+        </article>
+      </div>
+      <div class="hero-dots" id="hero-dots" aria-label="Slide navigation"></div>
+    </section>
+
+    <section class="trust-strip">
+      <div class="container trust-grid">
+        <div class="trust-item"><strong>Lightweight</strong><span>Easy all-day wear</span></div>
+        <div class="trust-item"><strong>Non-slip sole</strong><span>Textured grip</span></div>
+        <div class="trust-item"><strong>Soft padded</strong><span>Cushioned comfort</span></div>
+        <div class="trust-item"><strong>Durable</strong><span>Built to last</span></div>
+      </div>
+    </section>
+
+    <section class="categories">
+      <div class="container">
+        <div class="section-head">
+          <h2>Shop by Category</h2>
+          <p>Find your perfect pair in our curated collections.</p>
+        </div>
+        <div class="category-grid">
+          <a href="#men" class="category-card" id="men">
+            <img src="images/showcase/craft-960.jpg" alt="Men's slippers" width="720" height="960" loading="lazy" />
+            <span>Men's Flip Flops</span>
+          </a>
+          <a href="#women" class="category-card" id="women">
+            <img src="images/showcase/comfort-960.jpg" alt="Women's slippers" width="720" height="960" loading="lazy" />
+            <span>Women's Flip Flops</span>
+          </a>
+          <a href="#shop" class="category-card">
+            <img src="images/showcase/style-960.jpg" alt="Everyday slippers" width="720" height="960" loading="lazy" />
+            <span>Everyday Collection</span>
+          </a>
         </div>
       </div>
     </section>
 
-    <section id="about" class="section about">
-      <div class="container about-grid">
-        <div class="about-visual" aria-hidden="true">
-          <div class="about-card">
-            <div class="shoe-icon">
-              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 40c0-8 6-14 14-16l8-12c2-3 6-4 9-2l6 4c3 2 4 6 2 9l-4 8c6 4 10 10 10 17v4H8v-14z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
-                <path d="M22 24l10 6M30 18l8 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <p>Crafted with care</p>
+    <section class="products" id="shop">
+      <div class="container">
+        <div class="section-head row">
+          <div>
+            <h2>New Arrivals</h2>
+            <p>Professional studio shots — prices from ₹100 to ₹1,000. Order by call or WhatsApp.</p>
+          </div>
+          <div class="filter-tabs" role="tablist" aria-label="Filter products">
+            <button class="filter-tab is-active" data-filter="all" role="tab" aria-selected="true">All</button>
+            <button class="filter-tab" data-filter="men" role="tab" aria-selected="false">Men</button>
+            <button class="filter-tab" data-filter="women" role="tab" aria-selected="false">Women</button>
           </div>
         </div>
-        <div class="about-copy">
-          <p class="section-label">About Us</p>
-          <h2>Where comfort meets luxury</h2>
-          <p>
-            JFF Footwear is built on a simple belief: every step should feel exceptional. We bring together quality materials, thoughtful design, and attention to detail to create footwear that looks refined and feels effortless.
-          </p>
-          <p>
-            Whether you are looking for everyday elegance or something truly special, we are here to help you find the perfect pair — and keep it looking its best for years to come.
-          </p>
-        </div>
+        <div class="product-grid" id="product-grid"></div>
       </div>
     </section>
 
-    <section id="services" class="section services">
+    <section class="products bestsellers">
       <div class="container">
-        <div class="section-header">
-          <p class="section-label">What We Offer</p>
-          <h2>Our Services</h2>
-          <p class="section-subtitle">Everything you need for a premium footwear experience.</p>
+        <div class="section-head">
+          <h2>Best Sellers</h2>
+          <p>Customer favourites — comfort you can trust.</p>
         </div>
-        <div class="services-grid">
-          <article class="service-card">
-            <div class="service-icon">01</div>
-            <h3>Website Design &amp; Development</h3>
-            <p>Modern, responsive online presence tailored to showcase your brand and connect with customers wherever they are.</p>
-          </article>
-          <article class="service-card">
-            <div class="service-icon">02</div>
-            <h3>Landing Pages</h3>
-            <p>Focused, high-impact pages built to highlight collections, launches, and campaigns that convert visitors into buyers.</p>
-          </article>
-          <article class="service-card">
-            <div class="service-icon">03</div>
-            <h3>Site Maintenance</h3>
-            <p>Ongoing updates, performance checks, and support so your digital storefront stays fast, secure, and up to date.</p>
-          </article>
+        <div class="product-grid" id="bestseller-grid"></div>
+      </div>
+    </section>
+
+    <section class="promo-banner">
+      <div class="container promo-inner">
+        <div class="promo-copy">
+          <h2>Bulk &amp; Corporate Orders</h2>
+          <p>Retailers and businesses — get special pricing on bulk slipper orders with seamless support from enquiry to delivery.</p>
+          <a href="mailto:govardhan.reddy.g.94@gmail.com?subject=JFF%20Bulk%20Order%20Enquiry" class="btn btn-dark">Enquire Now</a>
+        </div>
+        <img src="images/gallery/0380-800.jpg" alt="JFF footwear bulk collection" width="700" height="933" loading="lazy" />
+      </div>
+    </section>
+
+    <section class="reviews">
+      <div class="container">
+        <div class="section-head">
+          <h2>What Customers Say</h2>
+          <p>Comfort loved by shoppers across India.</p>
+        </div>
+        <div class="review-grid">
+          <blockquote class="review-card">
+            <p>"Super comfortable and lightweight. I wear them all day without any pain — great quality for the price."</p>
+            <footer>— Verified Buyer, Men's Blue</footer>
+          </blockquote>
+          <blockquote class="review-card">
+            <p>"The non-slip sole is excellent. Stylish design and the floral women's pair looks beautiful."</p>
+            <footer>— Verified Buyer, Women's Green</footer>
+          </blockquote>
+          <blockquote class="review-card">
+            <p>"Ordered for the whole family. Soft, durable, and delivery was quick. Highly recommend JFF!"</p>
+            <footer>— Verified Buyer, Family Pack</footer>
+          </blockquote>
         </div>
       </div>
     </section>
 
-    <section id="contact" class="section contact">
-      <div class="container contact-inner">
-        <div class="contact-copy">
-          <p class="section-label">Contact</p>
-          <h2>Let's talk</h2>
-          <p>Ready to step into something better? Reach out — we'd love to hear from you.</p>
-          <a href="tel:+918106407372" class="contact-phone">+91 81064 07372</a>
+    <section class="about" id="about">
+      <div class="container about-grid">
+        <img src="images/about/about-1200.jpg" alt="JFF Footwear craftsmanship" width="1000" height="750" loading="lazy" />
+        <div class="about-copy">
+          <span class="eyebrow">Our Story</span>
+          <h2>Crafting comfort for every step</h2>
+          <p>JFF Footwear brings together quality materials, thoughtful design, and everyday affordability. From textured footbeds to bold colours, every slipper is made to feel as good as it looks.</p>
+          <p>We merge traditional craftsmanship with modern comfort — slippers designed for home, travel, work, and everything in between.</p>
+          <a href="#shop" class="link-arrow">Explore collection</a>
         </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="container contact-box">
+        <h2>Ready to order?</h2>
+        <p>Call, WhatsApp, or email us with your size and style. We'll confirm availability and delivery.</p>
         <div class="contact-actions">
-          <a href="mailto:govardhan.reddy.g.94@gmail.com" class="btn btn-primary btn-large">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M4 6h16v12H4V6zm0 0l8 7 8-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Email Us
-          </a>
-          <a href="tel:+918106407372" class="btn btn-ghost btn-large">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M6.6 10.8a15 15 0 006.6 6.6l2.2-2.2a1 1 0 011-.24 11 11 0 003.48.56 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11 11 0 00.56 3.48 1 1 0 01-.25 1L6.6 10.8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Call Now
-          </a>
+          <a href="tel:+918106407372" class="btn btn-dark">+91 81064 07372</a>
+          <a href="https://wa.me/918106407372" class="btn btn-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
+          <a href="mailto:govardhan.reddy.g.94@gmail.com" class="btn btn-outline">Email Us</a>
         </div>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <div class="container footer-inner">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">JFF <em>Footwear</em></a>
+        <p>Luxury for Every Step</p>
+        <p class="footer-contact"><a href="tel:+918106407372">+91 81064 07372</a><br /><a href="mailto:govardhan.reddy.g.94@gmail.com">govardhan.reddy.g.94@gmail.com</a></p>
+      </div>
+      <div>
+        <h3>Shop</h3>
+        <ul>
+          <li><a href="#men">Men's Flip Flops</a></li>
+          <li><a href="#women">Women's Flip Flops</a></li>
+          <li><a href="#shop">New Arrivals</a></li>
+          <li><a href="#shop">Best Sellers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Help</h3>
+        <ul>
+          <li><a href="#contact">Order on Call</a></li>
+          <li><a href="https://wa.me/918106407372" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+          <li><a href="mailto:govardhan.reddy.g.94@gmail.com?subject=Bulk%20Order">Bulk Orders</a></li>
+          <li><a href="#about">About Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
       <p>&copy; <span id="year"></span> JFF Footwear. All rights reserved.</p>
-      <a href="https://github.com/ggovardhanreddy" target="_blank" rel="noopener noreferrer">GitHub</a>
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
+  <a href="https://wa.me/918106407372" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.01-1.37l-.36-.214-3.015 1.012 1.012-3.015-.214-.36A9.818 9.818 0 1112 21.818z"/></svg>
+  </a>
+
+  <script src="js/main.js" defer></script>
 </body>
 </html>
