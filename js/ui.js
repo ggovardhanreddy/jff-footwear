@@ -10,18 +10,60 @@ const {
   freeDelivery,
 } = window.JFFStore;
 
+const renderSizePicker = (product) => {
+  const sizes = getSizesForCategory(product.category);
+  if (!sizes.length) {
+    return `<p class="size-picker-hint">Sizes ${sizeRangeText(product.category)} — contact us to order.</p>`;
+  }
+  return `
+    <div class="size-picker" data-product-id="${product.id}">
+      <p class="size-picker-label">Select size <span class="size-required">*</span></p>
+      <div class="size-picker-chips" role="group" aria-label="Select size for ${product.name}">
+        ${sizes
+          .map((s) => `<button type="button" class="size-pick-btn" data-size="${s}">${s}"</button>`)
+          .join("")}
+      </div>
+      <input type="hidden" class="size-picker-value" value="" />
+    </div>`;
+};
+
+const getSelectedSize = (root) => {
+  const picker =
+    root?.classList?.contains("size-picker") ? root : root?.querySelector?.(".size-picker");
+  if (!picker) throw new Error("Please select a size.");
+  const value = picker.querySelector(".size-picker-value")?.value;
+  if (!value) throw new Error("Please select a size before continuing.");
+  return value;
+};
+
+const bindSizePickers = (root = document) => {
+  const scope = root.querySelectorAll ? root : document;
+  scope.querySelectorAll(".size-picker").forEach((picker) => {
+    if (picker.dataset.bound) return;
+    picker.dataset.bound = "1";
+    const hidden = picker.querySelector(".size-picker-value");
+    picker.querySelectorAll(".size-pick-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        picker.classList.remove("size-picker-error");
+        picker.querySelectorAll(".size-pick-btn").forEach((b) => b.classList.remove("is-selected"));
+        btn.classList.add("is-selected");
+        hidden.value = btn.dataset.size;
+      });
+    });
+  });
+};
+
 const renderProductCard = (product, opts = {}) => {
   const { compact = false } = opts;
   const rating = productRating(product.id);
   const off = discount(product.price, product.mrp);
-  const sizes = getSizesForCategory(product.category)
-    .map((s) => `<option value="${s}">${s}"</option>`)
-    .join("");
   const delivery = freeDelivery(product.price);
 
   return `
     <article class="product-card amazon-card ${compact ? "is-compact" : ""}" data-category="${product.category}" data-product-id="${product.id}">
-      <div class="product-image-wrap">
+      <div class="product-image-wrap animate-card">
         <button type="button" class="wishlist-heart ${window.JFFWishlist?.isWishlisted(product.id) ? "is-active" : ""}" data-wishlist-id="${product.id}" aria-label="Add to wishlist">♡</button>
         <a href="product.html?id=${product.id}" class="product-image">
           ${product.badge ? `<span class="product-badge ${product.badge === "Best Seller" ? "" : "sale"}">${product.badge}</span>` : ""}
@@ -41,47 +83,53 @@ const renderProductCard = (product, opts = {}) => {
           <span class="price-off">${off}% off</span>
         </div>
         ${delivery ? `<p class="delivery-badge">FREE delivery</p>` : ""}
-        ${compact ? "" : `<p class="product-sizes">Sizes ${sizeRangeText(product.category)}</p>`}
-        <label class="sr-only" for="size-${product.id}">Select size</label>
-        <select id="size-${product.id}" class="size-select" aria-label="Select size for ${product.name}">
-          <option value="">Size</option>
-          ${sizes}
-        </select>
+        ${compact ? "" : renderSizePicker(product)}
         <div class="product-actions">
           <button type="button" class="product-order btn-add-cart" data-product-id="${product.id}">Add to Cart</button>
           <button type="button" class="btn-buy-now" data-product-id="${product.id}">Buy Now</button>
         </div>
+        <a href="product.html?id=${product.id}" class="view-product-link">View details &amp; sizes</a>
       </div>
     </article>
   `;
 };
 
 const bindProductCards = (root = document) => {
-  root.querySelectorAll(".product-card").forEach((card) => {
+  const scope = root.querySelectorAll ? root : document;
+  bindSizePickers(scope);
+  const cards = scope.querySelectorAll(".product-card");
+
+  cards.forEach((card) => {
     const btn = card.querySelector(".btn-add-cart");
     const buyBtn = card.querySelector(".btn-buy-now");
-    const select = card.querySelector(".size-select");
     const heart = card.querySelector(".wishlist-heart");
-    const productId = card.dataset.productId;
 
-    if (btn && select && !btn.dataset.bound) {
+    if (btn && !btn.dataset.bound) {
       btn.dataset.bound = "1";
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         try {
-          window.JFFCart.addToCart(btn.dataset.productId, select.value, 1);
-          showToast("Added to cart");
+          const size = getSelectedSize(card);
+          window.JFFCart.addToCart(btn.dataset.productId, size, 1);
+          showToast("Added to cart — go to Cart to checkout");
         } catch (err) {
+          card.querySelector(".size-picker")?.classList.add("size-picker-error");
           showToast(err.message, "error");
         }
       });
     }
 
-    if (buyBtn && select && !buyBtn.dataset.bound) {
+    if (buyBtn && !buyBtn.dataset.bound) {
       buyBtn.dataset.bound = "1";
-      buyBtn.addEventListener("click", () => {
+      buyBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         try {
-          window.JFFCart.buyNow(buyBtn.dataset.productId, select.value, 1);
+          const size = getSelectedSize(card);
+          window.JFFCart.buyNow(buyBtn.dataset.productId, size, 1);
         } catch (err) {
+          card.querySelector(".size-picker")?.classList.add("size-picker-error");
           showToast(err.message, "error");
         }
       });
@@ -188,12 +236,14 @@ const showToast = (message, type = "success") => {
   toast.dataset.type = type;
   toast.classList.add("show");
   clearTimeout(showToast._timer);
-  showToast._timer = setTimeout(() => toast.classList.remove("show"), 2800);
+  showToast._timer = setTimeout(() => toast.classList.remove("show"), 3200);
 };
 
 const bindAddToCartButtons = () => bindProductCards(document);
 
 document.addEventListener("DOMContentLoaded", () => {
+  document.body.classList.add("page-loaded");
+
   const headerSlot = document.getElementById("jff-header");
   if (headerSlot) {
     window.JFFLayout?.mount(headerSlot.dataset.active || "");
@@ -213,5 +263,8 @@ window.JFFUI = {
   showToast,
   bindAddToCartButtons,
   bindProductCards,
+  bindSizePickers,
   renderProductCard,
+  renderSizePicker,
+  getSelectedSize,
 };

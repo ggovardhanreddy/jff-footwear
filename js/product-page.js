@@ -1,37 +1,43 @@
-const {
-  getProductById,
-  formatPrice,
-  discount,
-  sizeRangeText,
-  categoryLabel,
-  subcategoryLabel,
-  getSizesForCategory,
-  productRating,
-  renderStars,
-  freeDelivery,
-  PRODUCTS,
-} = window.JFFStore;
+const initProductPage = () => {
+  const {
+    getProductById,
+    formatPrice,
+    discount,
+    sizeRangeText,
+    categoryLabel,
+    subcategoryLabel,
+    getSizesForCategory,
+    productRating,
+    renderStars,
+    freeDelivery,
+    PRODUCTS,
+  } = window.JFFStore;
 
-const params = new URLSearchParams(window.location.search);
-const productId = params.get("id");
-const product = getProductById(productId);
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get("id");
+  const product = getProductById(productId);
 
-const content = document.getElementById("pdp-content");
-const breadcrumb = document.getElementById("pdp-breadcrumb");
-const reviewsEl = document.getElementById("pdp-reviews");
-const relatedEl = document.getElementById("pdp-related-grid");
+  const content = document.getElementById("pdp-content");
+  const breadcrumb = document.getElementById("pdp-breadcrumb");
+  const reviewsEl = document.getElementById("pdp-reviews");
+  const relatedEl = document.getElementById("pdp-related-grid");
 
-if (!product) {
-  content.innerHTML = `<div class="alert error">Product not found. <a href="index.html">Continue shopping</a></div>`;
-} else {
+  if (!content) return;
+
+  if (!product) {
+    content.innerHTML = `<div class="alert error">Product not found. <a href="index.html">Continue shopping</a></div>`;
+    return;
+  }
+
   document.title = `${product.name} | JFF Footwear`;
   const rating = productRating(product.id);
   const off = discount(product.price, product.mrp);
   const delivery = freeDelivery(product.price);
-  const sizes = getSizesForCategory(product.category)
-    .map((s) => `<option value="${s}">${s} inch</option>`)
+  const sizes = getSizesForCategory(product.category);
+  const sizeChips = sizes
+    .map((s) => `<button type="button" class="size-pick-btn size-pick-lg" data-size="${s}">${s}"</button>`)
     .join("");
-  const wishlisted = window.JFFWishlist.isWishlisted(product.id);
+  const wishlisted = window.JFFWishlist?.isWishlisted(product.id);
 
   breadcrumb.innerHTML = `
     <a href="index.html">Home</a>
@@ -69,14 +75,15 @@ if (!product) {
       </div>
       <p class="pdp-stock in-stock">In stock</p>
       <div class="pdp-options">
-        <label>Size (inches)
-          <select id="pdp-size" class="size-select">
-            <option value="">Select size</option>
-            ${sizes}
-          </select>
-        </label>
-        <label>Quantity
-          <select id="pdp-qty">
+        <div class="size-picker" id="pdp-size-picker">
+          <p class="size-picker-label">Select size (inches) <span class="size-required">*</span></p>
+          <div class="size-picker-chips" role="group" aria-label="Select size">
+            ${sizeChips}
+          </div>
+          <input type="hidden" class="size-picker-value" id="pdp-size" value="" />
+        </div>
+        <label class="pdp-qty-label">Quantity
+          <select id="pdp-qty" class="pdp-qty-select">
             ${[1, 2, 3, 4, 5].map((n) => `<option value="${n}">${n}</option>`).join("")}
           </select>
         </label>
@@ -85,25 +92,28 @@ if (!product) {
         <button type="button" class="btn btn-amazon" id="pdp-add-cart">Add to Cart</button>
         <button type="button" class="btn btn-amazon-secondary" id="pdp-buy-now">Buy Now</button>
       </div>
+      <p class="pdp-flow-hint">Buy Now → Login (if needed) → Checkout → Pay with UPI / COD</p>
       <button type="button" class="pdp-wishlist-btn ${wishlisted ? "is-active" : ""}" id="pdp-wishlist">
         ${wishlisted ? "♥ In your wishlist" : "♡ Add to Wishlist"}
       </button>
       <div class="pdp-trust">
         <div><strong>Secure transaction</strong></div>
         <div><strong>Easy returns</strong> within 7 days</div>
-        <div><strong>Non-slip sole</strong> · Lightweight</div>
+        <div><strong>Sizes available:</strong> ${sizeRangeText(product.category)}</div>
       </div>
     </div>
     <div class="pdp-about">
       <h2>About this item</h2>
       <ul>
-        <li>Premium ${categoryLabel(product.category).toLowerCase()}'s flip flops with cushioned footbed</li>
+        <li>Premium ${categoryLabel(product.category).toLowerCase()}'s footwear with cushioned footbed</li>
+        <li>Category: ${subcategoryLabel(product.subcategory)}</li>
         <li>Available sizes: ${sizeRangeText(product.category)}</li>
         <li>Lightweight, non-slip sole for everyday comfort</li>
-        <li>Perfect for home, travel, and casual wear</li>
         <li>Brand: JFF Footwear — Luxury for Every Step</li>
       </ul>
     </div>`;
+
+  window.JFFUI.bindSizePickers(content);
 
   const reviewSnippets = [
     "Super comfortable and great value for money.",
@@ -136,23 +146,27 @@ if (!product) {
   const related = PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 6);
   relatedEl.innerHTML = related.map((p) => window.JFFUI.renderProductCard(p, { compact: true })).join("");
   window.JFFUI.bindProductCards(relatedEl);
-  window.JFFAnimations?.staggerCards?.(relatedEl);
-  document.getElementById("pdp-content")?.classList.add("animate-in", "is-visible");
+
+  const readSize = () => {
+    const picker = document.getElementById("pdp-size-picker");
+    return window.JFFUI.getSelectedSize(picker);
+  };
 
   document.getElementById("pdp-add-cart").addEventListener("click", () => {
     try {
-      const size = document.getElementById("pdp-size").value;
+      const size = readSize();
       const qty = Number(document.getElementById("pdp-qty").value);
       window.JFFCart.addToCart(product.id, size, qty);
-      window.JFFUI.showToast("Added to cart");
+      window.JFFUI.showToast("Added! Open Cart → Proceed to Buy");
     } catch (err) {
+      document.getElementById("pdp-size-picker")?.classList.add("size-picker-error");
       window.JFFUI.showToast(err.message, "error");
     }
   });
 
   document.getElementById("pdp-buy-now").addEventListener("click", () => {
     try {
-      const size = document.getElementById("pdp-size").value;
+      const size = readSize();
       const qty = Number(document.getElementById("pdp-qty").value);
       window.JFFCart.addToCart(product.id, size, qty);
       if (!window.JFFAuth.getSession()) {
@@ -161,6 +175,7 @@ if (!product) {
       }
       window.location.href = "checkout.html";
     } catch (err) {
+      document.getElementById("pdp-size-picker")?.classList.add("size-picker-error");
       window.JFFUI.showToast(err.message, "error");
     }
   });
@@ -171,4 +186,10 @@ if (!product) {
     e.currentTarget.textContent = added ? "♥ In your wishlist" : "♡ Add to Wishlist";
     window.JFFUI.showToast(added ? "Added to wishlist" : "Removed from wishlist");
   });
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initProductPage);
+} else {
+  initProductPage();
 }

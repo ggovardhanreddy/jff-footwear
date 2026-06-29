@@ -10,7 +10,8 @@ const renderCart = () => {
       <div class="empty-state">
         <h2>Your cart is empty</h2>
         <p>Add slippers from our collection and they will appear here.</p>
-        <a href="index.html" class="btn">Shop Now</a>
+        <a href="index.html" class="btn btn-amazon">Shop Now</a>
+        <p class="size-picker-hint">Tap a product → pick size → Add to Cart → Cart → Proceed to Buy</p>
       </div>`;
     document.getElementById("summary-items").textContent = "0";
     document.getElementById("summary-total").textContent = formatPrice(0);
@@ -71,6 +72,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkoutBtn = document.getElementById("checkout-btn");
   if (checkoutBtn) {
     checkoutBtn.addEventListener("click", (e) => {
+      if (!JFFCart.getCartItems().length) {
+        e.preventDefault();
+        return;
+      }
       if (!window.JFFAuth?.getSession()) {
         e.preventDefault();
         window.location.href = "login.html?return=checkout.html";
