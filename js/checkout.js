@@ -11,6 +11,7 @@ if (!items.length) {
 
 const user = JFFAuth.getCurrentUser();
 const form = document.getElementById("checkout-form");
+const submitBtn = form.querySelector('button[type="submit"]');
 
 if (user) {
   form.elements.name.value = user.name;
@@ -32,13 +33,46 @@ const delivery = JFFCart.getCartTotal() >= 999 ? 0 : 49;
 const total = JFFCart.getCartTotal() + delivery;
 document.getElementById("summary-total").textContent = formatPrice(total);
 
-form.addEventListener("submit", (e) => {
+const paymentHint = document.getElementById("payment-hint");
+const razorpayConfigured = Boolean(window.JFFConfig?.razorpayKeyId);
+
+if (!razorpayConfigured) {
+  paymentHint.textContent =
+    "Online payment (UPI/Card) will appear after you add your Razorpay Key ID in js/config.js.";
+  paymentHint.hidden = false;
+}
+
+const finishOrder = (order) => {
+  JFFAuth.saveOrder(order);
+  JFFCart.clearCart();
+
+  const lines = order.items
+    .map((i) => `• ${i.name} (${i.size}") x${i.qty} - ${formatPrice(i.price * i.qty)}`)
+    .join("\n");
+  const paymentLine =
+    order.payment === "razorpay"
+      ? `Paid online (Razorpay) · ID: ${order.paymentId || "—"}`
+      : order.payment === "cod"
+        ? "Cash on Delivery"
+        : "UPI (WhatsApp)";
+
+  const msg = encodeURIComponent(
+    `New JFF order ${order.id}\n\n${lines}\n\nTotal: ${formatPrice(order.total)}\nPayment: ${paymentLine}\n\nDeliver to:\n${order.address.name}\n${order.address.phone}\n${order.address.address}\n${order.address.city} - ${order.address.pincode}`
+  );
+
+  window.open(`https://wa.me/918106407372?text=${msg}`, "_blank");
+  window.location.href = `account.html?ordered=${order.id}`;
+};
+
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const err = document.getElementById("checkout-error");
   err.hidden = true;
 
   const fd = new FormData(form);
   const session = JFFAuth.getSession();
+  const payment = fd.get("payment");
+
   const order = {
     id: `ORD${Date.now()}`,
     userId: session.id,
@@ -58,19 +92,35 @@ form.addEventListener("submit", (e) => {
       city: fd.get("city"),
       pincode: fd.get("pincode"),
     },
-    payment: fd.get("payment"),
+    payment,
     status: "Placed",
     createdAt: new Date().toISOString(),
   };
 
-  JFFAuth.saveOrder(order);
-  JFFCart.clearCart();
+  if (payment === "razorpay") {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Opening payment…";
+    try {
+      const response = await JFFRazorpay.pay({
+        amountPaise: Math.round(total * 100),
+        orderId: order.id,
+        customer: {
+          name: order.address.name,
+          email: user?.email || "",
+          phone: order.address.phone,
+        },
+      });
+      order.paymentId = response.razorpay_payment_id;
+      order.status = "Paid";
+      finishOrder(order);
+    } catch (error) {
+      err.textContent = error.message;
+      err.hidden = false;
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Place Order";
+    }
+    return;
+  }
 
-  const lines = order.items.map((i) => `• ${i.name} (${i.size}") x${i.qty} - ${formatPrice(i.price * i.qty)}`).join("\n");
-  const msg = encodeURIComponent(
-    `New JFF order ${order.id}\n\n${lines}\n\nTotal: ${formatPrice(total)}\nPayment: ${order.payment}\n\nDeliver to:\n${order.address.name}\n${order.address.phone}\n${order.address.address}\n${order.address.city} - ${order.address.pincode}`
-  );
-
-  window.open(`https://wa.me/918106407372?text=${msg}`, "_blank");
-  window.location.href = `account.html?ordered=${order.id}`;
+  finishOrder(order);
 });

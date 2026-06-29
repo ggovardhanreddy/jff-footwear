@@ -80,6 +80,36 @@ const login = async ({ email, password }) => {
   return user;
 };
 
+const normalizePhone = (phone) => {
+  const digits = String(phone).replace(/\D/g, "");
+  if (digits.length === 10) return digits;
+  if (digits.startsWith("91") && digits.length === 12) return digits.slice(2);
+  return digits;
+};
+
+const loginWithPhone = async ({ phone, name }) => {
+  const users = readUsers();
+  const phoneKey = normalizePhone(phone);
+  let user = users.find((u) => normalizePhone(u.phone) === phoneKey);
+
+  if (!user) {
+    user = {
+      id: `user_${Date.now()}`,
+      name: (name || "Customer").trim(),
+      email: `${phoneKey}@jff.phone`,
+      phone: phoneKey,
+      passwordHash: "",
+      authMethod: "otp",
+      createdAt: new Date().toISOString(),
+    };
+    users.push(user);
+    writeUsers(users);
+  }
+
+  setSession(user);
+  return user;
+};
+
 const logout = () => clearSession();
 
 const getCurrentUser = () => {
@@ -115,6 +145,7 @@ const saveOrder = (order) => {
 window.JFFAuth = {
   signup,
   login,
+  loginWithPhone,
   logout,
   getSession,
   getCurrentUser,

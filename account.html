@@ -54,6 +54,12 @@
     const orders = JFFAuth.getOrders(user.id);
     const ordersEl = document.getElementById("orders-list");
 
+    const paymentLabel = (o) => {
+      if (o.payment === "cod") return "Cash on Delivery";
+      if (o.payment === "razorpay") return `Paid online${o.paymentId ? ` · ${o.paymentId}` : ""}`;
+      return "UPI (WhatsApp)";
+    };
+
     if (!orders.length) {
       ordersEl.innerHTML = `<p class="muted">No orders yet. <a href="index.html">Start shopping</a></p>`;
     } else {
@@ -66,7 +72,7 @@
               <span>${new Date(o.createdAt).toLocaleDateString("en-IN")}</span>
             </div>
             <p>${o.items.length} item(s) · ${JFFStore.formatPrice(o.total)} · ${o.status}</p>
-            <p class="muted">${o.address.city} · ${o.payment === "cod" ? "Cash on Delivery" : "UPI"}</p>
+            <p class="muted">${o.address.city} · ${paymentLabel(o)}</p>
           </article>`
         )
         .join("");
