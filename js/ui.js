@@ -244,6 +244,19 @@ const bindAddToCartButtons = () => bindProductCards(document);
 document.addEventListener("DOMContentLoaded", () => {
   document.body.classList.add("page-loaded");
 
+  document.body.addEventListener("click", (e) => {
+    const sizeBtn = e.target.closest(".size-pick-btn");
+    if (!sizeBtn) return;
+    e.preventDefault();
+    const picker = sizeBtn.closest(".size-picker");
+    if (!picker) return;
+    picker.classList.remove("size-picker-error");
+    picker.querySelectorAll(".size-pick-btn").forEach((b) => b.classList.remove("is-selected"));
+    sizeBtn.classList.add("is-selected");
+    const hidden = picker.querySelector(".size-picker-value");
+    if (hidden) hidden.value = sizeBtn.dataset.size;
+  });
+
   const headerSlot = document.getElementById("jff-header");
   if (headerSlot) {
     window.JFFLayout?.mount(headerSlot.dataset.active || "");

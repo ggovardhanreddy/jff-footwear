@@ -2,6 +2,16 @@
 <html lang="en" id="top">
 <head>
   <meta charset="UTF-8" />
+  <script>
+    (function () {
+      var p = location.pathname || "";
+      var gh = location.hostname.indexOf("github.io") !== -1;
+      window.JFF_BASE = gh || p.indexOf("/jff-footwear") !== -1 ? "/jff-footwear/" : "./";
+      var b = document.createElement("base");
+      b.href = window.JFF_BASE;
+      document.head.appendChild(b);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="JFF Footwear — Shop premium slippers and flip flops online. Amazon-style shopping with cart, UPI payments, and fast delivery." />
   <meta name="theme-color" content="#131921" />
@@ -13,7 +23,7 @@
   <div id="jff-header" data-active="home"></div>
 
   <main>
-    <section class="amazon-hero animate-in">
+    <section class="amazon-hero">
       <div class="amazon-hero-main" style="background-image: linear-gradient(to right, rgba(234,237,237,0.95), rgba(234,237,237,0.4)), url('images/hero/hero-1280.jpg')">
         <div class="amazon-hero-copy">
           <h1>Luxury for Every Step</h1>
@@ -24,7 +34,7 @@
       <div class="hero-banners" id="hero-banners"></div>
     </section>
 
-    <section class="amazon-row animate-in">
+    <section class="amazon-row">
       <div class="container">
         <div class="amazon-row-head">
           <h2>Shop by Style</h2>

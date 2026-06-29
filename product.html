@@ -2,6 +2,16 @@
 <html lang="en" id="top">
 <head>
   <meta charset="UTF-8" />
+  <script>
+    (function () {
+      var p = location.pathname || "";
+      var gh = location.hostname.indexOf("github.io") !== -1;
+      window.JFF_BASE = gh || p.indexOf("/jff-footwear") !== -1 ? "/jff-footwear/" : "./";
+      var b = document.createElement("base");
+      b.href = window.JFF_BASE;
+      document.head.appendChild(b);
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product | JFF Footwear</title>
   <link rel="stylesheet" href="css/style.css" />
