@@ -64,6 +64,15 @@ const removeFromCart = (key) => {
   writeCart(readCart().filter((i) => i.key !== key));
 };
 
+const buyNow = (productId, size, qty = 1) => {
+  addToCart(productId, size, qty);
+  if (!window.JFFAuth?.getSession()) {
+    window.location.href = `login.html?return=${encodeURIComponent("checkout.html")}`;
+    return;
+  }
+  window.location.href = "checkout.html";
+};
+
 const clearCart = () => writeCart([]);
 
 window.JFFCart = {
@@ -71,6 +80,7 @@ window.JFFCart = {
   getCartTotal,
   getCartItems,
   addToCart,
+  buyNow,
   updateQty,
   removeFromCart,
   clearCart,

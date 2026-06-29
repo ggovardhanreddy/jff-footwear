@@ -82,6 +82,41 @@ const searchProducts = (query) => {
   );
 };
 
+const productRating = (id) => {
+  const num = parseInt(String(id).replace(/\D/g, ""), 10) || 1;
+  return {
+    stars: Math.round((3.6 + (num % 13) * 0.1) * 10) / 10,
+    count: 48 + (num % 420),
+  };
+};
+
+const renderStars = (rating, size = "sm") => {
+  const full = Math.floor(rating);
+  const half = rating - full >= 0.5;
+  const empty = 5 - full - (half ? 1 : 0);
+  const star = (type) => {
+    if (type === "full") return "★";
+    if (type === "half") return "★";
+    return "☆";
+  };
+  let html = "";
+  for (let i = 0; i < full; i += 1) html += star("full");
+  if (half) html += star("half");
+  for (let i = 0; i < empty; i += 1) html += star("empty");
+  return `<span class="stars stars-${size}" aria-label="${rating} out of 5">${html}</span>`;
+};
+
+const sortProducts = (items, sort) => {
+  const list = [...items];
+  if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
+  else if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
+  else if (sort === "rating") list.sort((a, b) => productRating(b.id).stars - productRating(a.id).stars);
+  else if (sort === "discount") list.sort((a, b) => discount(b.price, b.mrp) - discount(a.price, a.mrp));
+  return list;
+};
+
+const freeDelivery = (price) => price >= 499;
+
 window.JFFStore = {
   PRODUCTS,
   SIZE_RANGES,
@@ -92,4 +127,8 @@ window.JFFStore = {
   getSizesForCategory,
   getProductById,
   searchProducts,
+  productRating,
+  renderStars,
+  sortProducts,
+  freeDelivery,
 };

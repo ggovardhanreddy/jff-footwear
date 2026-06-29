@@ -6,13 +6,8 @@
   <title>Sign Up | JFF Footwear</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body class="auth-page">
-  <header class="header">
-    <div class="header-inner store-header">
-      <a href="index.html" class="logo">JFF <em>Footwear</em></a>
-      <a href="login.html" class="btn btn-sm btn-outline">Login</a>
-    </div>
-  </header>
+<body class="auth-page amazon-page">
+  <div id="jff-header" data-active=""></div>
 
   <main class="auth-main">
     <div class="auth-card">
@@ -36,7 +31,7 @@
           <input type="password" name="password" required minlength="6" placeholder="Min 6 characters" autocomplete="new-password" />
         </label>
         <p id="signup-error" class="form-error" hidden></p>
-        <button type="submit" class="btn btn-block">Sign Up</button>
+        <button type="submit" class="btn btn-amazon btn-block">Create your JFF account</button>
       </form>
       <p class="auth-switch">Already have an account? <a href="login.html">Login</a></p>
     </div>
@@ -44,6 +39,10 @@
 
   <script src="js/store.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/ui.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
     const returnUrl = params.get("return") || "index.html";

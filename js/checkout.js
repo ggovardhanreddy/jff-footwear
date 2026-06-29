@@ -29,7 +29,7 @@ list.innerHTML = items
   )
   .join("");
 
-const delivery = JFFCart.getCartTotal() >= 999 ? 0 : 49;
+const delivery = JFFCart.getCartTotal() >= 499 ? 0 : 49;
 const total = JFFCart.getCartTotal() + delivery;
 document.getElementById("summary-total").textContent = formatPrice(total);
 

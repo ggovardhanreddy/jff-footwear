@@ -28,7 +28,7 @@ const renderCart = () => {
       <article class="cart-item" data-key="${item.key}">
         <img src="${item.product.image}" alt="${item.product.name}" width="120" height="120" />
         <div class="cart-item-info">
-          <h3>${item.product.name}</h3>
+          <h3><a href="product.html?id=${item.product.id}">${item.product.name}</a></h3>
           <p>Size: ${item.size} inch · ${window.JFFStore.categoryLabel(item.product.category)}</p>
           <p class="cart-item-price">${formatPrice(item.product.price)}</p>
           <div class="qty-controls">
@@ -43,11 +43,15 @@ const renderCart = () => {
     )
     .join("");
 
-  const total = JFFCart.getCartTotal();
+  const subtotal = JFFCart.getCartTotal();
   const count = JFFCart.getCartCount();
+  const deliveryFee = subtotal >= 499 ? 0 : 49;
+  const orderTotal = subtotal + deliveryFee;
   document.getElementById("summary-items").textContent = String(count);
-  document.getElementById("summary-total").textContent = formatPrice(total);
-  document.getElementById("summary-delivery").textContent = total >= 999 ? "FREE" : "₹ 49";
+  const subtotalEl = document.getElementById("summary-subtotal");
+  if (subtotalEl) subtotalEl.textContent = formatPrice(subtotal);
+  document.getElementById("summary-total").textContent = formatPrice(orderTotal);
+  document.getElementById("summary-delivery").textContent = deliveryFee === 0 ? "FREE" : formatPrice(deliveryFee);
 
   container.querySelectorAll(".qty-btn, .link-btn").forEach((btn) => {
     btn.addEventListener("click", () => {

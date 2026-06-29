@@ -6,28 +6,18 @@
   <title>My Account | JFF Footwear</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
-  <header class="header">
-    <div class="header-inner store-header">
-      <a href="index.html" class="logo">JFF <em>Footwear</em></a>
-      <div class="header-actions">
-        <a href="cart.html" class="cart-link">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6h15l-1.5 9H8L6 6zm0 0L5 3H2M9 20a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span id="cart-count" class="cart-badge" hidden>0</span>
-        </a>
-        <button type="button" id="logout-btn" class="btn btn-sm btn-outline">Logout</button>
-      </div>
-    </div>
-  </header>
+<body class="amazon-page">
+  <div id="jff-header" data-active="orders"></div>
 
   <main class="page-main">
     <div class="container">
       <div id="order-success" class="alert success" hidden></div>
-      <h1 class="page-title">My Account</h1>
+      <h1 class="page-title">Your Account</h1>
       <div class="account-grid">
         <section class="account-card">
           <h2>Profile</h2>
           <dl id="profile-info" class="profile-dl"></dl>
+          <button type="button" id="logout-btn" class="btn btn-outline" style="margin-top:1rem">Sign Out</button>
         </section>
         <section class="account-card account-orders">
           <h2>My Orders</h2>
@@ -37,9 +27,13 @@
     </div>
   </main>
 
+  <div id="jff-footer"></div>
+
   <script src="js/store.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/layout.js"></script>
   <script src="js/ui.js"></script>
   <script>
     if (!JFFAuth.requireAuth()) return;

@@ -6,18 +6,13 @@
   <title>Login | JFF Footwear</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body class="auth-page">
-  <header class="header">
-    <div class="header-inner store-header">
-      <a href="index.html" class="logo">JFF <em>Footwear</em></a>
-      <a href="signup.html" class="btn btn-sm">Create account</a>
-    </div>
-  </header>
+<body class="auth-page amazon-page">
+  <div id="jff-header" data-active=""></div>
 
   <main class="auth-main">
     <div class="auth-card">
-      <h1>Login</h1>
-      <p class="auth-sub">Welcome back. Sign in to shop slippers &amp; track orders.</p>
+      <h1>Sign in</h1>
+      <p class="auth-sub">New to JFF? <a href="signup.html">Create your account</a></p>
 
       <div class="auth-tabs" role="tablist">
         <button type="button" class="auth-tab active" data-panel="panel-password">Password</button>
@@ -37,7 +32,7 @@
             Password
             <input type="password" name="password" required minlength="6" autocomplete="current-password" />
           </label>
-          <button type="submit" class="btn btn-block">Login</button>
+          <button type="submit" class="btn btn-amazon btn-block">Sign in</button>
         </form>
       </div>
 
@@ -73,6 +68,9 @@
   <script src="js/store.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/ui.js"></script>
   <script src="js/otp.js"></script>
   <script src="js/login-page.js"></script>
 </body>

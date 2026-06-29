@@ -1,270 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="top">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="JFF Footwear — Shop premium slippers and flip flops for men and women. Lightweight, non-slip, and built for everyday comfort." />
-  <meta name="theme-color" content="#ffffff" />
-  <title>JFF Footwear | Shop Slippers &amp; Flip Flops Online</title>
+  <meta name="description" content="JFF Footwear — Shop premium slippers and flip flops online. Amazon-style shopping with cart, UPI payments, and fast delivery." />
+  <meta name="theme-color" content="#131921" />
+  <title>JFF Footwear | Online Shopping for Flip Flops</title>
   <link rel="preload" as="image" href="images/hero/hero-1280.jpg" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
-  <div class="announcement">
-    <p>Prices from ₹100 &nbsp;·&nbsp; Free delivery above ₹999 &nbsp;·&nbsp; Call <a href="tel:+918106407372">+91 81064 07372</a></p>
-  </div>
-
-  <header class="header" data-scrolled="false">
-    <div class="header-inner store-header">
-      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span></button>
-      <a href="index.html" class="logo">JFF <em>Footwear</em></a>
-      <form id="search-form" class="search-form" action="index.html" method="get">
-        <input id="search-input" type="search" name="q" placeholder="Search for slippers, flip flops..." value="" />
-        <button type="submit" aria-label="Search">Search</button>
-      </form>
-      <nav class="nav" aria-label="Main">
-        <a href="index.html#men">Men</a>
-        <a href="index.html#women">Women</a>
-        <a href="index.html#kids">Kids</a>
-        <a href="index.html#shop">Shop</a>
-        <a href="index.html#sizes">Sizes</a>
-      </nav>
-      <div class="header-actions">
-        <a href="login.html" id="auth-link" class="header-link">Login</a>
-        <a href="signup.html" class="header-link hide-mobile">Sign Up</a>
-        <a href="cart.html" class="cart-link" aria-label="Cart">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6h15l-1.5 9H8L6 6zm0 0L5 3H2M9 20a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span id="cart-count" class="cart-badge" hidden>0</span>
-        </a>
-      </div>
-    </div>
-  </header>
+<body class="amazon-page">
+  <div id="jff-header" data-active="home"></div>
 
   <main>
-    <section class="hero-slider" aria-label="Featured collections">
-      <div class="hero-track" id="hero-track">
-        <article class="hero-slide is-active" style="--slide-img: url('images/hero/hero-1280.jpg')">
-          <div class="hero-slide-content">
-            <span class="badge">New Arrivals</span>
-            <h1>Luxury for Every Step</h1>
-            <p>Premium flip flops crafted for all-day comfort.</p>
-            <a href="login.html" class="btn">Shop Collection</a>
-          </div>
-        </article>
-        <article class="hero-slide" style="--slide-img: url('images/showcase/craft-1600.jpg')">
-          <div class="hero-slide-content">
-            <span class="badge">Men's</span>
-            <h1>Step Into Comfort</h1>
-            <p>Textured footbeds, durable straps, bold colours.</p>
-            <a href="#men" class="btn">Shop Men</a>
-          </div>
-        </article>
-        <article class="hero-slide" style="--slide-img: url('images/showcase/comfort-1600.jpg')">
-          <div class="hero-slide-content">
-            <span class="badge">Women's</span>
-            <h1>Style Meets Softness</h1>
-            <p>Floral patterns and cushioned support for every day.</p>
-            <a href="#women" class="btn">Shop Women</a>
-          </div>
-        </article>
+    <section class="amazon-hero">
+      <div class="amazon-hero-main" style="background-image: linear-gradient(to right, rgba(234,237,237,0.95), rgba(234,237,237,0.4)), url('images/hero/hero-1280.jpg')">
+        <div class="amazon-hero-copy">
+          <h1>Luxury for Every Step</h1>
+          <p>Premium flip flops from ₹100 · Free delivery above ₹499</p>
+          <a href="index.html?cat=new" class="btn btn-amazon">Shop new arrivals</a>
+        </div>
       </div>
-      <div class="hero-dots" id="hero-dots" aria-label="Slide navigation"></div>
+      <div class="hero-banners" id="hero-banners"></div>
     </section>
 
-    <section class="trust-strip">
-      <div class="container trust-grid">
-        <div class="trust-item"><strong>Lightweight</strong><span>Easy all-day wear</span></div>
-        <div class="trust-item"><strong>Non-slip sole</strong><span>Textured grip</span></div>
-        <div class="trust-item"><strong>Soft padded</strong><span>Cushioned comfort</span></div>
-        <div class="trust-item"><strong>Durable</strong><span>Built to last</span></div>
-      </div>
-    </section>
-
-    <section class="categories">
+    <section class="amazon-row">
       <div class="container">
-        <div class="section-head">
+        <div class="amazon-row-head">
+          <h2>Today's Deals</h2>
+          <a href="index.html?cat=deals">See all deals</a>
+        </div>
+        <div class="product-row" id="deals-grid"></div>
+      </div>
+    </section>
+
+    <section class="amazon-row alt">
+      <div class="container">
+        <div class="amazon-row-head">
+          <h2>Best Sellers in Flip Flops</h2>
+          <a href="index.html?cat=bestsellers">See more</a>
+        </div>
+        <div class="product-row" id="bestseller-grid"></div>
+      </div>
+    </section>
+
+    <section class="categories amazon-categories">
+      <div class="container">
+        <div class="amazon-row-head">
           <h2>Shop by Category</h2>
-          <p>Find your perfect pair in our curated collections.</p>
         </div>
-        <div class="category-grid">
-          <a href="#shop" class="category-card" id="men">
+        <div class="category-grid amazon-category-grid">
+          <a href="index.html?cat=men" class="category-card">
             <img src="images/showcase/craft-960.jpg" alt="Men's slippers" width="720" height="960" loading="lazy" />
-            <div class="category-label">
-              <span>Men's Flip Flops</span>
-              <small>Sizes 5 – 11 inch</small>
-            </div>
+            <div class="category-label"><span>Men's Flip Flops</span><small>Sizes 5 – 11 inch</small></div>
           </a>
-          <a href="#shop" class="category-card" id="women">
+          <a href="index.html?cat=women" class="category-card">
             <img src="images/showcase/comfort-960.jpg" alt="Women's slippers" width="720" height="960" loading="lazy" />
-            <div class="category-label">
-              <span>Women's Flip Flops</span>
-              <small>Sizes 5 – 10 inch</small>
-            </div>
+            <div class="category-label"><span>Women's Flip Flops</span><small>Sizes 5 – 10 inch</small></div>
           </a>
-          <a href="#kids" class="category-card" id="kids">
-            <img src="images/showcase/style-960.jpg" alt="Kids slippers" width="720" height="960" loading="lazy" />
-            <div class="category-label">
-              <span>Kids Flip Flops</span>
-              <small>Sizes 2 – 5 inch</small>
-            </div>
+          <a href="index.html?cat=deals" class="category-card">
+            <img src="images/showcase/style-960.jpg" alt="Deals" width="720" height="960" loading="lazy" />
+            <div class="category-label"><span>Today's Deals</span><small>Up to 35% off</small></div>
           </a>
         </div>
       </div>
     </section>
 
-    <section class="products" id="shop">
+    <section class="products amazon-shop" id="shop">
       <div class="container">
-        <div class="section-head row">
-          <div>
-            <h2>New Arrivals</h2>
-            <p>Professional studio shots — prices from ₹100 to ₹1,000. Order by call or WhatsApp.</p>
-          </div>
-          <div class="filter-tabs" role="tablist" aria-label="Filter products">
-            <button class="filter-tab is-active" data-filter="all" role="tab" aria-selected="true">All</button>
-            <button class="filter-tab" data-filter="men" role="tab" aria-selected="false">Men</button>
-            <button class="filter-tab" data-filter="women" role="tab" aria-selected="false">Women</button>
-            <button class="filter-tab" data-filter="kids" role="tab" aria-selected="false">Kids</button>
+        <div class="shop-toolbar">
+          <h2 id="results-title">All Flip Flops</h2>
+          <div class="shop-toolbar-right">
+            <div class="filter-tabs" role="tablist" aria-label="Filter products">
+              <button class="filter-tab is-active" data-filter="all" role="tab" aria-selected="true">All</button>
+              <button class="filter-tab" data-filter="men" role="tab" aria-selected="false">Men</button>
+              <button class="filter-tab" data-filter="women" role="tab" aria-selected="false">Women</button>
+            </div>
+            <label class="sort-label">Sort by
+              <select id="sort-select">
+                <option value="featured">Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="rating">Avg. Customer Review</option>
+                <option value="discount">Discount</option>
+              </select>
+            </label>
           </div>
         </div>
-        <div class="product-grid" id="product-grid"></div>
+        <div class="product-grid amazon-product-grid" id="product-grid"></div>
       </div>
     </section>
 
     <section class="size-guide" id="sizes">
       <div class="container">
-        <div class="section-head">
-          <h2>Size Guide</h2>
-          <p>All sizes in inches. Mention your size when ordering on WhatsApp or call.</p>
-        </div>
+        <div class="amazon-row-head"><h2>Size Guide (inches)</h2></div>
         <div class="size-grid">
-          <article class="size-card">
-            <h3>Men</h3>
-            <p class="size-range">5 – 11 inch</p>
-            <div class="size-chips" id="size-chips-men"></div>
-          </article>
-          <article class="size-card">
-            <h3>Women</h3>
-            <p class="size-range">5 – 10 inch</p>
-            <div class="size-chips" id="size-chips-women"></div>
-          </article>
-          <article class="size-card">
-            <h3>Kids</h3>
-            <p class="size-range">2 – 5 inch</p>
-            <div class="size-chips" id="size-chips-kids"></div>
-          </article>
+          <article class="size-card"><h3>Men</h3><p class="size-range">5 – 11 inch</p><div class="size-chips" id="size-chips-men"></div></article>
+          <article class="size-card"><h3>Women</h3><p class="size-range">5 – 10 inch</p><div class="size-chips" id="size-chips-women"></div></article>
+          <article class="size-card"><h3>Kids</h3><p class="size-range">2 – 5 inch</p><div class="size-chips" id="size-chips-kids"></div></article>
         </div>
       </div>
     </section>
 
-    <section class="products bestsellers">
-      <div class="container">
-        <div class="section-head">
-          <h2>Best Sellers</h2>
-          <p>Customer favourites — comfort you can trust.</p>
-        </div>
-        <div class="product-grid" id="bestseller-grid"></div>
-      </div>
-    </section>
-
-    <section class="promo-banner">
-      <div class="container promo-inner">
-        <div class="promo-copy">
-          <h2>Bulk &amp; Corporate Orders</h2>
-          <p>Retailers and businesses — get special pricing on bulk slipper orders with seamless support from enquiry to delivery.</p>
-          <a href="mailto:govardhan.reddy.g.94@gmail.com?subject=JFF%20Bulk%20Order%20Enquiry" class="btn btn-dark">Enquire Now</a>
-        </div>
-        <img src="images/gallery/0380-800.jpg" alt="JFF footwear bulk collection" width="700" height="933" loading="lazy" />
-      </div>
-    </section>
-
-    <section class="reviews">
-      <div class="container">
-        <div class="section-head">
-          <h2>What Customers Say</h2>
-          <p>Comfort loved by shoppers across India.</p>
-        </div>
-        <div class="review-grid">
-          <blockquote class="review-card">
-            <p>"Super comfortable and lightweight. I wear them all day without any pain — great quality for the price."</p>
-            <footer>— Verified Buyer, Men's Blue</footer>
-          </blockquote>
-          <blockquote class="review-card">
-            <p>"The non-slip sole is excellent. Stylish design and the floral women's pair looks beautiful."</p>
-            <footer>— Verified Buyer, Women's Green</footer>
-          </blockquote>
-          <blockquote class="review-card">
-            <p>"Ordered for the whole family. Soft, durable, and delivery was quick. Highly recommend JFF!"</p>
-            <footer>— Verified Buyer, Family Pack</footer>
-          </blockquote>
-        </div>
-      </div>
-    </section>
-
-    <section class="about" id="about">
-      <div class="container about-grid">
-        <img src="images/about/about-1200.jpg" alt="JFF Footwear craftsmanship" width="1000" height="750" loading="lazy" />
-        <div class="about-copy">
-          <span class="eyebrow">Our Story</span>
-          <h2>Crafting comfort for every step</h2>
-          <p>JFF Footwear brings together quality materials, thoughtful design, and everyday affordability. From textured footbeds to bold colours, every slipper is made to feel as good as it looks.</p>
-          <p>We merge traditional craftsmanship with modern comfort — slippers designed for home, travel, work, and everything in between.</p>
-          <a href="#shop" class="link-arrow">Explore collection</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="contact" id="contact">
-      <div class="container contact-box">
-        <h2>Ready to order?</h2>
-        <p>Call, WhatsApp, or email with your <strong>size in inches</strong> and style. We'll confirm availability and delivery.</p>
-        <div class="contact-actions">
-          <a href="tel:+918106407372" class="btn btn-dark">+91 81064 07372</a>
-          <a href="https://wa.me/918106407372" class="btn btn-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
-          <a href="mailto:govardhan.reddy.g.94@gmail.com" class="btn btn-outline">Email Us</a>
-        </div>
+    <section class="amazon-trust">
+      <div class="container trust-grid">
+        <div class="trust-item"><strong>🚚 Fast Delivery</strong><span>Ships across India</span></div>
+        <div class="trust-item"><strong>💳 Secure Pay</strong><span>UPI, Card, COD</span></div>
+        <div class="trust-item"><strong>↩ Easy Returns</strong><span>7-day return policy</span></div>
+        <div class="trust-item"><strong>✓ Genuine</strong><span>100% JFF quality</span></div>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="container footer-grid">
-      <div class="footer-brand">
-        <a href="#" class="logo">JFF <em>Footwear</em></a>
-        <p>Luxury for Every Step</p>
-        <p class="footer-contact"><a href="tel:+918106407372">+91 81064 07372</a><br /><a href="mailto:govardhan.reddy.g.94@gmail.com">govardhan.reddy.g.94@gmail.com</a></p>
-      </div>
-      <div>
-        <h3>Shop</h3>
-        <ul>
-          <li><a href="#men">Men's Flip Flops</a></li>
-          <li><a href="#women">Women's Flip Flops</a></li>
-          <li><a href="#kids">Kids Flip Flops</a></li>
-          <li><a href="#sizes">Size Guide</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Account</h3>
-        <ul>
-          <li><a href="login.html">Login</a></li>
-          <li><a href="signup.html">Sign Up</a></li>
-          <li><a href="account.html">My Orders</a></li>
-          <li><a href="cart.html">Cart</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Help</h3>
-        <ul>
-          <li><a href="#contact">Order on Call</a></li>
-          <li><a href="https://wa.me/918106407372" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
-          <li><a href="mailto:govardhan.reddy.g.94@gmail.com?subject=Bulk%20Order">Bulk Orders</a></li>
-          <li><a href="#about">About Us</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="container footer-bottom">
-      <p>&copy; <span id="year"></span> JFF Footwear. All rights reserved.</p>
-    </div>
-  </footer>
+  <div id="jff-footer"></div>
 
   <a href="https://wa.me/918106407372" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
     <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.01-1.37l-.36-.214-3.015 1.012 1.012-3.015-.214-.36A9.818 9.818 0 1112 21.818z"/></svg>
@@ -273,6 +121,8 @@
   <script src="js/store.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/layout.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/main.js" defer></script>
 </body>

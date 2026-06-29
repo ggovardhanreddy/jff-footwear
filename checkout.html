@@ -1,31 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="top">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Checkout | JFF Footwear</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
-  <header class="header">
-    <div class="header-inner store-header">
-      <a href="index.html" class="logo">JFF <em>Footwear</em></a>
-      <a href="cart.html" class="header-link">← Back to cart</a>
-    </div>
-  </header>
+<body class="amazon-page">
+  <div id="jff-header" data-active=""></div>
 
   <main class="page-main">
     <div class="container checkout-layout">
       <section class="checkout-form-wrap">
         <h1 class="page-title">Checkout</h1>
         <form id="checkout-form" class="checkout-form">
-          <h2>Delivery address</h2>
+          <h2>1. Delivery address</h2>
           <label>Full name<input type="text" name="name" required /></label>
           <label>Phone<input type="tel" name="phone" required pattern="[0-9]{10}" /></label>
           <label>Address<textarea name="address" rows="3" required placeholder="House no, street, area"></textarea></label>
           <label>City<input type="text" name="city" required /></label>
           <label>Pincode<input type="text" name="pincode" required pattern="[0-9]{6}" /></label>
-          <label>Payment method
+          <h2>2. Payment method</h2>
+          <label>Payment
             <select name="payment" required>
               <option value="cod">Cash on Delivery</option>
               <option value="razorpay">Pay online — UPI, Card, Net Banking</option>
@@ -34,10 +30,10 @@
           </label>
           <p id="payment-hint" class="auth-hint" hidden></p>
           <p id="checkout-error" class="form-error" hidden></p>
-          <button type="submit" class="btn btn-block btn-dark">Place Order</button>
+          <button type="submit" class="btn btn-amazon btn-block">Place your order</button>
         </form>
       </section>
-      <aside class="cart-summary" id="order-summary">
+      <aside class="cart-summary amazon-cart-summary" id="order-summary">
         <h2>Order Summary</h2>
         <div id="summary-list"></div>
         <div class="summary-row total"><span>Total</span><span id="summary-total">₹ 0</span></div>
@@ -45,10 +41,14 @@
     </div>
   </main>
 
+  <div id="jff-footer"></div>
+
   <script src="js/config.js"></script>
   <script src="js/store.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/layout.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/razorpay-pay.js"></script>
   <script src="js/checkout.js"></script>
