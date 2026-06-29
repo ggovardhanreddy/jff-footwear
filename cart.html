@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shopping Cart | JFF Footwear</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="announcement">
+    <p>Prices from ₹100 &nbsp;·&nbsp; Free delivery above ₹999</p>
+  </div>
+
+  <header class="header">
+    <div class="header-inner store-header">
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span></button>
+      <a href="index.html" class="logo">JFF <em>Footwear</em></a>
+      <form id="search-form" class="search-form" action="index.html" method="get">
+        <input id="search-input" type="search" name="q" placeholder="Search for slippers, flip flops..." />
+        <button type="submit" aria-label="Search">Search</button>
+      </form>
+      <div class="header-actions">
+        <a href="login.html" id="auth-link" class="header-link">Login</a>
+        <a href="signup.html" class="header-link hide-mobile">Sign Up</a>
+        <a href="cart.html" class="cart-link active">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6h15l-1.5 9H8L6 6zm0 0L5 3H2M9 20a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span id="cart-count" class="cart-badge" hidden>0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <div class="container">
+      <h1 class="page-title">My Cart</h1>
+      <div class="cart-layout">
+        <div id="cart-items" class="cart-items"></div>
+        <aside class="cart-summary" id="cart-summary">
+          <h2>Price Details</h2>
+          <div class="summary-row"><span>Items</span><span id="summary-items">0</span></div>
+          <div class="summary-row"><span>Delivery</span><span id="summary-delivery">FREE</span></div>
+          <div class="summary-row total"><span>Total</span><span id="summary-total">₹ 0</span></div>
+          <a href="checkout.html" id="checkout-btn" class="btn btn-block">Place Order</a>
+          <a href="index.html" class="btn btn-outline btn-block">Continue Shopping</a>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-bottom">
+      <p>&copy; <span id="year"></span> JFF Footwear. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/store.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/cart-page.js"></script>
+</body>
+</html>

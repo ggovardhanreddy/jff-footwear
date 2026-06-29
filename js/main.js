@@ -1,80 +1,23 @@
-const PRICES = [100, 149, 199, 249, 279, 299, 329, 349, 379, 399, 429, 449, 479, 499, 549, 579, 649, 699, 749, 799, 849, 899, 949, 999, 1000, 1000];
-
-const SIZE_RANGES = {
-  men: { min: 5, max: 11, label: "Men" },
-  women: { min: 5, max: 10, label: "Women" },
-  kids: { min: 2, max: 5, label: "Kids" },
-};
-
-const sizeRangeText = (category) => {
-  const r = SIZE_RANGES[category];
-  return r ? `${r.min} – ${r.max} inch` : "";
-};
-
-const categoryLabel = (category) => {
-  if (category === "men") return "Men";
-  if (category === "women") return "Women";
-  if (category === "kids") return "Kids";
-  return category;
-};
-
-const PRODUCT_META = [
-  { id: "0381", name: "Classic Flip Flops : Blue", category: "men", badge: "New", bestseller: true },
-  { id: "0374", name: "Classic Flip Flops : Terracotta", category: "men", badge: "New", bestseller: true },
-  { id: "0363", name: "Floral Comfort Flips : Green", category: "women", badge: "New", bestseller: true },
-  { id: "0380", name: "Everyday Comfort : Black", category: "men", badge: "Best Seller", bestseller: true },
-  { id: "0378", name: "Soft Walk Slides : Navy", category: "men", bestseller: true },
-  { id: "0386", name: "Premium Flips : Brown", category: "men", badge: "New", bestseller: true },
-  { id: "0362", name: "Urban Comfort : Grey", category: "men" },
-  { id: "0364", name: "Floral Comfort : Pink", category: "women" },
-  { id: "0365", name: "Daily Wear : Olive", category: "men" },
-  { id: "0366", name: "Breeze Flips : Lavender", category: "women" },
-  { id: "0367", name: "Comfort Plus : Charcoal", category: "men" },
-  { id: "0368", name: "Style Flips : Coral", category: "women" },
-  { id: "0369", name: "Classic Walk : Tan", category: "men" },
-  { id: "0370", name: "Soft Sole : Beige", category: "men" },
-  { id: "0371", name: "Floral Flips : Mint", category: "women" },
-  { id: "0372", name: "Everyday Basic : Black", category: "men" },
-  { id: "0373", name: "Comfort Walk : Slate", category: "men" },
-  { id: "0375", name: "Premium Comfort : Maroon", category: "men" },
-  { id: "0376", name: "Floral Style : Peach", category: "women" },
-  { id: "0377", name: "Urban Flips : Dark Blue", category: "men" },
-  { id: "0379", name: "Soft Touch : Rose", category: "women" },
-  { id: "0382", name: "Bold Comfort : Red", category: "men" },
-  { id: "0383", name: "Floral Grace : Yellow", category: "women" },
-  { id: "0384", name: "Easy Walk : White", category: "women" },
-  { id: "0385", name: "Comfort Zone : Teal", category: "women" },
-  { id: "0387", name: "Classic Style : Burgundy", category: "men" },
-];
-
-const PRODUCTS = PRODUCT_META.map((item, index) => {
-  const price = PRICES[index];
-  const mrp = Math.round(price * 1.35);
-  return {
-    ...item,
-    image: `images/gallery/${item.id}-800.jpg`,
-    price,
-    mrp,
-  };
-});
-
-const formatPrice = (n) => `₹ ${n.toLocaleString("en-IN")}`;
-const discount = (price, mrp) => Math.round(((mrp - price) / mrp) * 100);
-
-const orderLink = (product) => {
-  const sizes = sizeRangeText(product.category);
-  const msg = encodeURIComponent(
-    `Hi JFF Footwear, I'd like to order: ${product.name} (${formatPrice(product.price)}). Available sizes: ${sizes}. My size: `
-  );
-  return `https://wa.me/918106407372?text=${msg}`;
-};
+const {
+  PRODUCTS,
+  formatPrice,
+  discount,
+  sizeRangeText,
+  categoryLabel,
+  getSizesForCategory,
+  searchProducts,
+} = window.JFFStore;
 
 const renderProduct = (product) => {
   const off = discount(product.price, product.mrp);
   const badgeClass = product.badge === "Best Seller" ? "" : "sale";
+  const sizes = getSizesForCategory(product.category)
+    .map((s) => `<option value="${s}">${s} inch</option>`)
+    .join("");
+
   return `
     <article class="product-card" data-category="${product.category}">
-      <a href="${orderLink(product)}" class="product-image" target="_blank" rel="noopener noreferrer">
+      <a href="cart.html" class="product-image">
         ${product.badge ? `<span class="product-badge ${badgeClass}">${product.badge}</span>` : ""}
         <img src="${product.image}" alt="${product.name}" width="900" height="900" loading="lazy" decoding="async" />
       </a>
@@ -87,7 +30,12 @@ const renderProduct = (product) => {
           <span class="price-was">${formatPrice(product.mrp)}</span>
           <span class="price-off">${off}% Off</span>
         </div>
-        <a href="${orderLink(product)}" class="product-order" target="_blank" rel="noopener noreferrer">Order on WhatsApp</a>
+        <label class="sr-only" for="size-${product.id}">Select size</label>
+        <select id="size-${product.id}" class="size-select" aria-label="Select size for ${product.name}">
+          <option value="">Select size</option>
+          ${sizes}
+        </select>
+        <button type="button" class="product-order btn-add-cart" data-product-id="${product.id}">Add to Cart</button>
       </div>
     </article>
   `;
@@ -96,9 +44,6 @@ const renderProduct = (product) => {
 const productGrid = document.getElementById("product-grid");
 const bestsellerGrid = document.getElementById("bestseller-grid");
 const filterTabs = document.querySelectorAll(".filter-tab");
-const yearEl = document.getElementById("year");
-
-if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 const renderGrid = (el, items, emptyMessage = "") => {
   if (!el) return;
@@ -107,14 +52,20 @@ const renderGrid = (el, items, emptyMessage = "") => {
     return;
   }
   el.innerHTML = items.map(renderProduct).join("");
+  window.JFFUI?.bindAddToCartButtons();
 };
 
-renderGrid(productGrid, PRODUCTS);
+const query = new URLSearchParams(window.location.search).get("q") || "";
+const searchInput = document.getElementById("search-input");
+if (searchInput && query) searchInput.value = query;
+
+const initialProducts = query ? searchProducts(query) : PRODUCTS;
+renderGrid(productGrid, initialProducts, query ? "No products found for your search." : "");
 renderGrid(bestsellerGrid, PRODUCTS.filter((p) => p.bestseller));
 
 const renderSizeChips = (containerId, category) => {
   const el = document.getElementById(containerId);
-  const range = SIZE_RANGES[category];
+  const range = window.JFFStore.SIZE_RANGES[category];
   if (!el || !range) return;
 
   const sizes = [];
@@ -123,9 +74,7 @@ const renderSizeChips = (containerId, category) => {
   el.innerHTML = sizes
     .map(
       (size) =>
-        `<a class="size-chip" href="https://wa.me/918106407372?text=${encodeURIComponent(
-          `Hi JFF Footwear, I'd like to order ${range.label}'s flip flops in size ${size} inch.`
-        )}" target="_blank" rel="noopener noreferrer">${size}"</a>`
+        `<a class="size-chip" href="login.html?return=${encodeURIComponent("checkout.html")}">${size}"</a>`
     )
     .join("");
 };
@@ -150,7 +99,7 @@ filterTabs.forEach((tab) => {
     if (filter === "kids") {
       filtered = PRODUCTS.filter((p) => p.category === "kids");
       emptyMessage =
-        "Kids flip flops available in sizes 2 – 5 inch. WhatsApp or call us to order — we'll share styles and colours.";
+        "Kids flip flops available in sizes 2 – 5 inch. Login and order, or contact us on WhatsApp.";
     } else if (filter !== "all") {
       filtered = PRODUCTS.filter((p) => p.category === filter);
     }
@@ -189,29 +138,18 @@ if (slides.length && dotsContainer) {
   });
 
   const nextSlide = () => goToSlide((currentSlide + 1) % slides.length);
-
   const startTimer = () => {
     clearInterval(slideTimer);
     slideTimer = setInterval(nextSlide, 5000);
   };
-
   startTimer();
 }
 
-// Mobile nav
-const navToggle = document.querySelector(".nav-toggle");
-const nav = document.querySelector(".nav");
-
-if (navToggle && nav) {
-  navToggle.addEventListener("click", () => {
-    const isOpen = nav.classList.toggle("open");
-    navToggle.setAttribute("aria-expanded", String(isOpen));
-  });
-
-  nav.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      nav.classList.remove("open");
-      navToggle.setAttribute("aria-expanded", "false");
-    });
+const searchForm = document.getElementById("search-form");
+if (searchForm) {
+  searchForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const q = searchInput?.value.trim() || "";
+    window.location.href = q ? `index.html?q=${encodeURIComponent(q)}` : "index.html";
   });
 }

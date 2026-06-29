@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | JFF Footwear</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="auth-page">
+  <header class="header">
+    <div class="header-inner store-header">
+      <a href="index.html" class="logo">JFF <em>Footwear</em></a>
+      <a href="signup.html" class="btn btn-sm">Create account</a>
+    </div>
+  </header>
+
+  <main class="auth-main">
+    <div class="auth-card">
+      <h1>Login</h1>
+      <p class="auth-sub">Welcome back. Sign in to shop slippers &amp; track orders.</p>
+      <form id="login-form" class="auth-form">
+        <label>
+          Email or phone
+          <input type="text" name="email" required placeholder="you@email.com or 8106407372" autocomplete="username" />
+        </label>
+        <label>
+          Password
+          <input type="password" name="password" required minlength="6" autocomplete="current-password" />
+        </label>
+        <p id="login-error" class="form-error" hidden></p>
+        <button type="submit" class="btn btn-block">Login</button>
+      </form>
+      <p class="auth-switch">New to JFF? <a href="signup.html">Create an account</a></p>
+    </div>
+  </main>
+
+  <script src="js/store.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const returnUrl = params.get("return") || "index.html";
+
+    if (JFFAuth.getSession()) {
+      window.location.href = returnUrl;
+    }
+
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const err = document.getElementById("login-error");
+      err.hidden = true;
+      const fd = new FormData(e.target);
+      try {
+        await JFFAuth.login({
+          email: fd.get("email"),
+          password: fd.get("password"),
+        });
+        window.dispatchEvent(new Event("jff-auth-updated"));
+        window.location.href = returnUrl;
+      } catch (error) {
+        err.textContent = error.message;
+        err.hidden = false;
+      }
+    });
+  </script>
+</body>
+</html>

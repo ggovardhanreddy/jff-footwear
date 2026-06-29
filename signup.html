@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up | JFF Footwear</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="auth-page">
+  <header class="header">
+    <div class="header-inner store-header">
+      <a href="index.html" class="logo">JFF <em>Footwear</em></a>
+      <a href="login.html" class="btn btn-sm btn-outline">Login</a>
+    </div>
+  </header>
+
+  <main class="auth-main">
+    <div class="auth-card">
+      <h1>Create account</h1>
+      <p class="auth-sub">Join JFF Footwear — shop flip flops, save cart &amp; track orders.</p>
+      <form id="signup-form" class="auth-form">
+        <label>
+          Full name
+          <input type="text" name="name" required placeholder="Your name" autocomplete="name" />
+        </label>
+        <label>
+          Email
+          <input type="email" name="email" required placeholder="you@email.com" autocomplete="email" />
+        </label>
+        <label>
+          Phone
+          <input type="tel" name="phone" required placeholder="8106407372" pattern="[0-9]{10}" autocomplete="tel" />
+        </label>
+        <label>
+          Password
+          <input type="password" name="password" required minlength="6" placeholder="Min 6 characters" autocomplete="new-password" />
+        </label>
+        <p id="signup-error" class="form-error" hidden></p>
+        <button type="submit" class="btn btn-block">Sign Up</button>
+      </form>
+      <p class="auth-switch">Already have an account? <a href="login.html">Login</a></p>
+    </div>
+  </main>
+
+  <script src="js/store.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const returnUrl = params.get("return") || "index.html";
+
+    if (JFFAuth.getSession()) {
+      window.location.href = returnUrl;
+    }
+
+    document.getElementById("signup-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const err = document.getElementById("signup-error");
+      err.hidden = true;
+      const fd = new FormData(e.target);
+      try {
+        await JFFAuth.signup({
+          name: fd.get("name"),
+          email: fd.get("email"),
+          phone: fd.get("phone"),
+          password: fd.get("password"),
+        });
+        window.dispatchEvent(new Event("jff-auth-updated"));
+        window.location.href = returnUrl;
+      } catch (error) {
+        err.textContent = error.message;
+        err.hidden = false;
+      }
+    });
+  </script>
+</body>
+</html>

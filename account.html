@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Account | JFF Footwear</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner store-header">
+      <a href="index.html" class="logo">JFF <em>Footwear</em></a>
+      <div class="header-actions">
+        <a href="cart.html" class="cart-link">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6h15l-1.5 9H8L6 6zm0 0L5 3H2M9 20a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span id="cart-count" class="cart-badge" hidden>0</span>
+        </a>
+        <button type="button" id="logout-btn" class="btn btn-sm btn-outline">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <div class="container">
+      <div id="order-success" class="alert success" hidden></div>
+      <h1 class="page-title">My Account</h1>
+      <div class="account-grid">
+        <section class="account-card">
+          <h2>Profile</h2>
+          <dl id="profile-info" class="profile-dl"></dl>
+        </section>
+        <section class="account-card account-orders">
+          <h2>My Orders</h2>
+          <div id="orders-list"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/store.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    if (!JFFAuth.requireAuth()) return;
+
+    const user = JFFAuth.getCurrentUser();
+    const profile = document.getElementById("profile-info");
+    profile.innerHTML = `
+      <dt>Name</dt><dd>${user.name}</dd>
+      <dt>Email</dt><dd>${user.email}</dd>
+      <dt>Phone</dt><dd>${user.phone}</dd>`;
+
+    const orders = JFFAuth.getOrders(user.id);
+    const ordersEl = document.getElementById("orders-list");
+
+    if (!orders.length) {
+      ordersEl.innerHTML = `<p class="muted">No orders yet. <a href="index.html">Start shopping</a></p>`;
+    } else {
+      ordersEl.innerHTML = orders
+        .map(
+          (o) => `
+          <article class="order-card">
+            <div class="order-head">
+              <strong>${o.id}</strong>
+              <span>${new Date(o.createdAt).toLocaleDateString("en-IN")}</span>
+            </div>
+            <p>${o.items.length} item(s) · ${JFFStore.formatPrice(o.total)} · ${o.status}</p>
+            <p class="muted">${o.address.city} · ${o.payment === "cod" ? "Cash on Delivery" : "UPI"}</p>
+          </article>`
+        )
+        .join("");
+    }
+
+    const ordered = new URLSearchParams(window.location.search).get("ordered");
+    if (ordered) {
+      const alert = document.getElementById("order-success");
+      alert.textContent = `Order ${ordered} placed successfully! We'll confirm on WhatsApp.`;
+      alert.hidden = false;
+    }
+
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      JFFAuth.logout();
+      window.dispatchEvent(new Event("jff-auth-updated"));
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>

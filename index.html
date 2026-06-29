@@ -15,23 +15,27 @@
   </div>
 
   <header class="header" data-scrolled="false">
-    <div class="header-inner">
+    <div class="header-inner store-header">
       <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span></button>
-      <a href="#" class="logo">JFF <em>Footwear</em></a>
+      <a href="index.html" class="logo">JFF <em>Footwear</em></a>
+      <form id="search-form" class="search-form" action="index.html" method="get">
+        <input id="search-input" type="search" name="q" placeholder="Search for slippers, flip flops..." value="" />
+        <button type="submit" aria-label="Search">Search</button>
+      </form>
       <nav class="nav" aria-label="Main">
-        <a href="#men">Men</a>
-        <a href="#women">Women</a>
-        <a href="#kids">Kids</a>
-        <a href="#shop">Flip Flops</a>
-        <a href="#sizes">Sizes</a>
-        <a href="#about">Our Story</a>
-        <a href="#contact">Contact</a>
+        <a href="index.html#men">Men</a>
+        <a href="index.html#women">Women</a>
+        <a href="index.html#kids">Kids</a>
+        <a href="index.html#shop">Shop</a>
+        <a href="index.html#sizes">Sizes</a>
       </nav>
       <div class="header-actions">
-        <a href="https://wa.me/918106407372" class="icon-btn" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.01-1.37l-.36-.214-3.015 1.012 1.012-3.015-.214-.36A9.818 9.818 0 1112 21.818z"/></svg>
+        <a href="login.html" id="auth-link" class="header-link">Login</a>
+        <a href="signup.html" class="header-link hide-mobile">Sign Up</a>
+        <a href="cart.html" class="cart-link" aria-label="Cart">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6h15l-1.5 9H8L6 6zm0 0L5 3H2M9 20a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span id="cart-count" class="cart-badge" hidden>0</span>
         </a>
-        <a href="tel:+918106407372" class="btn btn-sm">Order Now</a>
       </div>
     </div>
   </header>
@@ -44,7 +48,7 @@
             <span class="badge">New Arrivals</span>
             <h1>Luxury for Every Step</h1>
             <p>Premium flip flops crafted for all-day comfort.</p>
-            <a href="#shop" class="btn">Shop Collection</a>
+            <a href="login.html" class="btn">Shop Collection</a>
           </div>
         </article>
         <article class="hero-slide" style="--slide-img: url('images/showcase/craft-1600.jpg')">
@@ -239,6 +243,15 @@
         </ul>
       </div>
       <div>
+        <h3>Account</h3>
+        <ul>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="signup.html">Sign Up</a></li>
+          <li><a href="account.html">My Orders</a></li>
+          <li><a href="cart.html">Cart</a></li>
+        </ul>
+      </div>
+      <div>
         <h3>Help</h3>
         <ul>
           <li><a href="#contact">Order on Call</a></li>
@@ -257,6 +270,10 @@
     <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.01-1.37l-.36-.214-3.015 1.012 1.012-3.015-.214-.36A9.818 9.818 0 1112 21.818z"/></svg>
   </a>
 
+  <script src="js/store.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/ui.js"></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>
