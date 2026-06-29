@@ -1,0 +1,11 @@
+{
+  "appId": "com.jff.footwear",
+  "appName": "JFF Footwear",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": true
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

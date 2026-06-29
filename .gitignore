@@ -1,0 +1,7 @@
+node_modules/
+www/
+android/
+.capacitor/
+*.apk
+*.aab
+.DS_Store

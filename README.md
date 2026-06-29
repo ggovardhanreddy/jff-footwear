@@ -37,6 +37,33 @@ git push -u origin main
 
 (Replace `jff-footwear` if you used a different repo name.)
 
+## Android APK
+
+The store can be packaged as an Android app using **Capacitor**.
+
+### Download APK (easiest)
+
+1. Push to `main` or open **Actions** on GitHub: [ggovardhanreddy/jff-footwear/actions](https://github.com/ggovardhanreddy/jff-footwear/actions)
+2. Open the latest **Build Android APK** workflow run
+3. Download **`jff-footwear-debug`** artifact → `app-debug.apk`
+4. Copy to your phone and install (enable **Install unknown apps** if asked)
+
+### Build on your Mac (optional)
+
+Requires [Android Studio](https://developer.android.com/studio) (includes Java + Android SDK):
+
+```bash
+cd ~/Projects/jff-footwear
+npm install
+npm run android:build
+```
+
+APK output: `android/app/build/outputs/apk/debug/app-debug.apk`
+
+### Play Store release
+
+For Google Play you need a signed **release** build (`.aab`). That requires a keystore and `assembleRelease` — say if you want help setting that up.
+
 ## Edit content
 
 - Page text: `index.html`
