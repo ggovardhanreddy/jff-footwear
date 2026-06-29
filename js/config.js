@@ -1,5 +1,5 @@
 window.JFFConfig = {
-  razorpayKeyId: "",
+  razorpayKeyId: "rzp_test_T7RAgHklApdV0q",
   firebase: {
     apiKey: "",
     authDomain: "",
