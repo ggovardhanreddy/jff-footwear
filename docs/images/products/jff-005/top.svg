@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#faf8f5"/>
+      <stop offset="100%" style="stop-color:#e8e4dc"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="#faf8f5"/>
+  
+  
+        <ellipse cx="400" cy="350" rx="200" ry="120" fill="#e8e4dc"/>
+        <ellipse cx="400" cy="350" rx="160" ry="90" fill="#c8a96e" opacity="0.1"/>
+        <path d="M250 350 Q400 280 550 350" stroke="#c8a96e" stroke-width="2" fill="none" opacity="0.4"/>
+      
+  <text x="400" y="80" text-anchor="middle" fill="#c8a96e" font-family="system-ui, sans-serif" font-size="18" font-weight="600" letter-spacing="4">JFF</text>
+  <text x="400" y="110" text-anchor="middle" fill="#c8a96e" font-family="system-ui, sans-serif" font-size="11" opacity="0.6" letter-spacing="2">TOP</text>
+  <text x="400" y="540" text-anchor="middle" fill="#c8a96e" font-family="system-ui, sans-serif" font-size="10" opacity="0.4">jff-005</text>
+</svg>

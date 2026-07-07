@@ -1,0 +1,4 @@
+User-Agent: *
+Allow: /
+
+Sitemap: https://ggovardhanreddy.github.io/jff-footwear/sitemap.xml

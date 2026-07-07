@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5f0e6"/>
+      <stop offset="100%" style="stop-color:#d4c4a8"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="#f5f0e6"/>
+  
+  
+        <path d="M250 400 Q300 300 450 290 Q550 285 580 380 L570 420 Q450 440 280 420 Z" fill="#d4c4a8"/>
+        <path d="M280 410 Q350 350 450 345 Q520 342 560 385" stroke="#0a0a0a" stroke-width="2" fill="none" opacity="0.5"/>
+        <rect x="250" y="400" width="330" height="25" rx="8" fill="#d4c4a8" opacity="0.7"/>
+      
+  <text x="400" y="80" text-anchor="middle" fill="#0a0a0a" font-family="system-ui, sans-serif" font-size="18" font-weight="600" letter-spacing="4">JFF</text>
+  <text x="400" y="110" text-anchor="middle" fill="#0a0a0a" font-family="system-ui, sans-serif" font-size="11" opacity="0.6" letter-spacing="2">SIDE</text>
+  <text x="400" y="540" text-anchor="middle" fill="#0a0a0a" font-family="system-ui, sans-serif" font-size="10" opacity="0.4">jff-017</text>
+</svg>
