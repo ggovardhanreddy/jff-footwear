@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { products } from "@/data";
 
+export const dynamic = "force-static";
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://jfffootwear.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {

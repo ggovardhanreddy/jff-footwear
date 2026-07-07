@@ -20,6 +20,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## Live Site
+
+**https://ggovardhanreddy.github.io/jff-footwear/**
+
+Deployed automatically via GitHub Pages on every push to `main`.
+
 ## Product Discovery
 
 Products are **automatically generated** from image folders in:
