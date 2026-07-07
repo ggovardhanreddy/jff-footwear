@@ -2,6 +2,9 @@ import { Suspense } from "react";
 import { createMetadata } from "@/lib/seo";
 import { products, getUniqueFilterValues } from "@/data";
 import ProductsPageClient from "@/components/products/ProductsPageClient";
+import { ProductGridSkeleton } from "@/components/LoadingSkeleton";
+import AnimatedBackground from "@/components/ui/AnimatedBackground";
+import PageShell from "@/components/ui/PageShell";
 
 export const metadata = createMetadata({
   title: "Products",
@@ -15,23 +18,18 @@ export default function ProductsPage() {
   const filterOptions = getUniqueFilterValues();
 
   return (
-    <div className="pt-20">
+    <PageShell fullWidth ambient="light" className="relative">
+      <AnimatedBackground variant="cream" className="opacity-80" />
       <Suspense
         fallback={
-          <div className="container-custom section-padding">
-            <div className="animate-pulse space-y-8">
-              <div className="h-12 w-64 bg-gray-200" />
-              <div className="grid grid-cols-4 gap-6">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="aspect-[4/5] bg-gray-200" />
-                ))}
-              </div>
-            </div>
+          <div className="container-custom section-padding relative z-10">
+            <div className="mb-10 h-12 w-64 animate-pulse rounded-2xl bg-neutral-100" />
+            <ProductGridSkeleton count={8} />
           </div>
         }
       >
         <ProductsPageClient products={products} filterOptions={filterOptions} />
       </Suspense>
-    </div>
+    </PageShell>
   );
 }

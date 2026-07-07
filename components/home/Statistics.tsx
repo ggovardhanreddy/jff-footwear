@@ -12,7 +12,7 @@ export default function Statistics() {
   );
 
   return (
-    <section className="bg-brand-black py-16 text-white md:py-20">
+    <section className="section-padding bg-brand-black py-14 text-white md:py-20">
       <div className="container-custom">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, index) => (

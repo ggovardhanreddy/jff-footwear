@@ -20,11 +20,12 @@ export default function SearchBar({
     <div className={cn("relative", className)}>
       <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-muted" />
       <input
-        type="text"
+        type="search"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full border border-gray-200 bg-white py-3 pl-11 pr-10 text-sm outline-none transition-colors focus:border-brand-accent"
+        aria-label="Search products"
+        className="input-field !rounded-none border-x-0 border-t-0 py-3 pl-11 pr-10"
       />
       {value && (
         <button

@@ -59,7 +59,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   ]);
 
   return (
-    <div className="pt-20">
+    <div className="page-shell">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -78,7 +78,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           ]}
         />
 
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="grid gap-12 bg-white lg:grid-cols-2 lg:gap-16">
           <ProductGallery images={product.images} productName={product.name} />
           <ProductDetails
             product={product}

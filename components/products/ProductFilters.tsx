@@ -50,7 +50,7 @@ export default function ProductFilterSidebar({
     filters.newArrival;
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn("space-y-6", className)} id="product-filters">
       <div className="flex flex-col gap-2">
         <label className="flex cursor-pointer items-center gap-2 text-sm">
           <input
@@ -194,8 +194,11 @@ export function MobileFilterToggle({
 }) {
   return (
     <button
+      type="button"
       onClick={onToggle}
-      className="flex items-center gap-2 border border-gray-200 bg-white px-4 py-3 text-sm font-medium lg:hidden"
+      className="focus-ring flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium lg:hidden"
+      aria-expanded={isOpen}
+      aria-controls="product-filters"
     >
       <SlidersHorizontal className="h-4 w-4" />
       {isOpen ? "Hide Filters" : "Filters"}

@@ -31,16 +31,23 @@ export default function FAQAccordion({
       <div className="mx-auto max-w-3xl space-y-3">
         {faqs.map((faq) => {
           const isOpen = openId === faq.id;
+          const panelId = `faq-panel-${faq.id}`;
+          const buttonId = `faq-button-${faq.id}`;
+
           return (
             <div
               key={faq.id}
-              className="border border-gray-200 bg-white"
+              className="overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-sm"
             >
               <button
+                id={buttonId}
+                type="button"
                 onClick={() => setOpenId(isOpen ? null : faq.id)}
-                className="flex w-full items-center justify-between gap-4 p-5 text-left"
+                className="focus-ring flex w-full items-center justify-between gap-4 rounded-2xl p-5 text-left"
+                aria-expanded={isOpen}
+                aria-controls={panelId}
               >
-                <span className="font-medium text-brand-black">
+                <span className="font-medium leading-snug text-brand-black">
                   {faq.question}
                 </span>
                 <ChevronDown
@@ -48,15 +55,19 @@ export default function FAQAccordion({
                     "h-5 w-5 shrink-0 text-brand-muted transition-transform duration-300",
                     isOpen && "rotate-180"
                   )}
+                  aria-hidden
                 />
               </button>
-              <AnimatePresence>
+              <AnimatePresence initial={false}>
                 {isOpen && (
                   <motion.div
+                    id={panelId}
+                    role="region"
+                    aria-labelledby={buttonId}
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.28 }}
                     className="overflow-hidden"
                   >
                     <p className="border-t border-gray-100 px-5 py-4 text-sm leading-relaxed text-brand-muted">

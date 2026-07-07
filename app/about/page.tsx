@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Award, Users, Factory, Globe, Target, Eye, Shield, Layers } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Breadcrumb from "@/components/Breadcrumb";
+import AnimatedBackground from "@/components/ui/AnimatedBackground";
 import { createMetadata } from "@/lib/seo";
 import { COMPANY, MATERIAL_INFO } from "@/lib/constants";
 import { manufacturingSteps } from "@/data/content";
@@ -22,8 +23,8 @@ const stats = [
 
 export default function AboutPage() {
   return (
-    <div className="pt-20">
-      <section className="relative flex min-h-[50vh] items-center bg-brand-black">
+    <div className="page-shell">
+      <section className="relative flex min-h-[50vh] items-center overflow-hidden bg-brand-black">
         <Image
           src="/images/hero-banner.svg"
           alt="JFF Manufacturing"
@@ -32,6 +33,7 @@ export default function AboutPage() {
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-r from-brand-black/90 to-brand-black/50" />
+        <AnimatedBackground variant="dark" />
         <div className="container-custom relative z-10 section-padding">
           <Breadcrumb
             items={[
@@ -39,9 +41,7 @@ export default function AboutPage() {
               { label: "About", href: "/about" },
             ]}
           />
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-accent">
-            Our Story
-          </p>
+          <p className="eyebrow">Our Story</p>
           <h1 className="heading-display mt-4 max-w-3xl text-white">
             Crafting Comfort Since {COMPANY.founded}
           </h1>
@@ -109,7 +109,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-brand-black py-16 text-white">
+      <section className="section-padding bg-brand-black text-white">
         <div className="container-custom">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((stat) => (

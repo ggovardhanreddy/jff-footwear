@@ -49,7 +49,7 @@ export default function ProductCategories({
                   <h3 className="font-display text-xl font-bold text-white">
                     {category.name}
                   </h3>
-                  <p className="mt-1 text-sm text-gray-300 opacity-0 transition-opacity group-hover:opacity-100">
+                  <p className="mt-1 line-clamp-2 text-sm text-gray-300 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100">
                     {category.description}
                   </p>
                   <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-brand-accent">

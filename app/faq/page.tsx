@@ -1,6 +1,7 @@
 import FAQAccordion from "@/components/shared/FAQAccordion";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Breadcrumb from "@/components/Breadcrumb";
+import PageShell from "@/components/ui/PageShell";
 import { createMetadata } from "@/lib/seo";
 import { faqs } from "@/data/content";
 
@@ -13,21 +14,19 @@ export const metadata = createMetadata({
 
 export default function FAQPage() {
   return (
-    <div className="pt-20">
-      <div className="container-custom section-padding">
-        <Breadcrumb
-          items={[
-            { label: "Home", href: "/" },
-            { label: "FAQ", href: "/faq" },
-          ]}
-        />
-        <SectionHeading
-          subtitle="Help Center"
-          title="Frequently Asked Questions"
-          description="Everything you need to know about our products and ordering process."
-        />
-        <FAQAccordion faqs={faqs} />
-      </div>
-    </div>
+    <PageShell>
+      <Breadcrumb
+        items={[
+          { label: "Home", href: "/" },
+          { label: "FAQ", href: "/faq" },
+        ]}
+      />
+      <SectionHeading
+        subtitle="Help Center"
+        title="Frequently Asked Questions"
+        description="Everything you need to know about our products and ordering process."
+      />
+      <FAQAccordion faqs={faqs} showHeading={false} />
+    </PageShell>
   );
 }

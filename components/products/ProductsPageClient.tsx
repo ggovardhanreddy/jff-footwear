@@ -56,7 +56,7 @@ export default function ProductsPageClient({
   );
 
   return (
-    <div className="container-custom section-padding">
+    <div className="relative z-10 container-custom section-padding">
       <Breadcrumb
         items={[
           { label: "Home", href: "/" },
@@ -70,7 +70,7 @@ export default function ProductsPageClient({
         description="Browse our complete range of premium slippers. Filter by category, material, color, size, and more."
       />
 
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <SearchBar
           value={filters.search}
           onChange={(search) => setFilters({ ...filters, search })}
@@ -82,7 +82,7 @@ export default function ProductsPageClient({
             onChange={(e) =>
               setFilters({ ...filters, sort: e.target.value as never })
             }
-            className="border border-gray-200 bg-white px-4 py-3 text-sm outline-none focus:border-brand-accent"
+            className="input-field w-auto py-3"
             aria-label="Sort products"
           >
             {SORT_OPTIONS.map((opt) => (

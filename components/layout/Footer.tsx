@@ -4,11 +4,11 @@ import {
   MapPin,
   Phone,
   Mail,
-  Instagram,
-  Facebook,
-  Linkedin,
+  MessageCircle,
 } from "lucide-react";
-import { NAV_LINKS, COMPANY, PRODUCT_CATEGORIES } from "@/lib/constants";
+import { NAV_LINKS, COMPANY, PRODUCT_CATEGORIES, WHATSAPP_NUMBER } from "@/lib/constants";
+
+const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}`;
 
 export default function Footer() {
   return (
@@ -26,29 +26,15 @@ export default function Footer() {
             <p className="text-sm leading-relaxed text-gray-400">
               {COMPANY.description}
             </p>
-            <div className="flex gap-4">
-              <a
-                href="#"
-                className="text-gray-400 transition-colors hover:text-brand-accent"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 transition-colors hover:text-brand-accent"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 transition-colors hover:text-brand-accent"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5" />
-              </a>
-            </div>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="focus-ring inline-flex items-center gap-2 rounded-xl border border-gray-700 px-4 py-2.5 text-sm text-gray-300 transition-colors hover:border-brand-accent hover:text-white"
+            >
+              <MessageCircle className="h-4 w-4 text-brand-accent" aria-hidden />
+              Chat on WhatsApp
+            </a>
           </div>
 
           <div>
@@ -60,12 +46,20 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-400 transition-colors hover:text-white"
+                    className="link-underline text-sm text-gray-400 hover:text-white"
                   >
                     {link.label}
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/categories"
+                  className="link-underline text-sm text-gray-400 hover:text-white"
+                >
+                  Categories
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/privacy-policy"

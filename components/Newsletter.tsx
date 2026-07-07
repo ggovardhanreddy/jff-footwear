@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Mail, ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,14 +25,15 @@ export default function Newsletter() {
             subtitle="Stay Updated"
             title="Join Our Newsletter"
             description="Get the latest collections, manufacturing insights, and wholesale offers delivered to your inbox."
-            className="[&_h2]:text-white [&_p]:text-gray-400"
+            theme="dark"
           />
 
           {submitted ? (
             <motion.p
-              initial={{ opacity: 0, y: 10 }}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="mt-8 text-brand-accent"
+              role="status"
             >
               Thank you for subscribing! We&apos;ll be in touch soon.
             </motion.p>
@@ -41,23 +43,28 @@ export default function Newsletter() {
               className="mt-8 flex flex-col gap-3 sm:flex-row"
             >
               <div className="relative flex-1">
-                <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                <label htmlFor="newsletter-email" className="sr-only">
+                  Email address
+                </label>
+                <Mail
+                  className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
+                  aria-hidden
+                />
                 <input
+                  id="newsletter-email"
                   type="email"
+                  name="email"
                   required
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="w-full border border-gray-700 bg-brand-dark py-4 pl-11 pr-4 text-sm text-white outline-none focus:border-brand-accent"
-                  aria-label="Email address"
+                  className="input-field border-gray-700 bg-brand-dark py-4 pl-11 text-white placeholder:text-gray-500"
                 />
               </div>
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center gap-2 bg-brand-accent px-8 py-4 text-sm font-semibold uppercase tracking-widest text-brand-black transition-colors hover:bg-white"
-              >
+              <button type="submit" className="btn-primary shrink-0">
                 Subscribe
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4" aria-hidden />
               </button>
             </form>
           )}

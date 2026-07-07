@@ -7,6 +7,7 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Breadcrumb from "@/components/Breadcrumb";
+import PageShell from "@/components/ui/PageShell";
 import { products } from "@/data";
 import { cn } from "@/lib/utils";
 
@@ -32,70 +33,76 @@ export default function GalleryPageClient() {
   const slides = filtered.map((img) => ({ src: img.src, alt: img.alt }));
 
   return (
-    <div className="pt-20">
-      <div className="container-custom section-padding">
-        <Breadcrumb
-          items={[
-            { label: "Home", href: "/" },
-            { label: "Gallery", href: "/gallery" },
-          ]}
-        />
-        <SectionHeading
-          subtitle="Visual Showcase"
-          title="Gallery"
-          description="Explore our premium slipper collection through stunning visuals."
-        />
+    <PageShell>
+      <Breadcrumb
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Gallery", href: "/gallery" },
+        ]}
+      />
+      <SectionHeading
+        subtitle="Visual Showcase"
+        title="Gallery"
+        description="Explore our premium slipper collection through stunning visuals."
+      />
 
-        <div className="mb-8 flex flex-wrap gap-2">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveFilter(cat)}
-              className={cn(
-                "px-4 py-2 text-xs font-semibold uppercase tracking-widest transition-colors",
-                activeFilter === cat
-                  ? "bg-brand-black text-white"
-                  : "bg-white text-brand-muted hover:text-brand-black"
-              )}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
-          {filtered.map((img, index) => (
-            <button
-              key={`${img.src}-${index}`}
-              onClick={() => {
-                setLightboxIndex(index);
-                setLightboxOpen(true);
-              }}
-              className="group relative mb-4 block w-full overflow-hidden break-inside-avoid"
-            >
-              <div className="relative aspect-[4/5]">
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  loading="lazy"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20" />
-              </div>
-            </button>
-          ))}
-        </div>
-
-        <Lightbox
-          open={lightboxOpen}
-          close={() => setLightboxOpen(false)}
-          index={lightboxIndex}
-          slides={slides}
-          plugins={[Zoom]}
-        />
+      <div
+        className="mb-8 flex flex-wrap gap-2"
+        role="group"
+        aria-label="Filter gallery by category"
+      >
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            type="button"
+            onClick={() => setActiveFilter(cat)}
+            aria-pressed={activeFilter === cat}
+            className={cn(
+              "focus-ring rounded-xl px-4 py-2.5 text-xs font-semibold uppercase tracking-widest transition-colors",
+              activeFilter === cat
+                ? "bg-brand-black text-white"
+                : "bg-white text-brand-muted hover:text-brand-black"
+            )}
+          >
+            {cat}
+          </button>
+        ))}
       </div>
-    </div>
+
+      <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
+        {filtered.map((img, index) => (
+          <button
+            key={`${img.src}-${index}`}
+            type="button"
+            onClick={() => {
+              setLightboxIndex(index);
+              setLightboxOpen(true);
+            }}
+            className="focus-ring group relative mb-4 block w-full overflow-hidden break-inside-avoid rounded-2xl"
+            aria-label={`View ${img.alt}`}
+          >
+            <div className="relative aspect-[4/5]">
+              <Image
+                src={img.src}
+                alt={img.alt}
+                fill
+                loading="lazy"
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, 33vw"
+              />
+              <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20" />
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <Lightbox
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        index={lightboxIndex}
+        slides={slides}
+        plugins={[Zoom]}
+      />
+    </PageShell>
   );
 }

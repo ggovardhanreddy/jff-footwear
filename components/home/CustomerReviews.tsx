@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import type { Review } from "@/types";
+import { cn } from "@/lib/utils";
 
 interface CustomerReviewsProps {
   reviews: Review[];
@@ -13,6 +14,7 @@ interface CustomerReviewsProps {
 export default function CustomerReviews({ reviews }: CustomerReviewsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(1);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const updateVisibleCount = () => {
@@ -27,12 +29,12 @@ export default function CustomerReviews({ reviews }: CustomerReviewsProps) {
   }, []);
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
     const timer = window.setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % reviews.length);
-    }, 5000);
-
+    }, 6000);
     return () => window.clearInterval(timer);
-  }, [reviews.length]);
+  }, [prefersReducedMotion, reviews.length]);
 
   const maxIndex = Math.max(0, reviews.length - visibleCount);
   const clampedIndex = Math.min(activeIndex, maxIndex);
@@ -124,13 +126,24 @@ export default function CustomerReviews({ reviews }: CustomerReviewsProps) {
                 key={index}
                 type="button"
                 onClick={() => setActiveIndex(index)}
-                className={`h-2 rounded-full transition-all ${
+                className={cn(
+                  "focus-ring rounded-full p-2 transition-all",
                   clampedIndex === index
-                    ? "w-8 bg-brand-accent"
-                    : "w-2 bg-gray-200"
-                }`}
+                    ? "bg-transparent"
+                    : "bg-transparent"
+                )}
                 aria-label={`Go to testimonial slide ${index + 1}`}
-              />
+                aria-current={clampedIndex === index}
+              >
+                <span
+                  className={cn(
+                    "block h-1.5 rounded-full transition-all",
+                    clampedIndex === index
+                      ? "w-8 bg-brand-accent"
+                      : "w-2 bg-gray-200"
+                  )}
+                />
+              </button>
             ))}
           </div>
         </div>

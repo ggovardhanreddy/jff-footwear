@@ -22,12 +22,13 @@ export default function SizeSelector({
             key={size}
             onClick={() => onSelect(size)}
             className={cn(
-              "flex h-11 w-11 items-center justify-center border text-sm font-medium transition-all duration-200",
+              "focus-ring flex h-11 min-w-[2.75rem] items-center justify-center rounded-xl border px-2 text-sm font-medium transition-all duration-200",
               isSelected
                 ? "border-brand-black bg-brand-black text-white"
                 : "border-gray-200 bg-white text-brand-black hover:border-brand-black"
             )}
             aria-label={`Select size ${size}`}
+            aria-pressed={isSelected}
           >
             {size}
           </button>

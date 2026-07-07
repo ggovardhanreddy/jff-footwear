@@ -1,1 +1,1 @@
-export { default } from "@/components/ui/ImageWithZoom";
+export { default } from "@/components/products/ImmersiveProductViewer";

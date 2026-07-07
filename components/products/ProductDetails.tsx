@@ -28,6 +28,7 @@ export default function ProductDetails({
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [shareMessage, setShareMessage] = useState("");
+  const [sizeError, setSizeError] = useState("");
 
   const features = getProductFeatures(product);
   const specifications = getProductSpecifications(product);
@@ -40,9 +41,10 @@ export default function ProductDetails({
 
   const handleInquiry = () => {
     if (!selectedSize) {
-      alert("Please select a size before sending inquiry.");
+      setSizeError("Please select a size before sending your inquiry.");
       return;
     }
+    setSizeError("");
 
     const url = buildWhatsAppUrl({
       productName: product.name,
@@ -72,7 +74,7 @@ export default function ProductDetails({
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-accent">
+        <p className="eyebrow">
           {product.category} · {product.material}
         </p>
         <h1 className="heading-display mt-2 text-brand-black">{product.name}</h1>
@@ -98,7 +100,7 @@ export default function ProductDetails({
         </ul>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 border-y border-gray-100 py-6 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 border-y border-gray-100 py-6 sm:grid-cols-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-widest text-brand-muted">
             Gender
@@ -139,8 +141,16 @@ export default function ProductDetails({
         <SizeSelector
           sizes={product.sizes}
           selected={selectedSize}
-          onSelect={setSelectedSize}
+          onSelect={(size) => {
+            setSelectedSize(size);
+            setSizeError("");
+          }}
         />
+        {sizeError && (
+          <p className="mt-3 text-sm text-red-600" role="alert">
+            {sizeError}
+          </p>
+        )}
       </div>
 
       <div>

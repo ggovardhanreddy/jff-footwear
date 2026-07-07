@@ -5,6 +5,13 @@ import { Send } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
 
+const fields = [
+  { id: "contact-name", name: "name", label: "Name", type: "text", required: true },
+  { id: "contact-email", name: "email", label: "Email", type: "email", required: true },
+  { id: "contact-phone", name: "phone", label: "Phone", type: "tel", required: false },
+  { id: "contact-subject", name: "subject", label: "Subject", type: "text", required: true },
+] as const;
+
 export default function ContactForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -36,77 +43,65 @@ export default function ContactForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-2xl bg-white p-8 shadow-sm"
+      className="space-y-6 rounded-[28px] border border-gray-100 bg-white p-6 shadow-sm md:p-8"
+      noValidate
     >
       <div className="grid gap-6 sm:grid-cols-2">
-        <div>
-          <label className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand-muted">
-            Name
-          </label>
-          <input
-            type="text"
-            required
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm outline-none focus:border-brand-accent"
-          />
-        </div>
-        <div>
-          <label className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand-muted">
-            Email
-          </label>
-          <input
-            type="email"
-            required
-            value={formData.email}
-            onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
-            }
-            className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm outline-none focus:border-brand-accent"
-          />
-        </div>
+        {fields.slice(0, 2).map((field) => (
+          <div key={field.id}>
+            <label htmlFor={field.id} className="eyebrow mb-2 block text-brand-muted">
+              {field.label}
+            </label>
+            <input
+              id={field.id}
+              name={field.name}
+              type={field.type}
+              required={field.required}
+              autoComplete={field.name === "name" ? "name" : field.name === "email" ? "email" : field.name === "phone" ? "tel" : undefined}
+              value={formData[field.name]}
+              onChange={(e) =>
+                setFormData({ ...formData, [field.name]: e.target.value })
+              }
+              className="input-field"
+            />
+          </div>
+        ))}
       </div>
       <div className="grid gap-6 sm:grid-cols-2">
-        <div>
-          <label className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand-muted">
-            Phone
-          </label>
-          <input
-            type="tel"
-            value={formData.phone}
-            onChange={(e) =>
-              setFormData({ ...formData, phone: e.target.value })
-            }
-            className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm outline-none focus:border-brand-accent"
-          />
-        </div>
-        <div>
-          <label className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand-muted">
-            Subject
-          </label>
-          <input
-            type="text"
-            required
-            value={formData.subject}
-            onChange={(e) =>
-              setFormData({ ...formData, subject: e.target.value })
-            }
-            className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm outline-none focus:border-brand-accent"
-          />
-        </div>
+        {fields.slice(2).map((field) => (
+          <div key={field.id}>
+            <label htmlFor={field.id} className="eyebrow mb-2 block text-brand-muted">
+              {field.label}
+            </label>
+            <input
+              id={field.id}
+              name={field.name}
+              type={field.type}
+              required={field.required}
+              autoComplete={field.name === "phone" ? "tel" : undefined}
+              value={formData[field.name]}
+              onChange={(e) =>
+                setFormData({ ...formData, [field.name]: e.target.value })
+              }
+              className="input-field"
+            />
+          </div>
+        ))}
       </div>
       <div>
-        <label className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand-muted">
+        <label htmlFor="contact-message" className="eyebrow mb-2 block text-brand-muted">
           Message
         </label>
         <textarea
+          id="contact-message"
+          name="message"
           required
           rows={5}
           value={formData.message}
           onChange={(e) =>
             setFormData({ ...formData, message: e.target.value })
           }
-          className="w-full resize-none rounded-lg border border-gray-200 px-4 py-3 text-sm outline-none focus:border-brand-accent"
+          className="input-field resize-none"
         />
       </div>
       <Button type="submit" variant="whatsapp" className="w-full">

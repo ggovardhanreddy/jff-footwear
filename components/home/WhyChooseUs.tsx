@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Award, Factory, Globe, HeartHandshake } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
+import AnimatedBackground from "@/components/ui/AnimatedBackground";
 
 const reasons = [
   {
@@ -33,12 +34,14 @@ const reasons = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="section-padding bg-brand-black text-white">
-      <div className="container-custom">
+    <section className="relative overflow-hidden section-padding bg-brand-black text-white">
+      <AnimatedBackground variant="dark" />
+      <div className="container-custom relative z-10">
         <SectionHeading
           subtitle="The JFF Difference"
           title="Why Choose Us"
           description="Decades of expertise in crafting the world's most comfortable slippers."
+          theme="dark"
         />
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">

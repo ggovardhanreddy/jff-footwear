@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
+import AnimatedBackground from "@/components/ui/AnimatedBackground";
 import ProductGrid from "@/components/products/ProductGrid";
 import type { Product } from "@/types";
 
@@ -12,14 +13,17 @@ interface FeaturedProductsProps {
 
 export default function FeaturedProducts({ products }: FeaturedProductsProps) {
   return (
-    <section className="section-padding bg-white">
-      <div className="container-custom">
+    <section className="relative overflow-hidden section-padding bg-white">
+      <AnimatedBackground variant="light" />
+      <div className="container-custom relative z-10">
         <SectionHeading
           subtitle="Curated Selection"
           title="Featured Products"
           description="Handpicked styles that define comfort and elegance."
         />
-        <ProductGrid products={products} />
+        <div className="rounded-3xl bg-white p-2 md:p-4">
+          <ProductGrid products={products} />
+        </div>
         <div className="mt-12 text-center">
           <Link
             href="/products"

@@ -42,6 +42,7 @@ const config: Config = {
         xl: "1rem",
         "2xl": "1.25rem",
         "3xl": "1.5rem",
+        luxury: "28px",
       },
       boxShadow: {
         soft: "0 4px 24px rgba(0, 0, 0, 0.06)",
