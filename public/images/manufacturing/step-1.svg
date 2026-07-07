@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <rect width="800" height="500" fill="#1a1a1a"/>
+  <rect x="200" y="150" width="400" height="200" rx="8" fill="#2d2d2d" stroke="#c8a96e" stroke-width="2"/>
+  <circle cx="300" cy="250" r="40" fill="#c8a96e" opacity="0.3"/>
+  <circle cx="400" cy="250" r="40" fill="#c8a96e" opacity="0.5"/>
+  <circle cx="500" cy="250" r="40" fill="#c8a96e" opacity="0.7"/>
+  <text x="400" y="420" text-anchor="middle" fill="#c8a96e" font-family="system-ui" font-size="16" letter-spacing="4">MATERIAL SELECTION</text>
+</svg>

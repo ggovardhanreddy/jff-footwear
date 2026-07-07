@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <rect width="800" height="500" fill="#1a1a1a"/>
+  <ellipse cx="350" cy="280" rx="100" ry="35" fill="#2d2d2d"/>
+  <ellipse cx="450" cy="280" rx="100" ry="35" fill="#3d3d3d"/>
+  <path d="M300 300 L500 300" stroke="#c8a96e" stroke-width="2"/>
+  <circle cx="400" cy="200" r="20" fill="#c8a96e"/>
+  <text x="400" y="420" text-anchor="middle" fill="#c8a96e" font-family="system-ui" font-size="16" letter-spacing="4">ASSEMBLY</text>
+</svg>

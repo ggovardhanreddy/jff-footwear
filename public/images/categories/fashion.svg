@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <rect width="400" height="300" fill="#141414"/>
+  <ellipse cx="200" cy="200" rx="100" ry="40" fill="#2d2d2d"/>
+  <path d="M110 200 Q150 150 200 160 Q250 150 290 200" stroke="#c8a96e" stroke-width="2" fill="none" opacity="0.6"/>
+  <text x="200" y="60" text-anchor="middle" fill="#c8a96e" font-family="system-ui" font-size="16" letter-spacing="3">FASHION</text>
+  <text x="200" y="280" text-anchor="middle" fill="#ffffff" font-family="system-ui" font-size="10" opacity="0.4">JFF</text>
+</svg>
