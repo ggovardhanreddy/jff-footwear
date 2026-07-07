@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "generate": "tsx scripts/generate-products.ts",
+    "deploy": "npm run generate && GITHUB_PAGES=true NEXT_PUBLIC_SITE_URL=https://ggovardhanreddy.github.io/jff-footwear next build && rm -rf docs && cp -r out docs",
     "prebuild": "npm run generate"
   },
   "dependencies": {
