@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import {
   MapPin,
   Phone,
@@ -16,7 +16,7 @@ export default function Footer() {
       <div className="container-custom section-padding">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-6">
-            <Image
+            <AssetImage
               src="/images/logo.svg"
               alt={COMPANY.fullName}
               width={80}

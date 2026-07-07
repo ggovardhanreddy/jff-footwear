@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import { motion, useSpring, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -98,7 +98,7 @@ export default function PremiumProductImage({
             prefersReducedMotion ? undefined : { x: parallaxX, y: parallaxY }
           }
         >
-          <Image
+          <AssetImage
             src={src}
             alt={alt}
             fill

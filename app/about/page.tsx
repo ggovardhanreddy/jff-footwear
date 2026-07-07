@@ -1,4 +1,4 @@
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import { Award, Users, Factory, Globe, Target, Eye, Shield, Layers } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Breadcrumb from "@/components/Breadcrumb";
@@ -25,7 +25,7 @@ export default function AboutPage() {
   return (
     <div className="page-shell">
       <section className="relative flex min-h-[50vh] items-center overflow-hidden bg-brand-black">
-        <Image
+        <AssetImage
           src="/images/hero-banner.svg"
           alt="JFF Manufacturing"
           fill
@@ -72,7 +72,7 @@ export default function AboutPage() {
               </div>
             </div>
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-              <Image
+              <AssetImage
                 src="/images/hero-banner.svg"
                 alt="JFF Factory"
                 fill

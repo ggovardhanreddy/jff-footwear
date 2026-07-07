@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import { motion } from "framer-motion";
 import SectionHeading from "@/components/ui/SectionHeading";
 import type { ManufacturingStep } from "@/types";
@@ -32,7 +32,7 @@ export default function ManufacturingProcess({
               className="group overflow-hidden bg-white"
             >
               <div className="relative aspect-[16/10] overflow-hidden">
-                <Image
+                <AssetImage
                   src={step.image}
                   alt={step.title}
                   fill

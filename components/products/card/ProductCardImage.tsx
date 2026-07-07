@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -36,7 +36,7 @@ export default function ProductCardImage({
         whileHover={{ scale: 1.08 }}
         transition={{ type: "spring", stiffness: 260, damping: 26 }}
       >
-        <Image
+        <AssetImage
           src={src}
           alt={alt}
           fill

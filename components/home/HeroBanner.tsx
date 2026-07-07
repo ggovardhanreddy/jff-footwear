@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Button from "@/components/ui/Button";
@@ -9,7 +9,7 @@ import Button from "@/components/ui/Button";
 export default function HeroBanner() {
   return (
     <section className="relative flex min-h-screen items-center overflow-hidden bg-brand-black">
-      <Image
+      <AssetImage
         src="/images/hero-banner.svg"
         alt="JFF Premium Slippers"
         fill

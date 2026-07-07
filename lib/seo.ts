@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { Product } from "@/types";
 import { COMPANY } from "./constants";
 import { getProductMainImage } from "./utils";
+import { assetPath } from "./paths";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://jfffootwear.com";
 
@@ -26,6 +27,7 @@ export function createMetadata({
     "JFF manufactures premium slippers including orthopedic, EVA, rubber, PU, and fashion slippers for men, women, and kids. Wholesale inquiries welcome.";
 
   const url = `${siteUrl}${path}`;
+  const ogImage = image.startsWith("http") ? image : `${siteUrl}${assetPath(image)}`;
 
   return {
     title: fullTitle,
@@ -51,13 +53,13 @@ export function createMetadata({
       siteName: COMPANY.fullName,
       title: fullTitle,
       description: desc,
-      images: [{ url: image, width: 1200, height: 630, alt: fullTitle }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: fullTitle }],
     },
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
       description: desc,
-      images: [image],
+      images: [ogImage],
     },
     robots: {
       index: true,
@@ -74,7 +76,7 @@ export function createMetadata({
 }
 
 export function createProductJsonLd(product: Product) {
-  const image = getProductMainImage(product);
+  const image = `${siteUrl}${assetPath(getProductMainImage(product))}`;
 
   return {
     "@context": "https://schema.org",
@@ -103,7 +105,7 @@ export function createOrganizationJsonLd() {
     "@type": "Organization",
     name: COMPANY.fullName,
     url: siteUrl,
-    logo: `${siteUrl}/images/logo.svg`,
+    logo: `${siteUrl}${assetPath("/images/logo.svg")}`,
     description: COMPANY.description,
     contactPoint: {
       "@type": "ContactPoint",

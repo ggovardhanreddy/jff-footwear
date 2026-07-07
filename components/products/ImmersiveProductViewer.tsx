@@ -8,7 +8,7 @@ import {
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import {
   AnimatePresence,
   motion,
@@ -183,7 +183,7 @@ function ViewerStage({
               {!loadedMap[activeIndex] && (
                 <div className="skeleton-shimmer absolute inset-0 rounded-2xl bg-neutral-100" />
               )}
-              <Image
+              <AssetImage
                 src={images[activeIndex]}
                 alt={`${productName} — view ${activeIndex + 1}`}
                 fill
@@ -271,7 +271,7 @@ function FlatExtraImage({
             transition={{ duration: 0.35 }}
             className="relative h-full w-full max-h-[min(72vw,520px)] max-w-[min(72vw,520px)]"
           >
-            <Image
+            <AssetImage
               src={src}
               alt={`${productName} additional view`}
               fill
@@ -463,7 +463,7 @@ export default function ImmersiveProductViewer({
                 )}
                 aria-label={`View ${src.split("/").pop()}`}
               >
-                <Image
+                <AssetImage
                   src={src}
                   alt=""
                   fill
@@ -501,7 +501,7 @@ export default function ImmersiveProductViewer({
               aria-label={`View image ${index + 1}`}
               aria-current={activeIndex === index}
             >
-              <Image
+              <AssetImage
                 src={src}
                 alt={`${productName} thumbnail ${index + 1}`}
                 fill

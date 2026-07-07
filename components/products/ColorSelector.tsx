@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import { COLOR_MAP } from "@/lib/constants";
 import type { ColorVariant, ProductColor } from "@/types";
 import { cn } from "@/lib/utils";
@@ -49,7 +49,7 @@ export default function ColorSelector({
                 style={{ backgroundColor: hex }}
               />
               {variant.image && (
-                <Image
+                <AssetImage
                   src={variant.image}
                   alt=""
                   width={32}

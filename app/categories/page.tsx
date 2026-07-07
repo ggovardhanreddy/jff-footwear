@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import { ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import PageShell from "@/components/ui/PageShell";
@@ -43,7 +43,7 @@ export default function CategoriesPage() {
             href={`/products?category=${encodeURIComponent(category.name)}`}
             className="focus-ring group relative aspect-[4/3] overflow-hidden rounded-[28px]"
           >
-            <Image
+            <AssetImage
               src={category.image}
               alt={category.name}
               fill

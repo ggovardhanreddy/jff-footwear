@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { createMetadata, createOrganizationJsonLd } from "@/lib/seo";
+import { assetPath } from "@/lib/paths";
 import "@/styles/globals.css";
 
 const inter = Inter({
@@ -30,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <head>
-        <link rel="icon" href="/images/logo.svg" type="image/svg+xml" />
+        <link rel="icon" href={assetPath("/images/logo.svg")} type="image/svg+xml" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}

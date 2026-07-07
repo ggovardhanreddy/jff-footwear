@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import { motion } from "framer-motion";
 import { Instagram } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -32,7 +32,7 @@ export default function InstagramGallery({ images }: InstagramGalleryProps) {
               transition={{ delay: index * 0.05 }}
               className="group relative aspect-square overflow-hidden rounded-xl bg-brand-light"
             >
-              <Image
+              <AssetImage
                 src={src}
                 alt={`JFF Footwear gallery ${index + 1}`}
                 fill

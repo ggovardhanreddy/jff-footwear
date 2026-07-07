@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -36,7 +36,7 @@ export default function ProductCategories({
                 href={`/products?category=${category.name}`}
                 className="group relative block aspect-[16/9] overflow-hidden"
               >
-                <Image
+                <AssetImage
                   src={category.image}
                   alt={category.name}
                   fill

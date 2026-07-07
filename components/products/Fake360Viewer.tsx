@@ -5,7 +5,7 @@ import {
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import {
   AnimatePresence,
   motion,
@@ -157,7 +157,7 @@ export default function Fake360Viewer({
               {!loadedMap[activeView.src] && (
                 <div className="skeleton-shimmer absolute inset-0 rounded-2xl bg-neutral-100" />
               )}
-              <Image
+              <AssetImage
                 src={activeView.src}
                 alt={`${productName} — ${activeView.label} view`}
                 fill

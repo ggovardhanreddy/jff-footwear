@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +32,7 @@ export default function ImageWithZoom({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <Image
+        <AssetImage
           src={src}
           alt={alt}
           fill
@@ -54,7 +54,7 @@ export default function ImageWithZoom({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Image
+      <AssetImage
         src={src}
         alt={alt}
         width={width || 800}

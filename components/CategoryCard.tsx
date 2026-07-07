@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import { motion } from "framer-motion";
 
 interface CategoryCardProps {
@@ -32,7 +32,7 @@ export default function CategoryCard({
         className="card-premium group block overflow-hidden rounded-2xl"
       >
         <div className="relative aspect-[4/3] overflow-hidden bg-brand-light">
-          <Image
+          <AssetImage
             src={image}
             alt={name}
             fill

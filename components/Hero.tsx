@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import { ArrowRight } from "lucide-react";
 import ButtonLink from "@/components/ui/ButtonLink";
 import AnimatedBackground from "@/components/ui/AnimatedBackground";
@@ -12,7 +12,7 @@ export default function Hero() {
 
   return (
     <section className="relative flex min-h-screen items-center overflow-hidden bg-brand-black">
-      <Image
+      <AssetImage
         src="/images/hero-banner.svg"
         alt="JFF Premium Slippers"
         fill

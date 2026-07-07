@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useId } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, MessageCircle } from "lucide-react";
@@ -48,7 +48,7 @@ export default function Header() {
           href="/"
           className="focus-ring relative z-10 flex items-center gap-2 rounded-lg"
         >
-          <Image
+          <AssetImage
             src="/images/logo.svg"
             alt={COMPANY.fullName}
             width={80}

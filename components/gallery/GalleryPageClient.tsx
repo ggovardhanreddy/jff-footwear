@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import AssetImage from "@/components/ui/AssetImage";
 import Lightbox from "yet-another-react-lightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Breadcrumb from "@/components/Breadcrumb";
 import PageShell from "@/components/ui/PageShell";
+import { assetPath } from "@/lib/paths";
 import { products } from "@/data";
 import { cn } from "@/lib/utils";
 
@@ -30,7 +31,10 @@ export default function GalleryPageClient() {
       ? allImages
       : allImages.filter((img) => img.category === activeFilter);
 
-  const slides = filtered.map((img) => ({ src: img.src, alt: img.alt }));
+  const slides = filtered.map((img) => ({
+    src: assetPath(img.src),
+    alt: img.alt,
+  }));
 
   return (
     <PageShell>
@@ -82,7 +86,7 @@ export default function GalleryPageClient() {
             aria-label={`View ${img.alt}`}
           >
             <div className="relative aspect-[4/5]">
-              <Image
+              <AssetImage
                 src={img.src}
                 alt={img.alt}
                 fill
