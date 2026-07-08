@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -43,6 +44,13 @@ const config: Config = {
         "2xl": "1.25rem",
         "3xl": "1.5rem",
         luxury: "28px",
+      },
+      letterSpacing: {
+        luxury: "0.24em",
+        wide: "0.18em",
+      },
+      transitionDuration: {
+        luxury: "500ms",
       },
       boxShadow: {
         soft: "0 4px 24px rgba(0, 0, 0, 0.06)",

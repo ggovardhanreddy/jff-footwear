@@ -4,9 +4,11 @@ import {
   Gem,
   Footprints,
   Shield,
-  Palette,
-  Leaf,
-  Globe,
+  IndianRupee,
+  MapPin,
+  Factory,
+  Package,
+  Store,
   type LucideIcon,
 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
@@ -20,9 +22,11 @@ const ICONS: Record<string, LucideIcon> = {
   Gem,
   Footprints,
   Shield,
-  Palette,
-  Leaf,
-  Globe,
+  IndianRupee,
+  MapPin,
+  Factory,
+  Package,
+  Store,
 };
 
 interface FeaturesSectionProps {
@@ -40,7 +44,7 @@ export default function FeaturesSection({ features }: FeaturesSectionProps) {
         <div className="mb-10 text-center">
           <p className="eyebrow">Section 05</p>
           <SplitText
-            text="The JFF Difference"
+            text="Why Choose JFF"
             className="heading-section mx-auto mt-3 max-w-3xl text-white"
           />
         </div>

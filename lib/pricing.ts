@@ -1,3 +1,4 @@
+import { SHIPPING_CONFIG } from "@/config/shipping";
 import { PRICING_CONFIG } from "@/lib/pricing-config";
 import type { CartItem, OrderSummaryBreakdown, ProductPricing } from "@/types";
 import type { Product } from "@/types";
@@ -32,15 +33,12 @@ export function getProductPricing(product?: Pick<Product, "slug"> | null): Produ
 }
 
 function getDeliveryCharge(cartSellingTotal: number, itemCount: number): number {
-  const { deliveryRules, perItemDeliverySurcharge, fees } = PRICING_CONFIG;
+  const { perItemDeliverySurcharge } = PRICING_CONFIG;
+  const threshold = SHIPPING_CONFIG.FREE_DELIVERY_THRESHOLD;
+  const standardCharge = SHIPPING_CONFIG.DELIVERY_CHARGE;
 
-  let charge: number = fees.deliveryCharge;
-  for (const rule of deliveryRules) {
-    if (cartSellingTotal >= rule.minCartValue) {
-      charge = rule.charge;
-      break;
-    }
-  }
+  const charge =
+    cartSellingTotal >= threshold ? 0 : standardCharge;
 
   return charge + perItemDeliverySurcharge * itemCount;
 }
@@ -75,9 +73,9 @@ export function calculateOrderSummary(
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   const platformFee =
-    items.length > 0 ? PRICING_CONFIG.fees.platformFee : 0;
+    items.length > 0 ? SHIPPING_CONFIG.PLATFORM_FEE : 0;
 
-  const standardDelivery = PRICING_CONFIG.fees.deliveryCharge;
+  const standardDelivery = SHIPPING_CONFIG.DELIVERY_CHARGE;
   const deliveryCharge = getDeliveryCharge(cartSellingTotal, itemCount);
   const deliverySavings =
     deliveryCharge === 0 && cartSellingTotal > 0 ? standardDelivery : 0;
@@ -92,7 +90,7 @@ export function calculateOrderSummary(
   const totalSavings = productDiscount + couponDiscount + deliverySavings;
 
   const isFreeDelivery =
-    cartSellingTotal >= PRICING_CONFIG.fees.freeDeliveryThreshold;
+    cartSellingTotal >= SHIPPING_CONFIG.FREE_DELIVERY_THRESHOLD;
 
   return {
     subtotal,

@@ -6,16 +6,25 @@ import {
   Mail,
   MessageCircle,
 } from "lucide-react";
-import { NAV_LINKS, COMPANY, PRODUCT_CATEGORIES, WHATSAPP_NUMBER } from "@/lib/constants";
+import { NAV_LINKS, COMPANY, WHATSAPP_NUMBER, ROUTES } from "@/lib/constants";
 
 const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}`;
+
+const SUPPORT_LINKS = [
+  { href: ROUTES.sizeGuide, label: "Size Guide" },
+  { href: ROUTES.careInstructions, label: "Care Instructions" },
+  { href: ROUTES.shipping, label: "Shipping & Delivery" },
+  { href: ROUTES.returns, label: "Returns & Exchanges" },
+  { href: ROUTES.dealer, label: "Become a Dealer" },
+  { href: ROUTES.oem, label: "OEM / Private Label" },
+] as const;
 
 export default function Footer() {
   return (
     <footer className="bg-brand-black text-white">
       <div className="container-custom section-padding">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-          <div className="space-y-6">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
+          <div className="space-y-6 lg:col-span-2">
             <AssetImage
               src="/images/logo.svg"
               alt={COMPANY.fullName}
@@ -46,7 +55,25 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="link-underline text-sm text-gray-400 hover:text-white"
+                    className="focus-ring link-underline text-sm text-gray-400 hover:text-white"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-6 text-xs font-semibold uppercase tracking-[0.3em] text-brand-accent">
+              Support
+            </h3>
+            <ul className="space-y-3">
+              {SUPPORT_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="focus-ring text-sm text-gray-400 transition-colors hover:text-white"
                   >
                     {link.label}
                   </Link>
@@ -54,38 +81,20 @@ export default function Footer() {
               ))}
               <li>
                 <Link
-                  href="/privacy-policy"
-                  className="text-sm text-gray-400 transition-colors hover:text-white"
+                  href={ROUTES.privacy}
+                  className="focus-ring text-sm text-gray-400 transition-colors hover:text-white"
                 >
                   Privacy Policy
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/terms"
-                  className="text-sm text-gray-400 transition-colors hover:text-white"
+                  href={ROUTES.terms}
+                  className="focus-ring text-sm text-gray-400 transition-colors hover:text-white"
                 >
-                  Terms of Service
+                  Terms & Conditions
                 </Link>
               </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-6 text-xs font-semibold uppercase tracking-[0.3em] text-brand-accent">
-              Categories
-            </h3>
-            <ul className="space-y-3">
-              {PRODUCT_CATEGORIES.slice(0, 8).map((cat) => (
-                <li key={cat}>
-                  <Link
-                    href={`/products?category=${encodeURIComponent(cat)}`}
-                    className="text-sm text-gray-400 transition-colors hover:text-white"
-                  >
-                    {cat}
-                  </Link>
-                </li>
-              ))}
             </ul>
           </div>
 
@@ -100,7 +109,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3 text-sm text-gray-400">
                 <Phone className="h-4 w-4 shrink-0 text-brand-accent" />
-                <a href={`tel:${COMPANY.phone}`} className="hover:text-white">
+                <a href={`tel:${COMPANY.phone}`} className="focus-ring rounded-sm hover:text-white">
                   {COMPANY.phone}
                 </a>
               </li>
@@ -108,7 +117,7 @@ export default function Footer() {
                 <Mail className="h-4 w-4 shrink-0 text-brand-accent" />
                 <a
                   href={`mailto:${COMPANY.email}`}
-                  className="hover:text-white"
+                  className="focus-ring rounded-sm hover:text-white"
                 >
                   {COMPANY.email}
                 </a>
@@ -123,7 +132,7 @@ export default function Footer() {
             reserved.
           </p>
           <p className="text-xs text-gray-500">
-            Crafted with precision since {COMPANY.founded}
+            Founded {COMPANY.foundedYear} · Made in India
           </p>
         </div>
       </div>

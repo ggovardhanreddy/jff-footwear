@@ -1,4 +1,5 @@
-import { createMetadata } from "@/lib/seo";
+import JsonLd from "@/components/seo/JsonLd";
+import { createMetadata, createBreadcrumbJsonLd } from "@/lib/seo";
 import GalleryPageClient from "@/components/gallery/GalleryPageClient";
 
 export const metadata = createMetadata({
@@ -9,5 +10,15 @@ export const metadata = createMetadata({
 });
 
 export default function GalleryPage() {
-  return <GalleryPageClient />;
+  return (
+    <>
+      <JsonLd
+        data={createBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Gallery", path: "/gallery" },
+        ])}
+      />
+      <GalleryPageClient />
+    </>
+  );
 }

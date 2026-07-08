@@ -28,7 +28,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
               ) : (
                 <Link
                   href={item.href}
-                  className="transition-colors hover:text-brand-accent"
+                  className="focus-ring rounded-sm transition-colors hover:text-brand-accent"
                 >
                   {item.label}
                 </Link>

@@ -18,6 +18,19 @@
     @apply bg-brand-cream text-brand-black font-sans;
   }
 
+  html.dark body {
+    @apply bg-brand-black text-white;
+  }
+
+  html.dark .card-premium,
+  html.dark .premium-card-glass {
+    @apply border-white/10 bg-brand-dark/80;
+  }
+
+  html.dark .input-field {
+    @apply border-white/10 bg-brand-dark text-white;
+  }
+
   main {
     scroll-margin-top: 4.5rem;
   }
@@ -52,7 +65,31 @@
   }
 
   .page-shell {
-    @apply pt-[4.5rem] md:pt-24;
+    @apply pt-[4.5rem] pb-20 md:pt-24 lg:pb-0;
+  }
+
+  .page-header {
+    @apply mb-10 md:mb-14 lg:mb-16;
+  }
+
+  .page-header__title {
+    @apply font-display text-3xl font-bold leading-[1.08] tracking-[-0.02em] text-balance md:text-4xl;
+  }
+
+  .content-prose {
+    @apply max-w-3xl space-y-5 text-base leading-[1.75] text-brand-muted md:text-lg;
+  }
+
+  .content-prose h2 {
+    @apply font-display text-2xl font-bold tracking-tight text-brand-black md:text-3xl;
+  }
+
+  .content-prose h3 {
+    @apply font-display text-xl font-semibold text-brand-black;
+  }
+
+  .content-prose a {
+    @apply font-medium text-brand-accent underline-offset-4 transition-colors hover:text-brand-accent-dark hover:underline;
   }
 
   .section-gap {
@@ -108,7 +145,17 @@
   }
 
   .card-premium {
-    @apply rounded-2xl bg-white shadow-soft transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-premium;
+    @apply rounded-2xl bg-white shadow-soft transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-premium;
+  }
+
+  .luxury-card {
+    @apply will-change-transform;
+  }
+
+  .group:focus-within .premium-quick-view,
+  .group:hover .premium-quick-view {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .motion-gpu {
@@ -224,6 +271,25 @@
   .immersive-viewer-nav {
     @apply flex h-10 w-10 items-center justify-center rounded-full border border-black/5 bg-white/85 text-brand-black shadow-lg backdrop-blur-md transition-colors hover:bg-brand-black hover:text-white;
   }
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(200%);
+  }
+}
+
+html.custom-cursor-active,
+html.custom-cursor-active body {
+  cursor: none;
+}
+
+html.custom-cursor-active a,
+html.custom-cursor-active button {
+  cursor: none;
 }
 
 @layer utilities {
@@ -454,6 +520,11 @@
 
   .motion-gpu {
     will-change: auto;
+  }
+
+  .card-premium:hover,
+  .luxury-card {
+    transform: none !important;
   }
 }
 

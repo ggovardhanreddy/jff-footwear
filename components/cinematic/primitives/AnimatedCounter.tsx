@@ -6,25 +6,34 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 interface AnimatedCounterProps {
   value: string;
   label: string;
+  sublabel?: string;
 }
 
 function parseValue(value: string) {
-  const match = value.match(/^([\d.]+)(.*)$/);
-  if (!match) return { num: 0, suffix: value, decimals: 0 };
-  const numStr = match[1];
+  const match = value.match(/^([\d,]+)(.*)$/);
+  if (!match) return null;
+  const numStr = match[1].replace(/,/g, "");
   const decimals = numStr.includes(".") ? numStr.split(".")[1].length : 0;
   return { num: parseFloat(numStr), suffix: match[2], decimals };
 }
 
-export default function AnimatedCounter({ value, label }: AnimatedCounterProps) {
+export default function AnimatedCounter({
+  value,
+  label,
+  sublabel,
+}: AnimatedCounterProps) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const reduced = useReducedMotion();
-  const { num, suffix, decimals } = parseValue(value);
-  const [display, setDisplay] = useState(reduced ? value : "0" + suffix);
+  const parsed = parseValue(value);
+  const isStatic = !parsed;
+  const { num = 0, suffix = "", decimals = 0 } = parsed ?? {};
+  const [display, setDisplay] = useState(
+    reduced || isStatic ? value : "0" + suffix
+  );
 
   useEffect(() => {
-    if (!inView || reduced) {
+    if (isStatic || !inView || reduced) {
       setDisplay(value);
       return;
     }
@@ -44,16 +53,19 @@ export default function AnimatedCounter({ value, label }: AnimatedCounterProps) 
     };
 
     requestAnimationFrame(tick);
-  }, [inView, reduced, num, suffix, decimals, value]);
+  }, [inView, reduced, num, suffix, decimals, value, isStatic]);
 
   return (
     <div ref={ref} className="text-center">
-      <p className="font-display text-4xl font-bold text-white md:text-5xl lg:text-6xl">
+      <p className="font-display text-3xl font-bold text-white md:text-4xl lg:text-5xl">
         {display}
       </p>
       <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-gray-500">
         {label}
       </p>
+      {sublabel ? (
+        <p className="mt-1 text-xs text-gray-500">{sublabel}</p>
+      ) : null}
     </div>
   );
 }

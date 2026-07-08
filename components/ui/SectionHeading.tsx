@@ -35,7 +35,7 @@ export default function SectionHeading({
       viewport={{ once: true, margin: "-48px" }}
       transition={{ duration: prefersReducedMotion ? 0 : 0.55, ease: EASE_LUXURY }}
       className={cn(
-        "mb-12 md:mb-16 lg:mb-20",
+        "mb-10 md:mb-14 lg:mb-16",
         align === "center" && "text-center",
         className
       )}

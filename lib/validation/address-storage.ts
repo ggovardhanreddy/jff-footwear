@@ -1,4 +1,5 @@
 import type { DeliveryAddress } from "@/types";
+import { EMPTY_DELIVERY_ADDRESS } from "@/lib/validation/address";
 
 const ADDRESS_STORAGE_KEY = "jff-default-address";
 
@@ -7,7 +8,8 @@ export function loadSavedAddress(): DeliveryAddress | null {
   try {
     const raw = localStorage.getItem(ADDRESS_STORAGE_KEY);
     if (!raw) return null;
-    return JSON.parse(raw) as DeliveryAddress;
+    const parsed = JSON.parse(raw) as Partial<DeliveryAddress>;
+    return { ...EMPTY_DELIVERY_ADDRESS, ...parsed };
   } catch {
     return null;
   }

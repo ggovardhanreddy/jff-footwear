@@ -12,9 +12,9 @@ import ColorsSection from "@/components/cinematic/sections/ColorsSection";
 import FeaturesSection from "@/components/cinematic/sections/FeaturesSection";
 import StatsSection from "@/components/cinematic/sections/StatsSection";
 import GallerySection from "@/components/cinematic/sections/GallerySection";
-import TestimonialsSection from "@/components/cinematic/sections/TestimonialsSection";
+import FAQSection from "@/components/cinematic/sections/FAQSection";
 import ContactSection from "@/components/cinematic/sections/ContactSection";
-import type { Feature, Review, Product, ProductColor } from "@/types";
+import type { Feature, Product, ProductColor } from "@/types";
 
 interface MaterialItem {
   id: string;
@@ -39,7 +39,6 @@ interface CinematicLandingProps {
   materials: MaterialItem[];
   colors: ColorItem[];
   features: Feature[];
-  reviews: Review[];
 }
 
 export default function CinematicLanding({
@@ -50,7 +49,6 @@ export default function CinematicLanding({
   materials,
   colors,
   features,
-  reviews,
 }: CinematicLandingProps) {
   useEffect(() => {
     document.documentElement.classList.add("cinematic-page", "cinematic-ready");
@@ -87,7 +85,7 @@ export default function CinematicLanding({
         <FeaturesSection features={features} />
         <StatsSection />
         <GallerySection products={galleryProducts} />
-        <TestimonialsSection reviews={reviews} />
+        <FAQSection />
         <ContactSection />
       </div>
     </>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Send } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
@@ -12,14 +12,24 @@ const fields = [
   { id: "contact-subject", name: "subject", label: "Subject", type: "text", required: true },
 ] as const;
 
-export default function ContactForm() {
+interface ContactFormProps {
+  defaultSubject?: string;
+}
+
+export default function ContactForm({ defaultSubject = "" }: ContactFormProps) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    subject: "",
+    subject: defaultSubject,
     message: "",
   });
+
+  useEffect(() => {
+    if (defaultSubject) {
+      setFormData((prev) => ({ ...prev, subject: defaultSubject }));
+    }
+  }, [defaultSubject]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +53,7 @@ export default function ContactForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-[28px] border border-gray-100 bg-white p-6 shadow-sm md:p-8"
+      className="space-y-6 rounded-[28px] border border-black/[0.06] bg-white/80 p-6 shadow-soft backdrop-blur-md md:p-8"
       noValidate
     >
       <div className="grid gap-6 sm:grid-cols-2">
@@ -57,7 +67,7 @@ export default function ContactForm() {
               name={field.name}
               type={field.type}
               required={field.required}
-              autoComplete={field.name === "name" ? "name" : field.name === "email" ? "email" : field.name === "phone" ? "tel" : undefined}
+              autoComplete={field.name === "name" ? "name" : field.name === "email" ? "email" : undefined}
               value={formData[field.name]}
               onChange={(e) =>
                 setFormData({ ...formData, [field.name]: e.target.value })
@@ -104,10 +114,20 @@ export default function ContactForm() {
           className="input-field resize-none"
         />
       </div>
-      <Button type="submit" variant="whatsapp" className="w-full">
-        <Send className="h-4 w-4" />
-        Send via WhatsApp
-      </Button>
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <Button type="submit" variant="primary" className="flex-1">
+          <Send className="h-4 w-4" />
+          Send Message
+        </Button>
+        <a
+          href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hello JFF, I would like to get in touch.")}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-whatsapp flex-1 justify-center"
+        >
+          Chat on WhatsApp
+        </a>
+      </div>
     </form>
   );
 }

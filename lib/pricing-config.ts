@@ -1,8 +1,6 @@
-/**
- * Central pricing & checkout configuration.
- * Adjust values here — no hardcoded prices elsewhere in the app.
- */
+import { SHIPPING_CONFIG } from "@/config/shipping";
 
+/** Product pricing configuration — fees sync with config/shipping.ts */
 export const PRICING_CONFIG = {
   currency: "INR" as const,
   locale: "en-IN" as const,
@@ -20,25 +18,21 @@ export const PRICING_CONFIG = {
   >,
 
   fees: {
-    platformFee: 10,
-    deliveryCharge: 40,
-    freeDeliveryThreshold: 499,
+    platformFee: SHIPPING_CONFIG.PLATFORM_FEE,
+    deliveryCharge: SHIPPING_CONFIG.DELIVERY_CHARGE,
+    freeDeliveryThreshold: SHIPPING_CONFIG.FREE_DELIVERY_THRESHOLD,
   },
 
-  /**
-   * Delivery charge tiers (evaluated in order; first match wins).
-   * `cartValue` = sum of selling prices × qty before fees.
-   */
   deliveryRules: [
     {
       id: "free-over-threshold",
-      minCartValue: 499,
+      minCartValue: SHIPPING_CONFIG.FREE_DELIVERY_THRESHOLD,
       charge: 0,
     },
     {
       id: "standard",
       minCartValue: 0,
-      charge: 40,
+      charge: SHIPPING_CONFIG.DELIVERY_CHARGE,
     },
   ] as const,
 

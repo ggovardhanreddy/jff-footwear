@@ -4,7 +4,8 @@ import { ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import PageShell from "@/components/ui/PageShell";
 import Breadcrumb from "@/components/Breadcrumb";
-import { createMetadata } from "@/lib/seo";
+import JsonLd from "@/components/seo/JsonLd";
+import { createMetadata, createBreadcrumbJsonLd } from "@/lib/seo";
 import { categories } from "@/data/content";
 import { getProductCountByCategory } from "@/data";
 import { MATERIALS } from "@/lib/constants";
@@ -24,6 +25,12 @@ export default function CategoriesPage() {
 
   return (
     <PageShell>
+      <JsonLd
+        data={createBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Categories", path: "/categories" },
+        ])}
+      />
       <Breadcrumb
         items={[
           { label: "Home", href: "/" },
@@ -42,7 +49,7 @@ export default function CategoriesPage() {
           <Link
             key={category.id}
             href={`/products?category=${encodeURIComponent(category.name)}`}
-            className="focus-ring group relative aspect-[4/3] overflow-hidden rounded-[28px]"
+            className="focus-ring group relative aspect-[4/3] overflow-hidden rounded-[28px] shadow-soft transition-shadow duration-500 hover:shadow-premium"
           >
             <AssetImage
               src={category.image}
@@ -79,7 +86,7 @@ export default function CategoriesPage() {
           <Link
             key={material}
             href={`/products?material=${encodeURIComponent(material)}`}
-            className="focus-ring group flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-6 transition-all hover:border-brand-accent hover:shadow-lg"
+            className="focus-ring group flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-6 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-accent hover:shadow-premium"
           >
             <span className="font-display font-semibold">{material}</span>
             <ArrowRight

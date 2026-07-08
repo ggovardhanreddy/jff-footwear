@@ -9,6 +9,19 @@ import ProductGrid from "@/components/products/ProductGrid";
 import SearchBar from "@/components/ui/SearchBar";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Breadcrumb from "@/components/Breadcrumb";
+import {
+  FlashSaleBanner,
+  ProductCarousel,
+  QuickViewModal,
+  SearchSuggestions,
+} from "@/components/features";
+import {
+  getFeaturedProducts,
+  getNewArrivals,
+  getBestSellers,
+  getTrendingProducts,
+} from "@/lib/product-sections";
+import { useSearchHistory } from "@/context/SearchHistoryContext";
 import { filterProducts } from "@/lib/utils";
 import { DEFAULT_FILTERS, SORT_OPTIONS } from "@/lib/constants";
 import type { Product, ProductFilters } from "@/types";
@@ -30,8 +43,12 @@ export default function ProductsPageClient({
   filterOptions,
 }: ProductsPageClientProps) {
   const searchParams = useSearchParams();
+  const { add: addSearch } = useSearchHistory();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filters, setFilters] = useState<ProductFilters>(DEFAULT_FILTERS);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(
+    null
+  );
 
   useEffect(() => {
     setFilters((prev) => ({
@@ -50,6 +67,10 @@ export default function ProductsPageClient({
     }));
   }, [searchParams]);
 
+  useEffect(() => {
+    if (filters.search) addSearch(filters.search);
+  }, [filters.search, addSearch]);
+
   const filtered = useMemo(
     () => filterProducts(products, filters),
     [products, filters]
@@ -57,6 +78,11 @@ export default function ProductsPageClient({
 
   return (
     <div className="relative z-10 container-custom section-padding">
+      <QuickViewModal
+        product={quickViewProduct}
+        onClose={() => setQuickViewProduct(null)}
+      />
+
       <Breadcrumb
         items={[
           { label: "Home", href: "/" },
@@ -64,11 +90,24 @@ export default function ProductsPageClient({
         ]}
       />
 
+      <FlashSaleBanner className="mb-12" />
+
+      <ProductCarousel
+        title="Trending Products"
+        products={getTrendingProducts(6)}
+        className="mb-12"
+      />
+
       <SectionHeading
         subtitle="Our Collection"
         title="All Products"
         titleAs="h1"
         description="Browse our complete range of premium slippers. Filter by category, material, color, size, and more."
+      />
+
+      <SearchSuggestions
+        className="mb-8 max-w-2xl"
+        onSelect={(q) => setFilters({ ...filters, search: q })}
       />
 
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
@@ -101,7 +140,9 @@ export default function ProductsPageClient({
 
       <p className="mb-6 text-sm text-brand-muted">
         Showing{" "}
-        <span className="font-semibold text-brand-black">{filtered.length}</span>{" "}
+        <span className="font-semibold text-brand-black dark:text-white">
+          {filtered.length}
+        </span>{" "}
         products
       </p>
 
@@ -123,8 +164,28 @@ export default function ProductsPageClient({
         </aside>
 
         <div className="flex-1">
-          <ProductGrid products={filtered} />
+          <ProductGrid
+            products={filtered}
+            infiniteScroll
+            emptyVariant="search"
+            onQuickView={setQuickViewProduct}
+          />
         </div>
+      </div>
+
+      <div className="mt-24 space-y-24">
+        <ProductCarousel
+          title="Featured Products"
+          products={getFeaturedProducts(6)}
+        />
+        <ProductCarousel
+          title="New Arrivals"
+          products={getNewArrivals(6)}
+        />
+        <ProductCarousel
+          title="Best Sellers"
+          products={getBestSellers(6)}
+        />
       </div>
     </div>
   );

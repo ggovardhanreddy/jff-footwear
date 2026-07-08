@@ -25,7 +25,7 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = createMetadata({
   description:
-    "JFF Footwear crafts premium slippers for global markets — orthopedic, EVA, rubber, and fashion collections for men, women, and kids. Wholesale & OEM inquiries welcome.",
+    "JFF Footwear manufactures comfortable, durable slippers for men, women, kids, and unisex collections. Based in Rayachoty, Andhra Pradesh. Retail and wholesale enquiries welcome.",
 });
 
 export const viewport: Viewport = {
@@ -45,7 +45,11 @@ export default function RootLayout({
   const structuredData = [createOrganizationJsonLd(), createWebSiteJsonLd()];
 
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${playfair.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <link rel="icon" href={assetPath("/images/logo.svg")} type="image/svg+xml" />
         <script

@@ -34,7 +34,7 @@ export type ProductColor =
   | "Navy"
   | "Standard";
 
-export type SortOption = "newest" | "featured" | "name";
+export type SortOption = "newest" | "featured" | "name" | "trending" | "price-low" | "price-high";
 
 export interface ProductPricing {
   mrp: number;
@@ -50,9 +50,12 @@ export interface DeliveryAddress {
   alternativeMobile: string;
   flatHouse: string;
   area: string;
-  city: string;
-  state: string;
   pincode: string;
+  city: string;
+  district: string;
+  state: string;
+  country: string;
+  postOffice: string;
   landmark: string;
   addressType: AddressType;
   isDefault: boolean;
@@ -61,6 +64,37 @@ export interface DeliveryAddress {
 export type DeliveryAddressErrors = Partial<
   Record<keyof DeliveryAddress, string>
 >;
+
+export interface GeolocationAddress {
+  area: string;
+  city: string;
+  district: string;
+  state: string;
+  pincode: string;
+  country?: string;
+}
+
+export interface DeliveryAvailability {
+  available: boolean;
+  checked: boolean;
+  message: string;
+}
+
+export interface CodAvailability {
+  available: boolean;
+  checked: boolean;
+  message: string;
+}
+
+export interface DeliveryEstimate {
+  tier: "same_state" | "neighbouring" | "other";
+  minDays: number;
+  maxDays: number;
+  label: string;
+  deliveryBy: string;
+}
+
+export type CheckoutStep = "address" | "delivery" | "review";
 
 export interface CartItem {
   id: string;
@@ -87,6 +121,7 @@ export interface OrderSummaryBreakdown {
   isFreeDelivery: boolean;
   taxNote: string;
   estimatedDelivery: string;
+  estimatedDeliveryBy?: string;
 }
 
 export interface Product {
@@ -116,6 +151,9 @@ export interface ProductFilters {
   sort: SortOption;
   featured: boolean;
   newArrival: boolean;
+  trending: boolean;
+  minPrice: number | "";
+  maxPrice: number | "";
 }
 
 export interface ColorVariant {

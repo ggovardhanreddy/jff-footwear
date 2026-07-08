@@ -1,21 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { products } from "@/data";
 import { STATS } from "@/lib/constants";
 
 export default function Statistics() {
-  const stats = STATS.map((stat) =>
-    stat.label === "Product Styles"
-      ? { ...stat, value: `${products.length}+` }
-      : stat
-  );
-
   return (
     <section className="section-padding bg-brand-black py-14 text-white md:py-20">
       <div className="container-custom">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat, index) => (
+          {STATS.map((stat, index) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
@@ -28,6 +21,9 @@ export default function Statistics() {
                 {stat.value}
               </p>
               <p className="mt-2 text-sm text-gray-400">{stat.label}</p>
+              {"sublabel" in stat && stat.sublabel ? (
+                <p className="text-xs text-gray-500">{stat.sublabel}</p>
+              ) : null}
             </motion.div>
           ))}
         </div>

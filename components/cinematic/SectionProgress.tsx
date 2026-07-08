@@ -9,10 +9,10 @@ export const CINEMATIC_SECTIONS = [
   { id: "showcase", label: "Spotlight" },
   { id: "materials", label: "Materials" },
   { id: "colors", label: "Colors" },
-  { id: "features", label: "Features" },
+  { id: "features", label: "Why JFF" },
   { id: "stats", label: "Stats" },
   { id: "gallery", label: "Gallery" },
-  { id: "testimonials", label: "Reviews" },
+  { id: "faq", label: "FAQ" },
   { id: "contact", label: "Contact" },
 ] as const;
 

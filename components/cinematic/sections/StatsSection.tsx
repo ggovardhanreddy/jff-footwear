@@ -34,7 +34,11 @@ export default function StatsSection() {
         >
           {STATS.map((stat) => (
             <motion.div key={stat.label} {...staggerItem(reduced)}>
-              <AnimatedCounter value={stat.value} label={stat.label} />
+              <AnimatedCounter
+                value={stat.value}
+                label={stat.label}
+                sublabel={"sublabel" in stat ? stat.sublabel : undefined}
+              />
             </motion.div>
           ))}
         </motion.div>

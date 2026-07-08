@@ -13,12 +13,15 @@
     "prebuild": "npm run generate"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.1",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.469.0",
     "next": "^15.1.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "yet-another-react-lightbox": "^3.21.7"
+    "react-hook-form": "^7.54.2",
+    "yet-another-react-lightbox": "^3.21.7",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

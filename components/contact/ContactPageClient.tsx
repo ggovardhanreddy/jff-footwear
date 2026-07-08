@@ -1,14 +1,35 @@
 "use client";
 
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
-import SectionHeading from "@/components/ui/SectionHeading";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import ContactForm from "@/components/ContactForm";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import {
+  PageHero,
+  ContactCard,
+  MapSection,
+  BusinessHours,
+} from "@/components/site";
+import ScrollReveal from "@/components/motion/ScrollReveal";
 import Breadcrumb from "@/components/Breadcrumb";
 import PageShell from "@/components/ui/PageShell";
-import { COMPANY } from "@/lib/constants";
 
-export default function ContactPageClient() {
+const SUBJECT_BY_TYPE: Record<string, string> = {
+  bulk: "Bulk Order Enquiry",
+  wholesale: "Wholesale Enquiry",
+  dealer: "Dealer Registration",
+  distributor: "Distributor Enquiry",
+  retail: "Retail Supply Enquiry",
+  "private-label": "Private Label / OEM Enquiry",
+  oem: "OEM Manufacturing Enquiry",
+  callback: "Request Callback",
+  factory: "Manufacturing Enquiry",
+};
+
+function ContactPageContent() {
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type") ?? "";
+  const defaultSubject = SUBJECT_BY_TYPE[type] ?? "";
+
   return (
     <PageShell ambient="cream">
       <Breadcrumb
@@ -18,86 +39,37 @@ export default function ContactPageClient() {
         ]}
       />
 
-      <SectionHeading
-        subtitle="Get in Touch"
+      <PageHero
+        eyebrow="Get in Touch"
         title="Contact Us"
-        titleAs="h1"
-        description="Have questions about our products or want to place a bulk order? We'd love to hear from you."
+        description="Questions about products, wholesale pricing, dealer registration, or OEM manufacturing? We are here to help."
+        className="mb-14"
       />
 
       <div className="grid gap-12 lg:grid-cols-2">
-        <div className="space-y-8">
+        <ScrollReveal variant="slideLeft">
           <div className="space-y-6">
-            {[
-              {
-                icon: MapPin,
-                title: "Address",
-                content: COMPANY.address,
-              },
-              {
-                icon: Phone,
-                title: "Phone",
-                content: COMPANY.phone,
-                href: `tel:${COMPANY.phone.replace(/\s/g, "")}`,
-              },
-              {
-                icon: Mail,
-                title: "Email",
-                content: COMPANY.email,
-                href: `mailto:${COMPANY.email}`,
-              },
-              {
-                icon: Clock,
-                title: "Business Hours",
-                content: "Mon - Sat: 9:00 AM - 6:00 PM IST",
-              },
-            ].map((item) => (
-              <div key={item.title} className="flex gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-black text-brand-accent">
-                  <item.icon className="h-5 w-5" aria-hidden />
-                </div>
-                <div>
-                  <h3 className="font-semibold">{item.title}</h3>
-                  {item.href ? (
-                    <a
-                      href={item.href}
-                      className="link-underline text-sm text-brand-muted"
-                    >
-                      {item.content}
-                    </a>
-                  ) : (
-                    <p className="text-sm text-brand-muted">{item.content}</p>
-                  )}
-                </div>
-              </div>
-            ))}
+            <ContactCard />
+            <BusinessHours />
           </div>
+        </ScrollReveal>
 
-          <WhatsAppButton />
-        </div>
-
-        <ContactForm />
+        <ScrollReveal variant="slideRight" delay={0.08}>
+          <ContactForm defaultSubject={defaultSubject} />
+        </ScrollReveal>
       </div>
 
-      <div className="mt-16 overflow-hidden rounded-[28px] border border-gray-200">
-        <div className="flex aspect-[21/9] items-center justify-center bg-brand-light">
-          <div className="px-4 text-center">
-            <MapPin className="mx-auto h-8 w-8 text-brand-accent" aria-hidden />
-            <p className="mt-3 text-sm font-medium text-brand-black">
-              Visit Our Facility
-            </p>
-            <p className="mt-1 text-xs text-brand-muted">{COMPANY.address}</p>
-            <a
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(COMPANY.address)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="link-underline mt-3 inline-block text-xs text-brand-accent"
-            >
-              Open in Google Maps
-            </a>
-          </div>
-        </div>
-      </div>
+      <ScrollReveal className="mt-16">
+        <MapSection />
+      </ScrollReveal>
     </PageShell>
+  );
+}
+
+export default function ContactPageClient() {
+  return (
+    <Suspense fallback={null}>
+      <ContactPageContent />
+    </Suspense>
   );
 }

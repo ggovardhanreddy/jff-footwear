@@ -1,12 +1,11 @@
 import { notFound } from "next/navigation";
-import ProductGallery from "@/components/products/ProductGallery";
+import ProductGalleryTabs from "@/components/products/ProductGalleryTabs";
 import ProductDetails from "@/components/products/ProductDetails";
-import ProductCard from "@/components/products/ProductCard";
+import ProductPageSections from "@/components/features/product/ProductPageSections";
 import Breadcrumb from "@/components/Breadcrumb";
 import { products } from "@/data";
 import {
   getProductBySlug,
-  getRelatedProducts,
   getColorVariants,
   getProductMainImage,
 } from "@/lib/utils";
@@ -49,7 +48,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   if (!product) notFound();
 
-  const related = getRelatedProducts(products, product);
   const colorVariants = getColorVariants(products, product);
   const jsonLd = createProductJsonLd(product);
   const breadcrumbLd = createBreadcrumbJsonLd([
@@ -79,25 +77,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
         />
 
         <div className="grid gap-12 bg-white lg:grid-cols-2 lg:gap-16">
-          <ProductGallery images={product.images} productName={product.name} />
+          <ProductGalleryTabs images={product.images} productName={product.name} />
           <ProductDetails
             product={product}
             colorVariants={colorVariants}
           />
         </div>
 
-        {related.length > 0 && (
-          <section className="mt-24">
-            <h2 className="heading-section mb-8 text-brand-black">
-              Related Products
-            </h2>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {related.map((p, i) => (
-                <ProductCard key={p.id} product={p} index={i} />
-              ))}
-            </div>
-          </section>
-        )}
+        <ProductPageSections product={product} />
       </div>
     </div>
   );

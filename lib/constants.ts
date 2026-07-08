@@ -25,16 +25,21 @@ export const COMPANY = {
   tagline: "Crafted Comfort. Every Step.",
   email: "govardhan.reddy.g.94@gmail.com",
   phone: "+91 81064 07372",
-  address: "Plot 42, Industrial Estate, Surat, Gujarat 395010, India",
-  founded: "1998",
+  founded: "January 2021",
+  foundedYear: "2021",
+  address:
+    "Plot 42, Rayachoty, Annamayya District, Andhra Pradesh – 516269, India",
+  locationShort: "Rayachoty, Andhra Pradesh",
   description:
-    "JFF is a leading manufacturer of premium slippers, delivering comfort, durability, and style to customers worldwide.",
+    "JFF Footwear is an Indian slipper manufacturer specializing in comfortable, durable, and stylish footwear for everyday use.",
+  businessHours: "Monday – Saturday: 9:00 AM – 6:00 PM IST",
 };
 
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
-  { href: "/products", label: "Products" },
+  { href: "/products", label: "Shop" },
   { href: "/categories", label: "Categories" },
+  { href: "/wholesale", label: "Wholesale" },
   { href: "/gallery", label: "Gallery" },
   { href: "/about", label: "About" },
   { href: "/faq", label: "FAQ" },
@@ -53,14 +58,24 @@ export const ROUTES = {
   faq: "/faq",
   cart: "/cart",
   checkout: "/checkout",
+  wishlist: "/wishlist",
+  customize: "/customize",
+  compare: "/compare",
+  wholesale: "/wholesale",
+  oem: "/oem",
+  dealer: "/dealer",
+  sizeGuide: "/size-guide",
+  careInstructions: "/care-instructions",
+  shipping: "/shipping",
+  returns: "/returns",
+  privacy: "/privacy-policy",
+  terms: "/terms",
 } as const;
 
 export const PRODUCT_CATEGORIES = [
   "Orthopedic",
   "Regular",
   "Bathroom",
-  "EVA",
-  "PVC",
   "Rubber",
   "Fashion",
   "Casual",
@@ -68,7 +83,7 @@ export const PRODUCT_CATEGORIES = [
   "Outdoor",
 ] as const;
 
-export const MATERIALS = ["EVA", "PVC", "Rubber", "Memory Foam"] as const;
+export const MATERIALS = ["Rubber", "Memory Foam"] as const;
 
 export const GENDERS = ["Men", "Women", "Kids", "Unisex"] as const;
 
@@ -99,7 +114,10 @@ export const SIZE_RANGES = {
 export const SORT_OPTIONS = [
   { value: "featured", label: "Featured" },
   { value: "newest", label: "Newest" },
+  { value: "trending", label: "Trending" },
   { value: "name", label: "Name (A–Z)" },
+  { value: "price-low", label: "Price: Low to High" },
+  { value: "price-high", label: "Price: High to Low" },
 ] as const;
 
 export const DEFAULT_FILTERS: ProductFilters = {
@@ -112,38 +130,30 @@ export const DEFAULT_FILTERS: ProductFilters = {
   sort: "featured",
   featured: false,
   newArrival: false,
+  trending: false,
+  minPrice: "",
+  maxPrice: "",
 };
 
 export const MATERIAL_INFO = [
   {
-    id: "eva",
-    name: "EVA" as const,
-    slug: "eva",
-    description: "Lightweight, cushioned, and flexible — ideal for everyday comfort.",
-  },
-  {
-    id: "pvc",
-    name: "PVC" as const,
-    slug: "pvc",
-    description: "Water-resistant and durable — perfect for bathroom and wet areas.",
-  },
-  {
     id: "rubber",
     name: "Rubber" as const,
     slug: "rubber",
-    description: "Heavy-duty grip and longevity — built for outdoor use.",
+    description: "Durable and grippy — ideal for everyday and outdoor use.",
   },
   {
     id: "memory-foam",
     name: "Memory Foam" as const,
     slug: "memory-foam",
-    description: "Orthopedic support with pressure-relieving comfort.",
+    description: "Soft, supportive cushioning for extended comfort.",
   },
 ];
 
+/** Verified statistics only — do not add invented figures. */
 export const STATS = [
-  { value: "25+", label: "Years of Excellence" },
-  { value: "73+", label: "Product Styles" },
-  { value: "30+", label: "Countries Exported" },
-  { value: "2M+", label: "Pairs Annually" },
-];
+  { value: "2021", label: "Founded" },
+  { value: "100+", label: "Employees" },
+  { value: "200,000+", label: "Production Capacity" },
+  { value: "Rayachoty", label: "Location", sublabel: "Andhra Pradesh" },
+] as const;

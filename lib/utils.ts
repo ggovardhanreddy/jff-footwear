@@ -6,6 +6,7 @@ import type {
   ProductSpecification,
 } from "@/types";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
+import { getProductPricing } from "@/lib/pricing";
 import { getGalleryImages } from "@/lib/productViews";
 import { DEFAULT_OG_IMAGE, SOLD_OUT_IMAGE } from "@/lib/paths";
 
@@ -63,6 +64,26 @@ export function filterProducts(
     result = result.filter((p) => p.newArrival);
   }
 
+  if (filters.trending) {
+    result = result.filter(
+      (p) => p.featured || p.newArrival
+    );
+  }
+
+  if (filters.minPrice !== "") {
+    const min = Number(filters.minPrice);
+    result = result.filter(
+      (p) => getProductPricing(p).sellingPrice >= min
+    );
+  }
+
+  if (filters.maxPrice !== "") {
+    const max = Number(filters.maxPrice);
+    result = result.filter(
+      (p) => getProductPricing(p).sellingPrice <= max
+    );
+  }
+
   return sortProducts(result, filters.sort);
 }
 
@@ -77,6 +98,22 @@ export function sortProducts(
       return sorted.sort((a, b) => Number(b.newArrival) - Number(a.newArrival));
     case "featured":
       return sorted.sort((a, b) => Number(b.featured) - Number(a.featured));
+    case "trending":
+      return sorted.sort((a, b) => {
+        const score = (p: Product) =>
+          (p.featured ? 2 : 0) + (p.newArrival ? 1 : 0);
+        return score(b) - score(a);
+      });
+    case "price-low":
+      return sorted.sort(
+        (a, b) =>
+          getProductPricing(a).sellingPrice - getProductPricing(b).sellingPrice
+      );
+    case "price-high":
+      return sorted.sort(
+        (a, b) =>
+          getProductPricing(b).sellingPrice - getProductPricing(a).sellingPrice
+      );
     case "name":
       return sorted.sort((a, b) => a.name.localeCompare(b.name));
     default:

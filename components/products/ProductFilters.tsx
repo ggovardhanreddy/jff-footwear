@@ -37,6 +37,9 @@ export default function ProductFilterSidebar({
       size: "",
       featured: false,
       newArrival: false,
+      trending: false,
+      minPrice: "",
+      maxPrice: "",
     });
   };
 
@@ -47,7 +50,10 @@ export default function ProductFilterSidebar({
     filters.color ||
     filters.size !== "" ||
     filters.featured ||
-    filters.newArrival;
+    filters.newArrival ||
+    filters.trending ||
+    filters.minPrice !== "" ||
+    filters.maxPrice !== "";
 
   return (
     <div className={cn("space-y-6", className)} id="product-filters">
@@ -70,6 +76,52 @@ export default function ProductFilterSidebar({
           />
           New arrivals only
         </label>
+        <label className="flex cursor-pointer items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={filters.trending}
+            onChange={(e) => update({ trending: e.target.checked })}
+            className="accent-brand-accent"
+          />
+          Trending only
+        </label>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand-muted">
+            Min Price (₹)
+          </label>
+          <input
+            type="number"
+            min={0}
+            value={filters.minPrice}
+            onChange={(e) =>
+              update({
+                minPrice: e.target.value ? Number(e.target.value) : "",
+              })
+            }
+            placeholder="Min"
+            className="input-field py-2.5"
+          />
+        </div>
+        <div>
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand-muted">
+            Max Price (₹)
+          </label>
+          <input
+            type="number"
+            min={0}
+            value={filters.maxPrice}
+            onChange={(e) =>
+              update({
+                maxPrice: e.target.value ? Number(e.target.value) : "",
+              })
+            }
+            placeholder="Max"
+            className="input-field py-2.5"
+          />
+        </div>
       </div>
 
       <div>

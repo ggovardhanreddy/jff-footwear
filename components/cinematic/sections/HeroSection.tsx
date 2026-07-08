@@ -14,7 +14,14 @@ import FloatingProduct from "@/components/cinematic/primitives/FloatingProduct";
 import SplitText from "@/components/cinematic/primitives/SplitText";
 import MagneticButton from "@/components/cinematic/primitives/MagneticButton";
 import BrandMarquee from "@/components/cinematic/BrandMarquee";
+import CountUp from "@/components/motion/CountUp";
 import { COMPANY } from "@/lib/constants";
+
+const HERO_STATS = [
+  { label: "2021", labelOnly: true, sub: "Founded" },
+  { value: 100, suffix: "+", label: "Employees" },
+  { label: "Made in India", labelOnly: true, sub: "Andhra Pradesh" },
+] as const;
 
 interface HeroSectionProps {
   productName: string;
@@ -57,7 +64,7 @@ export default function HeroSection({
           className="order-2 flex flex-col justify-center lg:order-1"
         >
           <p className="eyebrow tracking-[0.4em] text-brand-accent">
-            Premium Footwear Since {COMPANY.founded}
+            Indian Footwear Manufacturer · Since {COMPANY.foundedYear}
           </p>
 
           <h1 className="heading-display mt-5 text-white md:text-6xl lg:text-7xl">
@@ -78,8 +85,8 @@ export default function HeroSection({
           </h1>
 
           <p className="text-lead mt-7 max-w-md text-gray-400">
-            A cinematic introduction to {COMPANY.fullName} — precision-made
-            slippers engineered for global luxury markets.
+            {COMPANY.description} Comfortable slippers for men, women, kids,
+            and unisex — retail and wholesale across India.
           </p>
 
           <div className="mt-10 flex flex-wrap gap-4">
@@ -88,9 +95,31 @@ export default function HeroSection({
               <ArrowRight className="inline h-4 w-4" />
             </MagneticButton>
             <MagneticButton href={`/products/${productSlug}`} variant="outline">
-              View {productName.split(" ").slice(-2).join(" ")}
+              View Product
             </MagneticButton>
           </div>
+
+          <dl className="mt-12 grid grid-cols-3 gap-6 border-t border-white/10 pt-8">
+            {HERO_STATS.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={reduced ? false : { opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + i * 0.1, duration: 0.6 }}
+              >
+                <dt className="font-display text-2xl font-bold text-white md:text-3xl">
+                  {"labelOnly" in stat ? (
+                    stat.label
+                  ) : (
+                    <CountUp value={stat.value} suffix={stat.suffix} />
+                  )}
+                </dt>
+                <dd className="mt-1 text-[10px] font-semibold uppercase tracking-widest text-gray-500">
+                  {"sub" in stat ? stat.sub : stat.label}
+                </dd>
+              </motion.div>
+            ))}
+          </dl>
         </motion.div>
 
         <motion.div style={{ y: productY }} className="order-1 lg:order-2">

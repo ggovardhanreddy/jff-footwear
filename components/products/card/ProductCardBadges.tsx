@@ -6,16 +6,22 @@ import Badge from "@/components/ui/Badge";
 interface ProductCardBadgesProps {
   featured?: boolean;
   newArrival?: boolean;
+  category?: string;
+  material?: string;
+  gender?: string;
 }
 
 export default function ProductCardBadges({
   featured,
   newArrival,
+  category,
+  material,
+  gender,
 }: ProductCardBadgesProps) {
-  if (!featured && !newArrival) return null;
+  const hasMeta = category || material || gender;
 
   return (
-    <div className="absolute left-5 top-5 z-20 flex flex-col gap-2">
+    <div className="absolute left-5 top-5 z-20 flex max-w-[calc(100%-5rem)] flex-col gap-2">
       {newArrival && (
         <motion.div
           initial={{ opacity: 0, x: -12, scale: 0.9 }}
@@ -37,6 +43,25 @@ export default function ProductCardBadges({
             Featured
           </Badge>
         </motion.div>
+      )}
+      {hasMeta && (
+        <div className="flex flex-wrap gap-1.5">
+          {category && (
+            <Badge variant="muted" className="rounded-full px-2.5 py-0.5 text-[10px]">
+              {category}
+            </Badge>
+          )}
+          {material && (
+            <Badge variant="muted" className="rounded-full px-2.5 py-0.5 text-[10px]">
+              {material}
+            </Badge>
+          )}
+          {gender && (
+            <Badge variant="muted" className="rounded-full px-2.5 py-0.5 text-[10px]">
+              {gender}
+            </Badge>
+          )}
+        </div>
       )}
     </div>
   );

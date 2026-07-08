@@ -1,6 +1,10 @@
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
 import AssetImage from "@/components/ui/AssetImage";
 import QuantitySelector from "@/components/QuantitySelector";
 import { formatINR } from "@/lib/pricing";
+import { checkoutItemStagger, CHECKOUT_MOTION_GPU } from "@/lib/checkout-motion";
 import { cn } from "@/lib/utils";
 import type { CartItem } from "@/types";
 
@@ -9,6 +13,7 @@ interface OrderSummaryProps {
   onUpdateQuantity?: (id: string, quantity: number) => void;
   onRemove?: (id: string) => void;
   editable?: boolean;
+  variant?: "default" | "premium";
   className?: string;
 }
 
@@ -17,8 +22,12 @@ export default function OrderSummary({
   onUpdateQuantity,
   onRemove,
   editable = false,
+  variant = "default",
   className,
 }: OrderSummaryProps) {
+  const reduced = useReducedMotion();
+  const isPremium = variant === "premium";
+
   if (items.length === 0) {
     return (
       <p className={cn("text-sm text-brand-muted", className)}>
@@ -27,30 +36,63 @@ export default function OrderSummary({
     );
   }
 
+  const ItemWrapper = isPremium && !reduced ? motion.li : "li";
+
   return (
-    <ul className={cn("space-y-4", className)}>
-      {items.map((item) => (
-        <li
+    <ul
+      className={cn(
+        isPremium ? "space-y-3" : "space-y-4",
+        CHECKOUT_MOTION_GPU,
+        className
+      )}
+    >
+      {items.map((item, index) => (
+        <ItemWrapper
           key={item.id}
-          className="flex gap-4 rounded-2xl border border-black/[0.05] bg-white/60 p-4"
+          {...(isPremium && !reduced
+            ? {
+                custom: index,
+                variants: checkoutItemStagger,
+                initial: "hidden",
+                animate: "show",
+              }
+            : {})}
+          className={cn(
+            "flex gap-4",
+            isPremium
+              ? "rounded-[22px] border border-black/[0.04] bg-gradient-to-br from-white to-neutral-50/80 p-4 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.1)]"
+              : "rounded-2xl border border-black/[0.05] bg-white/60 p-4"
+          )}
         >
-          <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-neutral-100">
+          <div
+            className={cn(
+              "relative shrink-0 overflow-hidden bg-neutral-100",
+              isPremium
+                ? "h-[88px] w-[72px] rounded-[18px] ring-1 ring-black/[0.04]"
+                : "h-20 w-16 rounded-xl"
+            )}
+          >
             <AssetImage
               src={item.image}
               alt={item.name}
               fill
               className="object-cover"
-              sizes="64px"
+              sizes={isPremium ? "72px" : "64px"}
             />
           </div>
 
           <div className="min-w-0 flex-1 space-y-2">
             <div className="flex items-start justify-between gap-2">
               <div>
-                <p className="line-clamp-2 text-sm font-semibold text-brand-black">
+                <p
+                  className={cn(
+                    "line-clamp-2 font-semibold text-brand-black",
+                    isPremium ? "text-[15px] leading-snug" : "text-sm"
+                  )}
+                >
                   {item.name}
                 </p>
-                <p className="mt-0.5 text-xs text-brand-muted">
+                <p className="mt-1 text-xs text-brand-muted">
                   Size {item.size}
                   {item.color !== "Standard" ? ` · ${item.color}` : ""}
                 </p>
@@ -75,10 +117,23 @@ export default function OrderSummary({
                   max={99}
                 />
               ) : (
-                <span className="text-xs text-brand-muted">Qty: {item.quantity}</span>
+                <span
+                  className={cn(
+                    "text-xs text-brand-muted",
+                    isPremium &&
+                      "rounded-full bg-neutral-100 px-2.5 py-1 font-semibold uppercase tracking-wider"
+                  )}
+                >
+                  Qty {item.quantity}
+                </span>
               )}
               <div className="text-right">
-                <p className="text-sm font-bold text-brand-black">
+                <p
+                  className={cn(
+                    "font-bold tabular-nums text-brand-black",
+                    isPremium ? "text-base" : "text-sm"
+                  )}
+                >
                   {formatINR(item.pricing.sellingPrice * item.quantity)}
                 </p>
                 {item.pricing.mrp > item.pricing.sellingPrice && (
@@ -89,7 +144,7 @@ export default function OrderSummary({
               </div>
             </div>
           </div>
-        </li>
+        </ItemWrapper>
       ))}
     </ul>
   );

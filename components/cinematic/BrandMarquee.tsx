@@ -1,15 +1,16 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { COMPANY } from "@/lib/constants";
 
 const ITEMS = [
-  "CRAFTED IN INDIA",
-  "PREMIUM MATERIALS",
-  "73+ STYLES",
-  "30+ COUNTRIES",
-  "WHOLESALE & OEM",
-  "SINCE 1998",
-  "EVERY STEP MATTERS",
+  "MADE IN INDIA",
+  "PREMIUM QUALITY",
+  "RETAIL & WHOLESALE",
+  "RAYACHOTY, ANDHRA PRADESH",
+  "SINCE 2021",
+  "COMFORT & DURABILITY",
+  "BULK ORDERS WELCOME",
 ];
 
 export default function BrandMarquee() {

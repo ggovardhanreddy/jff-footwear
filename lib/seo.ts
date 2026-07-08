@@ -25,7 +25,7 @@ export function createMetadata({
     : `${COMPANY.fullName} — Premium Slippers Manufacturer`;
   const desc =
     description ||
-    "JFF manufactures premium slippers including orthopedic, EVA, rubber, and fashion slippers for men, women, and kids. Wholesale inquiries welcome.";
+    "JFF Footwear manufactures comfortable, durable slippers for men, women, kids, and unisex collections. Retail and wholesale enquiries welcome across India.";
 
   const url = `${siteUrl}${path}`;
   const ogImage = image.startsWith("http") ? image : `${siteUrl}${assetPath(image)}`;
@@ -37,10 +37,10 @@ export function createMetadata({
       "slippers",
       "footwear",
       "JFF",
-      "orthopedic slippers",
-      "EVA slippers",
+      "slipper manufacturer India",
       "wholesale slippers",
-      "manufacturer",
+      "Rayachoty footwear",
+      "made in India slippers",
       ...keywords,
     ],
     authors: [{ name: COMPANY.fullName }],
@@ -117,10 +117,10 @@ export function createOrganizationJsonLd() {
     },
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Plot 42, Industrial Estate",
-      addressLocality: "Surat",
-      addressRegion: "Gujarat",
-      postalCode: "395010",
+      streetAddress: "Plot 42",
+      addressLocality: "Rayachoty",
+      addressRegion: "Andhra Pradesh",
+      postalCode: "516269",
       addressCountry: "IN",
     },
   };

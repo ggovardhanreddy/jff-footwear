@@ -7,6 +7,7 @@ function isBlank(value: string): boolean {
   return value.trim().length === 0;
 }
 
+/** Manual validation — mirrors lib/validation/address-schema.ts (Zod) */
 export function validateDeliveryAddress(
   address: DeliveryAddress
 ): DeliveryAddressErrors {
@@ -34,21 +35,29 @@ export function validateDeliveryAddress(
   }
 
   if (isBlank(address.area)) {
-    errors.area = "Area / sector / locality is required";
+    errors.area = "Area / locality is required";
   }
 
   if (isBlank(address.city)) {
     errors.city = "City is required";
   }
 
+  if (isBlank(address.district)) {
+    errors.district = "District is required";
+  }
+
   if (isBlank(address.state)) {
     errors.state = "State is required";
   }
 
+  if (isBlank(address.country)) {
+    errors.country = "Country is required";
+  }
+
   if (isBlank(address.pincode)) {
-    errors.pincode = "Pincode is required";
+    errors.pincode = "PIN code is required";
   } else if (!PINCODE_REGEX.test(address.pincode.trim())) {
-    errors.pincode = "Enter a valid 6-digit pincode";
+    errors.pincode = "Enter a valid 6-digit PIN code";
   }
 
   return errors;
@@ -64,9 +73,12 @@ export const EMPTY_DELIVERY_ADDRESS: DeliveryAddress = {
   alternativeMobile: "",
   flatHouse: "",
   area: "",
-  city: "",
-  state: "",
   pincode: "",
+  city: "",
+  district: "",
+  state: "",
+  country: "India",
+  postOffice: "",
   landmark: "",
   addressType: "Home" as AddressType,
   isDefault: false,

@@ -1,25 +1,23 @@
 import AssetImage from "@/components/ui/AssetImage";
-import { Award, Users, Factory, Globe, Target, Eye, Shield, Layers } from "lucide-react";
+import { Users, Factory, MapPin, Target, Eye, Calendar } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Breadcrumb from "@/components/Breadcrumb";
 import AnimatedBackground from "@/components/ui/AnimatedBackground";
 import { createMetadata } from "@/lib/seo";
-import { COMPANY, MATERIAL_INFO } from "@/lib/constants";
-import { manufacturingSteps } from "@/data/content";
+import { COMPANY, STATS } from "@/lib/constants";
+import { ABOUT_US, MISSION, VISION } from "@/data/company";
+import AboutPageEnhancements from "@/components/features/sections/AboutPageEnhancements";
+import { QualityCommitment } from "@/components/site";
+import ScrollReveal from "@/components/motion/ScrollReveal";
 
 export const metadata = createMetadata({
   title: "About Us",
   description:
-    "Learn about JFF Footwear — a leading slipper manufacturer since 1998, crafting premium footwear for global markets.",
+    "Founded in January 2021, JFF Footwear is an Indian slipper manufacturer based in Rayachoty, Andhra Pradesh — crafting comfortable footwear for men, women, kids, and unisex collections.",
   path: "/about",
 });
 
-const stats = [
-  { icon: Factory, value: "25+", label: "Years of Excellence" },
-  { icon: Users, value: "500+", label: "Employees" },
-  { icon: Globe, value: "30+", label: "Countries Exported" },
-  { icon: Award, value: "2M+", label: "Pairs Annually" },
-];
+const statIcons = [Calendar, Users, Factory, MapPin] as const;
 
 export default function AboutPage() {
   return (
@@ -27,7 +25,7 @@ export default function AboutPage() {
       <section className="relative flex min-h-[50vh] items-center overflow-hidden bg-brand-black">
         <AssetImage
           src="/images/hero-banner.svg"
-          alt="JFF Manufacturing"
+          alt="JFF Footwear"
           fill
           className="object-cover opacity-40"
           priority
@@ -41,9 +39,9 @@ export default function AboutPage() {
               { label: "About", href: "/about" },
             ]}
           />
-          <p className="eyebrow">Our Story</p>
+          <p className="eyebrow">About Us</p>
           <h1 className="heading-display mt-4 max-w-3xl text-white">
-            Crafting Comfort Since {COMPANY.founded}
+            Premium Footwear, Made in India
           </h1>
         </div>
       </section>
@@ -54,27 +52,20 @@ export default function AboutPage() {
             <div>
               <SectionHeading
                 subtitle="Who We Are"
-                title="The JFF Legacy"
+                title="JFF Footwear"
                 align="left"
                 className="mb-8"
               />
-              <div className="space-y-4 text-body">
-                <p>
-                  Founded in {COMPANY.founded} in Surat, Gujarat — the footwear
-                  capital of India — JFF has grown from a small workshop to one
-                  of the region&apos;s most trusted slipper manufacturers.
-                </p>
-                <p>
-                  Our commitment to quality, innovation, and customer satisfaction
-                  has earned us partnerships with retailers, hotels, and
-                  distributors across 30+ countries.
-                </p>
+              <div className="content-prose space-y-4 text-body">
+                {ABOUT_US.split("\n\n").map((paragraph) => (
+                  <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+                ))}
               </div>
             </div>
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
               <AssetImage
                 src="/images/hero-banner.svg"
-                alt="JFF Factory"
+                alt="JFF Footwear"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -89,20 +80,16 @@ export default function AboutPage() {
           <div className="grid gap-8 md:grid-cols-2">
             <div className="rounded-2xl bg-white p-8 shadow-sm">
               <Target className="h-8 w-8 text-brand-accent" />
-              <h2 className="mt-4 font-display text-2xl font-bold">Mission</h2>
+              <h2 className="mt-4 font-display text-2xl font-bold">Our Mission</h2>
               <p className="mt-4 text-sm leading-relaxed text-brand-muted">
-                To craft premium slippers that deliver unmatched comfort,
-                durability, and style — making quality footwear accessible to
-                customers and partners worldwide.
+                {MISSION}
               </p>
             </div>
             <div className="rounded-2xl bg-white p-8 shadow-sm">
               <Eye className="h-8 w-8 text-brand-accent" />
-              <h2 className="mt-4 font-display text-2xl font-bold">Vision</h2>
+              <h2 className="mt-4 font-display text-2xl font-bold">Our Vision</h2>
               <p className="mt-4 text-sm leading-relaxed text-brand-muted">
-                To be the most trusted slipper manufacturer in India and a
-                globally recognized brand synonymous with comfort, innovation,
-                and manufacturing excellence.
+                {VISION}
               </p>
             </div>
           </div>
@@ -111,14 +98,27 @@ export default function AboutPage() {
 
       <section className="section-padding bg-brand-black text-white">
         <div className="container-custom">
+          <SectionHeading
+            subtitle="At a Glance"
+            title="JFF by the Numbers"
+            className="mb-12 [&_h2]:text-white [&_p]:text-gray-400"
+          />
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <stat.icon className="mx-auto mb-4 h-8 w-8 text-brand-accent" />
-                <p className="font-display text-4xl font-bold">{stat.value}</p>
-                <p className="mt-2 text-sm text-gray-400">{stat.label}</p>
-              </div>
-            ))}
+            {STATS.map((stat, index) => {
+              const Icon = statIcons[index] ?? Factory;
+              return (
+                <div key={stat.label} className="text-center">
+                  <Icon className="mx-auto mb-4 h-8 w-8 text-brand-accent" />
+                  <p className="font-display text-3xl font-bold md:text-4xl">
+                    {stat.value}
+                  </p>
+                  <p className="mt-2 text-sm text-gray-400">{stat.label}</p>
+                  {"sublabel" in stat && stat.sublabel ? (
+                    <p className="text-xs text-gray-500">{stat.sublabel}</p>
+                  ) : null}
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -126,24 +126,19 @@ export default function AboutPage() {
       <section className="section-padding">
         <div className="container-custom">
           <SectionHeading
-            subtitle="Manufacturing"
-            title="How We Make Every Pair"
-            description="Six stages of precision manufacturing ensure consistent quality."
+            subtitle="What We Make"
+            title="Footwear for Everyone"
+            description={`${COMPANY.fullName} manufactures slippers for men, women, kids, and unisex collections.`}
           />
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {manufacturingSteps.map((step) => (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {["Men", "Women", "Kids", "Unisex"].map((audience) => (
               <div
-                key={step.id}
-                className="rounded-2xl border border-gray-100 p-6 transition-shadow hover:shadow-md"
+                key={audience}
+                className="rounded-2xl border border-gray-100 p-6 text-center"
               >
-                <span className="text-xs font-semibold uppercase tracking-widest text-brand-accent">
-                  Step {step.step}
-                </span>
-                <h3 className="mt-2 font-display text-lg font-bold">
-                  {step.title}
-                </h3>
+                <p className="font-display text-lg font-bold">{audience}</p>
                 <p className="mt-2 text-sm text-brand-muted">
-                  {step.description}
+                  Comfortable, durable styles for everyday wear.
                 </p>
               </div>
             ))}
@@ -153,66 +148,13 @@ export default function AboutPage() {
 
       <section className="section-padding bg-brand-light">
         <div className="container-custom">
-          <SectionHeading
-            subtitle="Quality"
-            title="Our Quality Promise"
-            description="Every pair passes rigorous quality checks before leaving our facility."
-          />
-          <div className="grid gap-6 md:grid-cols-3">
-            {[
-              {
-                icon: Shield,
-                title: "12-Point Inspection",
-                text: "Slip resistance, color fastness, and structural integrity tested on every batch.",
-              },
-              {
-                icon: Award,
-                title: "Certified Materials",
-                text: "Raw materials sourced from certified suppliers meeting international standards.",
-              },
-              {
-                icon: Factory,
-                title: "Precision Molding",
-                text: "State-of-the-art injection molding for micron-level accuracy and consistency.",
-              },
-            ].map((item) => (
-              <div key={item.title} className="rounded-2xl bg-white p-8 shadow-sm">
-                <item.icon className="h-8 w-8 text-brand-accent" />
-                <h3 className="mt-4 font-display text-lg font-bold">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm text-brand-muted">{item.text}</p>
-              </div>
-            ))}
-          </div>
+          <ScrollReveal>
+            <QualityCommitment showHeading />
+          </ScrollReveal>
         </div>
       </section>
 
-      <section className="section-padding">
-        <div className="container-custom">
-          <SectionHeading
-            subtitle="Materials"
-            title="Premium Materials We Use"
-            description="Each material is selected for specific performance characteristics."
-          />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {MATERIAL_INFO.map((material) => (
-              <div
-                key={material.id}
-                className="flex items-start gap-4 rounded-2xl border border-gray-100 p-6"
-              >
-                <Layers className="h-6 w-6 shrink-0 text-brand-accent" />
-                <div>
-                  <h3 className="font-display font-bold">{material.name}</h3>
-                  <p className="mt-1 text-sm text-brand-muted">
-                    {material.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <AboutPageEnhancements />
     </div>
   );
 }

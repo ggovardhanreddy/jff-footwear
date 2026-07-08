@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import AssetImage from "@/components/ui/AssetImage";
+import { motion, useReducedMotion } from "framer-motion";
 import { COLOR_MAP } from "@/lib/constants";
 import type { ColorVariant, ProductColor } from "@/types";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,7 @@ export default function ColorSelector({
   onSelect,
   size = "md",
 }: ColorSelectorProps) {
+  const reduced = useReducedMotion();
   const dotSize = size === "sm" ? "h-6 w-6" : "h-8 w-8";
 
   return (
@@ -34,30 +35,34 @@ export default function ColorSelector({
             onClick={() => onSelect(variant)}
             className="group flex flex-col items-center gap-1.5"
             aria-label={`Select ${variant.color}`}
+            aria-pressed={isSelected}
             title={variant.color}
           >
             <span className="relative">
-              <span
+              {isSelected && !reduced && (
+                <motion.span
+                  layoutId="color-ring"
+                  className="absolute -inset-1.5 rounded-full border-2 border-brand-accent"
+                  transition={{ type: "spring", stiffness: 400, damping: 28 }}
+                />
+              )}
+              <motion.span
+                animate={
+                  isSelected && !reduced
+                    ? { scale: [1, 1.12, 1], boxShadow: "0 0 20px rgba(200,169,110,0.45)" }
+                    : { scale: 1, boxShadow: "0 0 0px transparent" }
+                }
+                transition={{ duration: 0.35 }}
                 className={cn(
                   dotSize,
-                  "block rounded-full border-2 transition-all duration-200",
+                  "relative block rounded-full border-2 transition-colors duration-200",
                   isSelected
-                    ? "border-brand-black ring-2 ring-brand-accent ring-offset-2"
+                    ? "border-brand-black"
                     : "border-gray-200 group-hover:border-brand-muted",
                   isLight && "shadow-inner"
                 )}
                 style={{ backgroundColor: hex }}
               />
-              {variant.image && (
-                <AssetImage
-                  src={variant.image}
-                  alt=""
-                  width={32}
-                  height={32}
-                  className="sr-only"
-                  aria-hidden
-                />
-              )}
             </span>
             <span
               className={cn(
