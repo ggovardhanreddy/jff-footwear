@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import CinematicPageLoader from "./CinematicPageLoader";
 import CinematicLanding from "./CinematicLanding";
 import { useIntroLoader } from "@/hooks/motionHooks";
@@ -32,7 +32,7 @@ interface CinematicExperienceProps {
 }
 
 export default function CinematicExperience(props: CinematicExperienceProps) {
-  const { showIntro, ready, completeIntro } = useIntroLoader();
+  const { showIntro, completeIntro } = useIntroLoader();
 
   return (
     <>
@@ -42,14 +42,8 @@ export default function CinematicExperience(props: CinematicExperienceProps) {
         )}
       </AnimatePresence>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: ready ? 1 : 0 }}
-        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: showIntro ? 0.1 : 0 }}
-        aria-hidden={!ready}
-      >
-        {ready && <CinematicLanding {...props} />}
-      </motion.div>
+      {/* Always render landing content for static export / no-JS fallback */}
+      <CinematicLanding {...props} />
     </>
   );
 }

@@ -3,9 +3,14 @@ import type { Product } from "@/types";
 import { COMPANY } from "./constants";
 import { getProductMainImage } from "./utils";
 import { getProductPricing } from "./pricing";
-import { assetPath } from "./paths";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://jfffootwear.com";
+
+/** Build absolute URL for public assets (siteUrl already includes GitHub Pages base path). */
+function absoluteAsset(path: string): string {
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return `${siteUrl.replace(/\/$/, "")}${normalized}`;
+}
 
 export function createMetadata({
   title,
@@ -28,7 +33,7 @@ export function createMetadata({
     "JFF Footwear manufactures comfortable, durable slippers for men, women, kids, and unisex collections. Retail and wholesale enquiries welcome across India.";
 
   const url = `${siteUrl}${path}`;
-  const ogImage = image.startsWith("http") ? image : `${siteUrl}${assetPath(image)}`;
+  const ogImage = image.startsWith("http") ? image : absoluteAsset(image);
 
   return {
     title: fullTitle,
@@ -77,7 +82,7 @@ export function createMetadata({
 }
 
 export function createProductJsonLd(product: Product) {
-  const image = `${siteUrl}${assetPath(getProductMainImage(product))}`;
+  const image = absoluteAsset(getProductMainImage(product));
   const pricing = getProductPricing(product);
 
   return {
@@ -107,7 +112,7 @@ export function createOrganizationJsonLd() {
     "@type": "Organization",
     name: COMPANY.fullName,
     url: siteUrl,
-    logo: `${siteUrl}${assetPath("/images/logo.svg")}`,
+    logo: absoluteAsset("/images/logo.svg"),
     description: COMPANY.description,
     contactPoint: {
       "@type": "ContactPoint",
@@ -168,7 +173,7 @@ export function createWebSiteJsonLd() {
     publisher: {
       "@type": "Organization",
       name: COMPANY.fullName,
-      logo: `${siteUrl}${assetPath("/images/logo.svg")}`,
+      logo: absoluteAsset("/images/logo.svg"),
     },
   };
 }

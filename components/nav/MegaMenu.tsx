@@ -20,7 +20,7 @@ export default function MegaMenu({ showSolid }: MegaMenuProps) {
 
   return (
     <div
-      className="relative hidden lg:block"
+      className="relative hidden md:block"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >

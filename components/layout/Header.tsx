@@ -105,7 +105,7 @@ export default function Header() {
         </Link>
 
         <nav
-          className="hidden items-center gap-6 lg:flex"
+          className="hidden items-center gap-4 md:flex md:gap-5 lg:gap-6"
           aria-label="Primary navigation"
         >
           <MegaMenu showSolid={showSolid} />
@@ -130,13 +130,13 @@ export default function Header() {
           <div className="hidden md:flex">
             <ThemeSwitcher compact />
           </div>
-          <div className="hidden lg:block">
+          <div className="hidden md:block">
             <LanguageSwitcher />
           </div>
 
           <Link
             href={ROUTES.customize}
-            className="focus-ring hidden rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white lg:inline-flex"
+            className="focus-ring hidden rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white md:inline-flex"
             aria-label="Customize slippers"
           >
             <span className="text-[10px] font-bold uppercase tracking-widest">Custom</span>
@@ -189,12 +189,19 @@ export default function Header() {
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="focus-ring relative z-10 rounded-lg p-2.5 text-brand-black dark:text-white lg:hidden"
+            className="focus-ring relative z-10 flex items-center gap-1.5 rounded-lg border border-black/10 px-2.5 py-2 text-brand-black dark:border-white/20 dark:text-white md:hidden"
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
             aria-controls={menuId}
           >
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {isOpen ? (
+              <X className="h-5 w-5" aria-hidden />
+            ) : (
+              <Menu className="h-5 w-5" aria-hidden />
+            )}
+            <span className="text-[10px] font-bold uppercase tracking-wider">
+              {isOpen ? "Close" : "Menu"}
+            </span>
           </button>
         </div>
       </div>
@@ -212,7 +219,7 @@ export default function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
             transition={{ duration: 0.28 }}
-            className="fixed inset-0 z-40 overflow-y-auto bg-white pt-20 lg:hidden"
+            className="fixed inset-0 z-40 overflow-y-auto bg-white pt-20 md:hidden"
           >
             <nav
               className="container-custom flex flex-col gap-2 py-8"
