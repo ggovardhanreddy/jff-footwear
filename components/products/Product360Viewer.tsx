@@ -17,8 +17,11 @@ import { EASE_LUXURY, MOTION_GPU } from "@/lib/motion";
 import { getFrameLabel, getViewerFrames } from "@/lib/viewerFrames";
 import { cn } from "@/lib/utils";
 
-const INACTIVITY_MS = 3000;
+const INACTIVITY_MS = 5000;
 const SWIPE_THRESHOLD = 40;
+/** Ms between frames during auto-rotate (higher = slower). */
+const DEFAULT_ROTATION_MS = 320;
+const SPIN_ROTATION_MS = 420;
 
 export interface Product360ViewerProps {
   images: string[];
@@ -43,7 +46,7 @@ export default function Product360Viewer({
   images,
   productName = "Product",
   autoRotate = true,
-  rotationSpeed = 140,
+  rotationSpeed,
   dragSensitivity = 32,
   showControls = true,
   theme = "light",
@@ -57,8 +60,11 @@ export default function Product360Viewer({
   const reduced = useReducedMotion();
   const isDark = theme === "dark";
   const canDrag = frames.length >= 2;
+  const frameInterval =
+    rotationSpeed ?? (isSpinSequence ? SPIN_ROTATION_MS : DEFAULT_ROTATION_MS);
 
   const { loadedMap, allLoaded } = useProduct360Preload(frames, frames.length > 0);
+  const [inlineLoaded, setInlineLoaded] = useState<Record<string, boolean>>({});
 
   const [activeIndex, setActiveIndex] = useState(defaultIndex);
   const [direction, setDirection] = useState(0);
@@ -73,7 +79,9 @@ export default function Product360Viewer({
   const lastTickRef = useRef(0);
 
   const activeSrc = frames[activeIndex] ?? frames[0];
-  const frameLoaded = activeSrc ? loadedMap[activeSrc] : false;
+  const frameLoaded = activeSrc
+    ? Boolean(loadedMap[activeSrc] || inlineLoaded[activeSrc])
+    : false;
 
   const markInteraction = useCallback(() => {
     lastInteractionRef.current = performance.now();
@@ -185,8 +193,8 @@ export default function Product360Viewer({
         lastTickRef.current = now;
         frameAccumulatorRef.current += delta;
 
-        while (frameAccumulatorRef.current >= rotationSpeed) {
-          frameAccumulatorRef.current -= rotationSpeed;
+        while (frameAccumulatorRef.current >= frameInterval) {
+          frameAccumulatorRef.current -= frameInterval;
           setDirection(1);
           setActiveIndex((current) =>
             normalizeIndex(current + 1, frames.length)
@@ -205,7 +213,7 @@ export default function Product360Viewer({
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     };
-  }, [autoRotate, canDrag, frames.length, isDragging, reduced, rotationSpeed]);
+  }, [autoRotate, canDrag, frameInterval, frames.length, isDragging, reduced]);
 
   const fadeVariants = {
     enter: (dir: number) => ({
@@ -303,7 +311,13 @@ export default function Product360Viewer({
                 priority={activeIndex === defaultIndex}
                 loading={activeIndex === defaultIndex ? undefined : "lazy"}
                 draggable={false}
-                className="object-contain drop-shadow-[0_20px_36px_rgba(0,0,0,0.12)]"
+                onLoad={() =>
+                  setInlineLoaded((current) => ({ ...current, [activeSrc]: true }))
+                }
+                className={cn(
+                  "object-contain drop-shadow-[0_20px_36px_rgba(0,0,0,0.12)] transition-opacity duration-300",
+                  frameLoaded ? "opacity-100" : "opacity-0"
+                )}
                 sizes="(max-width: 768px) 92vw, 50vw"
               />
             </motion.div>

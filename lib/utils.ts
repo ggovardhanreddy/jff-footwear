@@ -6,6 +6,8 @@ import type {
   ProductSpecification,
 } from "@/types";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
+import { getGalleryImages } from "@/lib/productViews";
+import { DEFAULT_OG_IMAGE, SOLD_OUT_IMAGE } from "@/lib/paths";
 
 export function slugify(text: string): string {
   return text
@@ -198,9 +200,18 @@ export function cn(
 }
 
 export function getProductMainImage(product: Product): string {
+  const gallery = getGalleryImages(product.images);
+  if (gallery.length === 0) return SOLD_OUT_IMAGE;
+
   const main =
-    product.images.find((img) => /main\./i.test(img)) || product.images[0];
-  return main || "/images/og-default.svg";
+    gallery.find((img) => /main\./i.test(img)) ||
+    gallery.find((img) => /front\./i.test(img)) ||
+    gallery[0];
+  return main || SOLD_OUT_IMAGE;
+}
+
+export function productHasDisplayImages(images: string[]): boolean {
+  return getGalleryImages(images).length > 0;
 }
 
 export async function shareProduct(

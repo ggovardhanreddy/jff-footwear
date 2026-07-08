@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5f5f4"/>
+      <stop offset="100%" style="stop-color:#e7e5e4"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <rect x="80" y="80" width="640" height="840" rx="32" fill="#ffffff" opacity="0.7"/>
+  <ellipse cx="400" cy="520" rx="200" ry="72" fill="#d6d3d1" opacity="0.45"/>
+  <path d="M240 540 Q320 470 400 480 Q480 470 560 540" stroke="#a8a29e" stroke-width="3" fill="none" stroke-dasharray="8 8"/>
+  <text x="400" y="340" text-anchor="middle" fill="#0a0a0a" font-family="system-ui, sans-serif" font-size="52" font-weight="700" letter-spacing="6">SOLD OUT</text>
+  <text x="400" y="400" text-anchor="middle" fill="#78716c" font-family="system-ui, sans-serif" font-size="18" letter-spacing="3">Currently Unavailable</text>
+  <text x="400" y="900" text-anchor="middle" fill="#c8a96e" font-family="system-ui, sans-serif" font-size="16" font-weight="600" letter-spacing="4">JFF FOOTWEAR</text>
+</svg>

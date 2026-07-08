@@ -4,6 +4,7 @@ import { useState } from "react";
 import AssetImage from "@/components/ui/AssetImage";
 import { cn } from "@/lib/utils";
 import { IMAGE_ZOOM_CLASS } from "@/lib/motion";
+import { SOLD_OUT_IMAGE } from "@/lib/paths";
 
 interface ProductCardImageProps {
   src: string;
@@ -19,6 +20,8 @@ export default function ProductCardImage({
   className,
 }: ProductCardImageProps) {
   const [loaded, setLoaded] = useState(false);
+  const [useSoldOut, setUseSoldOut] = useState(!src);
+  const displaySrc = useSoldOut ? SOLD_OUT_IMAGE : src;
 
   return (
     <div
@@ -36,15 +39,23 @@ export default function ProductCardImage({
 
       <div className="relative h-full w-full overflow-hidden">
         <AssetImage
-          src={src}
-          alt={alt}
+          src={displaySrc}
+          alt={useSoldOut ? "Sold out" : alt}
           fill
           priority={priority}
           loading={priority ? undefined : "lazy"}
           onLoad={() => setLoaded(true)}
+          onLoadingComplete={() => setLoaded(true)}
+          onError={() => {
+            if (!useSoldOut) {
+              setUseSoldOut(true);
+              setLoaded(false);
+            }
+          }}
           className={cn(
             "object-cover transition-opacity duration-500",
-            IMAGE_ZOOM_CLASS,
+            !useSoldOut && IMAGE_ZOOM_CLASS,
+            useSoldOut && "object-contain p-8",
             loaded ? "opacity-100" : "opacity-0"
           )}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

@@ -19,12 +19,8 @@ import {
 } from "framer-motion";
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  get360Views,
-  getSupplementaryImages,
-} from "@/lib/productViews";
-import Product360Viewer from "./Product360Viewer";
-import { getViewerFrames } from "@/lib/viewerFrames";
+import { getGalleryImages } from "@/lib/productViews";
+import { SOLD_OUT_IMAGE } from "@/lib/paths";
 
 interface ImmersiveProductViewerProps {
   images: string[];
@@ -34,6 +30,15 @@ interface ImmersiveProductViewerProps {
 
 const SPRING = { stiffness: 260, damping: 26, mass: 0.65 };
 const SWIPE_THRESHOLD = 48;
+
+function getDefaultImageIndex(images: string[]): number {
+  if (images.length <= 1) return 0;
+  const mainIdx = images.findIndex((img) => /main\./i.test(img));
+  if (mainIdx >= 0) return mainIdx;
+  const frontIdx = images.findIndex((img) => /front\./i.test(img));
+  if (frontIdx >= 0) return frontIdx;
+  return 0;
+}
 
 interface ViewerStageProps {
   images: string[];
@@ -192,10 +197,9 @@ function ViewerStage({
                 priority={activeIndex === 0}
                 loading={activeIndex === 0 ? undefined : "lazy"}
                 onLoad={() => onLoad(activeIndex)}
-                onLoadingComplete={() => onLoad(activeIndex)}
                 className={cn(
                   "object-contain drop-shadow-[0_24px_40px_rgba(0,0,0,0.14)] transition-opacity duration-300",
-                  "opacity-100"
+                  loadedMap[activeIndex] ? "opacity-100" : "opacity-0"
                 )}
                 sizes="(max-width: 768px) 90vw, 50vw"
                 draggable={false}
@@ -245,84 +249,33 @@ function ViewerStage({
   );
 }
 
-function FlatExtraImage({
-  src,
-  productName,
-  fullscreen,
-  onFullscreen,
-}: {
-  src: string;
-  productName: string;
-  fullscreen?: boolean;
-  onFullscreen?: () => void;
-}) {
-  return (
-    <div
-      className={cn(
-        "immersive-viewer-stage relative overflow-hidden",
-        fullscreen ? "h-full w-full" : "aspect-square w-full"
-      )}
-    >
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-50 via-white to-neutral-100" />
-      <div className="relative flex h-full items-center justify-center p-6 sm:p-10">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={src}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35 }}
-            className="relative h-full w-full max-h-[min(72vw,520px)] max-w-[min(72vw,520px)]"
-          >
-            <AssetImage
-              src={src}
-              alt={`${productName} additional view`}
-              fill
-              className="object-contain"
-              sizes="(max-width: 768px) 90vw, 50vw"
-            />
-          </motion.div>
-        </AnimatePresence>
-      </div>
-      {!fullscreen && onFullscreen && (
-        <div className="absolute bottom-4 right-4 z-20">
-          <button
-            type="button"
-            onClick={onFullscreen}
-            className="immersive-viewer-nav"
-            aria-label="Open fullscreen viewer"
-          >
-            <Maximize2 className="h-4 w-4" />
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function ImmersiveProductViewer({
   images,
   productName,
   variant = "light",
 }: ImmersiveProductViewerProps) {
   const isDark = variant === "dark";
-  const views360 = useMemo(() => get360Views(images), [images]);
-  const viewerFrames = useMemo(() => getViewerFrames(images), [images]);
-  const supportsDragViewer = viewerFrames.frames.length >= 2;
-  const supplementaryImages = useMemo(
-    () => getSupplementaryImages(images, views360),
-    [images, views360]
+  const galleryImages = useMemo(() => {
+    const visible = getGalleryImages(images);
+    return visible.length > 0 ? visible : [SOLD_OUT_IMAGE];
+  }, [images]);
+  const isSoldOut = galleryImages.length === 1 && galleryImages[0] === SOLD_OUT_IMAGE;
+  const defaultIndex = useMemo(
+    () => getDefaultImageIndex(galleryImages),
+    [galleryImages]
   );
 
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(defaultIndex);
   const [isHovered, setIsHovered] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [direction, setDirection] = useState(0);
   const [loadedMap, setLoadedMap] = useState<Record<number, boolean>>({});
-  const [selectedExtra, setSelectedExtra] = useState<string | null>(null);
-  const [show360, setShow360] = useState(true);
 
-  const galleryImages = views360 ? supplementaryImages : images;
+  useEffect(() => {
+    setActiveIndex(defaultIndex);
+    setLoadedMap({});
+    setDirection(0);
+  }, [galleryImages, defaultIndex]);
 
   const goTo = useCallback(
     (index: number) => {
@@ -334,11 +287,13 @@ export default function ImmersiveProductViewer({
   );
 
   const goNext = useCallback(() => {
+    if (galleryImages.length <= 1) return;
     setDirection(1);
     setActiveIndex((i) => (i + 1) % galleryImages.length);
   }, [galleryImages.length]);
 
   const goPrev = useCallback(() => {
+    if (galleryImages.length <= 1) return;
     setDirection(-1);
     setActiveIndex((i) => (i - 1 + galleryImages.length) % galleryImages.length);
   }, [galleryImages.length]);
@@ -347,9 +302,17 @@ export default function ImmersiveProductViewer({
     (e: ReactKeyboardEvent<HTMLDivElement>) => {
       if (e.key === "Escape" && isFullscreen) {
         setIsFullscreen(false);
+        return;
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        goNext();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        goPrev();
       }
     },
-    [isFullscreen]
+    [goNext, goPrev, isFullscreen]
   );
 
   useEffect(() => {
@@ -361,10 +324,24 @@ export default function ImmersiveProductViewer({
     };
   }, [isFullscreen]);
 
-  if (images.length === 0) {
+  if (images.length === 0 || isSoldOut) {
     return (
-      <div className="flex aspect-square items-center justify-center rounded-3xl bg-neutral-50 text-brand-muted">
-        No images available
+      <div className="space-y-5">
+        <div className="immersive-viewer-stage relative aspect-square w-full overflow-hidden">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-neutral-50 via-white to-neutral-100" />
+          <div className="relative flex h-full items-center justify-center p-8">
+            <div className="relative h-full w-full max-h-[min(72vw,520px)] max-w-[min(72vw,520px)]">
+              <AssetImage
+                src={SOLD_OUT_IMAGE}
+                alt={`${productName} — sold out`}
+                fill
+                priority
+                className="object-contain p-6"
+                sizes="(max-width: 768px) 90vw, 50vw"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -384,115 +361,23 @@ export default function ImmersiveProductViewer({
     onKeyDown: handleKeyDown,
   };
 
-  const renderMainViewer = (fullscreen = false) => {
-    if (supportsDragViewer && show360 && !selectedExtra) {
-      return (
-        <Product360Viewer
-          images={images}
-          productName={productName}
-          theme={isDark ? "dark" : "light"}
-          autoRotate
-          showControls
-        />
-      );
-    }
-
-    if (selectedExtra) {
-      return (
-        <FlatExtraImage
-          src={selectedExtra}
-          productName={productName}
-          fullscreen={fullscreen}
-          onFullscreen={fullscreen ? undefined : () => setIsFullscreen(true)}
-        />
-      );
-    }
-
-    return (
-      <ViewerStage
-        {...stageProps}
-        fullscreen={fullscreen}
-        onFullscreen={fullscreen ? undefined : () => setIsFullscreen(true)}
-      />
-    );
-  };
+  const renderMainViewer = (fullscreen = false) => (
+    <ViewerStage
+      {...stageProps}
+      fullscreen={fullscreen}
+      onFullscreen={fullscreen ? undefined : () => setIsFullscreen(true)}
+    />
+  );
 
   return (
     <div className="space-y-5">
       {renderMainViewer(false)}
 
-      {/* 360 + supplementary thumbnails */}
-      {views360 && (
-        <div className="space-y-3">
-          <p
-            className={cn(
-              "text-[10px] font-semibold uppercase tracking-[0.2em]",
-              isDark ? "text-gray-400" : "text-brand-muted"
-            )}
-          >
-            Views
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                setShow360(true);
-                setSelectedExtra(null);
-              }}
-              className={cn(
-                "rounded-full px-4 py-2 text-[10px] font-semibold uppercase tracking-widest transition-all",
-                show360 && !selectedExtra
-                  ? isDark
-                    ? "bg-brand-accent text-brand-black shadow-md"
-                    : "bg-brand-black text-white"
-                  : isDark
-                    ? "bg-white/10 text-gray-300 ring-1 ring-white/15 hover:bg-white/15 hover:text-white"
-                    : "bg-white text-brand-muted ring-1 ring-black/10 hover:text-brand-black"
-              )}
-            >
-              360° Rotate
-            </button>
-            {supplementaryImages.map((src) => (
-              <button
-                key={src}
-                type="button"
-                onClick={() => {
-                  setShow360(false);
-                  setSelectedExtra(src);
-                }}
-                className={cn(
-                  "relative h-14 w-14 overflow-hidden rounded-xl border-2 transition-all",
-                  selectedExtra === src
-                    ? isDark
-                      ? "border-brand-accent shadow-md ring-1 ring-brand-accent/40"
-                      : "border-brand-black shadow-md"
-                    : isDark
-                      ? "border-transparent ring-1 ring-white/15 hover:border-brand-accent/50"
-                      : "border-transparent ring-1 ring-black/10 hover:border-brand-accent/50"
-                )}
-                aria-label={`View ${src.split("/").pop()}`}
-              >
-                <AssetImage
-                  src={src}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="56px"
-                />
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Standard gallery thumbnails (non-360 products) */}
-      {!views360 && galleryImages.length > 1 && (
+      {galleryImages.length > 1 && (
         <div
           className={cn(
             "grid gap-2.5",
-            galleryImages.length <= 4
-              ? "grid-cols-4"
-              : "grid-cols-4 sm:grid-cols-6"
+            galleryImages.length <= 4 ? "grid-cols-4" : "grid-cols-4 sm:grid-cols-6"
           )}
         >
           {galleryImages.map((src, index) => (
@@ -523,16 +408,16 @@ export default function ImmersiveProductViewer({
         </div>
       )}
 
-      <p
-        className={cn(
-          "text-center text-[10px] uppercase tracking-[0.2em] sm:text-left",
-          isDark ? "text-gray-500" : "text-brand-muted"
-        )}
-      >
-        {supportsDragViewer
-          ? "Drag or swipe to browse · Auto-advances after 3s idle"
-          : "Swipe on mobile · Arrow keys on desktop"}
-      </p>
+      {galleryImages.length > 1 && (
+        <p
+          className={cn(
+            "text-center text-[10px] uppercase tracking-[0.2em] sm:text-left",
+            isDark ? "text-gray-500" : "text-brand-muted"
+          )}
+        >
+          Swipe on mobile · Arrow keys on desktop
+        </p>
+      )}
 
       <AnimatePresence>
         {isFullscreen && (

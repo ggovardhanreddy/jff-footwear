@@ -4,9 +4,15 @@
  * Usage:
  *   npm run generate
  *
- * Scans public/images/products recursively. Each folder that directly
- * contains image files becomes one product. Subfolders like `360/` are
- * merged into the parent product's image list (spin frames first).
+ * Canonical catalog layout (images live in the Color folder):
+ *
+ *   products/Gender/Category/Color/*.png  → one product per Color folder
+ *
+ * Material SKU layout (one image = one product):
+ *
+ *   products/Unisex/EVA/D1.png  → one product per image file
+ *
+ * The scanner remains generic for other depths (jff-001, Future/Premium/…).
  *
  * Supported formats: png, jpg, jpeg, svg, webp
  * Ignores: .DS_Store and hidden files
@@ -15,9 +21,8 @@
 import fs from "fs";
 import path from "path";
 import {
-  findProductFolders,
   IMAGE_EXTENSIONS,
-  loadImagesFromFolder,
+  scanProductImageFolders,
 } from "../lib/loadImages";
 
 const PRODUCTS_ROOT = path.join(process.cwd(), "public/images/products");
@@ -111,12 +116,130 @@ function slugify(text: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
-function capitalize(text: string): string {
-  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+function equalsToken(part: string, token: string): boolean {
+  return part.trim().toLowerCase() === token.toLowerCase();
 }
 
+function matchFromList<T extends string>(
+  part: string,
+  list: readonly T[]
+): T | undefined {
+  return list.find((token) => equalsToken(part, token));
+}
+
+function formatPathSegment(segment: string): string {
+  const gender = matchFromList(segment, GENDERS);
+  if (gender) return gender;
+
+  const category = matchFromList(segment, CATEGORIES);
+  if (category) return category;
+
+  const material = matchFromList(segment, MATERIALS);
+  if (material) return material;
+
+  const color = matchFromList(segment, COLORS);
+  if (color) return color;
+
+  if (/^jff-\d+$/i.test(segment)) {
+    return segment.toUpperCase().replace("JFF-", "JFF ");
+  }
+
+  if (segment.toUpperCase() === segment && segment.length <= 4) {
+    return segment.toUpperCase();
+  }
+
+  return segment
+    .split(/[\s_-]+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+}
+
+function isCategoryOnlyPart(part: string): boolean {
+  return Boolean(matchFromList(part, CATEGORIES)) && !matchFromList(part, MATERIALS);
+}
+
+interface PathMetadata {
+  gender: Gender;
+  category: Category;
+  material: Material;
+  color: Color | "Standard";
+}
+
+/**
+ * Canonical layout: Gender / Category / Color / images
+ * Example: Men/Orthopedic/Black/*.png
+ */
+function inferGenderCategoryColorLayout(parts: string[]): PathMetadata | null {
+  if (parts.length !== 3) return null;
+
+  const gender = matchFromList(parts[0], GENDERS);
+  const color = matchFromList(parts[2], COLORS);
+  if (!gender || !color) return null;
+
+  const category =
+    (matchFromList(parts[1], CATEGORIES) as Category | undefined) ?? "Regular";
+  const material = (MATERIAL_BY_CATEGORY[category] || "EVA") as Material;
+
+  return { gender, category, material, color };
+}
+
+/**
+ * Alternate layout: Gender / Material / images
+ * Example: Unisex/EVA/*.png
+ */
+function inferGenderMaterialLayout(parts: string[]): PathMetadata | null {
+  if (parts.length !== 2) return null;
+
+  const gender = matchFromList(parts[0], GENDERS);
+  const material = matchFromList(parts[1], MATERIALS);
+  if (!gender || !material) return null;
+
+  const category = (CATEGORY_BY_MATERIAL[material] || "Regular") as Category;
+  return { gender, category, material, color: "Standard" };
+}
+
+/** Token-based fallback for arbitrary folder depths. */
+function inferFromPathTokens(parts: string[]): PathMetadata {
+  let gender: Gender = "Unisex";
+  let category: Category = "Regular";
+  let material: Material = "EVA";
+  let color: Color | "Standard" = "Standard";
+
+  for (const part of parts) {
+    const genderMatch = matchFromList(part, GENDERS);
+    const materialMatch = matchFromList(part, MATERIALS);
+    const categoryMatch = matchFromList(part, CATEGORIES);
+    const colorMatch = matchFromList(part, COLORS);
+
+    if (genderMatch) gender = genderMatch;
+    if (materialMatch) material = materialMatch;
+    if (categoryMatch && !materialMatch) category = categoryMatch;
+    if (colorMatch) color = colorMatch;
+  }
+
+  const hasMaterial = parts.some((part) => matchFromList(part, MATERIALS));
+  const hasCategory = parts.some((part) => isCategoryOnlyPart(part));
+
+  if (!hasMaterial) {
+    material = (MATERIAL_BY_CATEGORY[category] || "EVA") as Material;
+  }
+
+  if (!hasCategory && hasMaterial) {
+    category = (CATEGORY_BY_MATERIAL[material] || category) as Category;
+  }
+
+  return { gender, category, material, color };
+}
+
+/**
+ * Infer catalog metadata from folder path.
+ * Prefers canonical Gender/Category/Color, then Gender/Material, then token scan.
+ * Pass `imageStem` (e.g. D1) for Gender/Material SKU folders — one product per file.
+ */
 function inferFromFolderPath(
-  parts: string[]
+  parts: string[],
+  imageStem?: string
 ): Omit<
   GeneratedProduct,
   | "slug"
@@ -127,12 +250,6 @@ function inferFromFolderPath(
   | "newArrival"
   | "description"
 > & { slugBase: string } {
-  let gender: Gender = "Unisex";
-  let category: Category = "Regular";
-  let material: Material = "EVA";
-  let color: Color | "Standard" = "Standard";
-
-  // Showcase folders: jff-001, jff-002, …
   if (parts.length === 1 && /^jff-\d+$/i.test(parts[0])) {
     const num = parts[0].replace(/^jff-/i, "");
     const id = parts[0].toLowerCase();
@@ -147,57 +264,30 @@ function inferFromFolderPath(
     };
   }
 
-  for (const part of parts) {
-    const normalized = capitalize(part);
+  const metadata =
+    inferGenderCategoryColorLayout(parts) ??
+    inferGenderMaterialLayout(parts) ??
+    inferFromPathTokens(parts);
 
-    if ((GENDERS as readonly string[]).includes(normalized)) {
-      gender = normalized as Gender;
-    } else if ((CATEGORIES as readonly string[]).includes(normalized)) {
-      category = normalized as Category;
-    } else if (
-      (MATERIALS as readonly string[]).includes(
-        part.toUpperCase() === "PU" ? "PU" : normalized
-      )
-    ) {
-      material = (part.toUpperCase() === "PU" ? "PU" : normalized) as Material;
-    } else if ((COLORS as readonly string[]).includes(normalized)) {
-      color = normalized as Color;
-    }
-  }
+  const idParts = parts.map((part) => part.toLowerCase());
+  if (imageStem) idParts.push(imageStem.toLowerCase());
+  const id = idParts.join("-");
 
-  const hasMaterial = parts.some((p) =>
-    (MATERIALS as readonly string[]).includes(
-      p.toUpperCase() === "PU" ? "PU" : capitalize(p)
-    )
-  );
-  const hasCategory = parts.some((p) =>
-    (CATEGORIES as readonly string[]).includes(capitalize(p))
-  );
-
-  if (!hasMaterial) {
-    material = (MATERIAL_BY_CATEGORY[category] || "EVA") as Material;
-  }
-
-  if (gender === "Unisex" && hasMaterial && !hasCategory) {
-    category = (CATEGORY_BY_MATERIAL[material] || "Regular") as Category;
-  }
-
-  const nameParts: string[] = [`JFF ${gender}`];
-  if (color !== "Standard") nameParts.push(color);
-  nameParts.push(category);
-  if (gender === "Unisex" && hasMaterial) nameParts.push(`(${material})`);
-
-  const id = parts.map((p) => p.toLowerCase()).join("-");
+  const nameParts = parts.map(formatPathSegment);
+  if (imageStem) nameParts.push(imageStem.toUpperCase());
+  const name = `JFF ${nameParts.join(" ")} Slippers`;
 
   return {
     id,
     slugBase: id,
-    name: `${nameParts.join(" ")} Slippers`,
-    gender,
-    category,
-    material,
-    color,
+    name,
+    ...metadata,
   };
+}
+
+/** Gender/Material folders hold individual SKUs — one product per image file. */
+function isGenderMaterialSkuFolder(parts: string[]): boolean {
+  return inferGenderMaterialLayout(parts) !== null;
 }
 
 function buildDescription(
@@ -224,40 +314,50 @@ function scanProducts(): GeneratedProduct[] {
     return [];
   }
 
-  const folders = findProductFolders(PRODUCTS_ROOT);
+  const scanned = scanProductImageFolders(PRODUCTS_ROOT);
   const usedSlugs = new Set<string>();
   const products: GeneratedProduct[] = [];
+  let productIndex = 0;
 
-  folders.forEach((folderPath, index) => {
-    const relativeParts = path.relative(PRODUCTS_ROOT, folderPath).split(path.sep);
-    const images = loadImagesFromFolder(folderPath, PRODUCTS_ROOT);
+  scanned.forEach((folder) => {
+    const splitByImage = isGenderMaterialSkuFolder(folder.relativeParts);
 
-    if (images.length === 0) return;
+    const addProduct = (productImages: string[], imageStem?: string) => {
+      const inferred = inferFromFolderPath(folder.relativeParts, imageStem);
+      const slug = uniqueSlug(inferred.slugBase, usedSlugs);
+      const sizes = SIZE_RANGES[inferred.gender] ?? SIZE_RANGES.Unisex;
 
-    const inferred = inferFromFolderPath(relativeParts);
-    const slug = uniqueSlug(inferred.slugBase, usedSlugs);
-    const imageFolder = relativeParts.join("/");
-    const sizes = SIZE_RANGES[inferred.gender] ?? SIZE_RANGES.Unisex;
+      const base: Omit<GeneratedProduct, "description"> = {
+        id: inferred.id,
+        slug,
+        name: inferred.name,
+        gender: inferred.gender,
+        category: inferred.category,
+        material: inferred.material,
+        color: inferred.color,
+        sizes,
+        images: productImages,
+        imageFolder: folder.relativePath,
+        featured: productIndex < 8,
+        newArrival: productIndex >= scanned.length - 12,
+      };
 
-    const base: Omit<GeneratedProduct, "description"> = {
-      id: inferred.id,
-      slug,
-      name: inferred.name,
-      gender: inferred.gender,
-      category: inferred.category,
-      material: inferred.material,
-      color: inferred.color,
-      sizes,
-      images,
-      imageFolder,
-      featured: index < 8,
-      newArrival: index >= folders.length - 12,
+      products.push({
+        ...base,
+        description: buildDescription(base),
+      });
+      productIndex += 1;
     };
 
-    products.push({
-      ...base,
-      description: buildDescription(base),
-    });
+    if (splitByImage) {
+      for (const imagePath of folder.images) {
+        const stem = path.basename(imagePath, path.extname(imagePath));
+        addProduct([imagePath], stem);
+      }
+      return;
+    }
+
+    addProduct(folder.images);
   });
 
   return products.sort((a, b) => a.slug.localeCompare(b.slug));
