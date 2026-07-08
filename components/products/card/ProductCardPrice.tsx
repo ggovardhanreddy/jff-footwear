@@ -1,35 +1,25 @@
-import { cn } from "@/lib/utils";
+import PriceCard from "@/components/pricing/PriceCard";
+import { getProductPricing } from "@/lib/pricing";
+import type { Product } from "@/types";
 
 interface ProductCardPriceProps {
   price?: number;
+  product?: Pick<Product, "slug">;
   className?: string;
 }
 
-function formatPrice(price: number): string {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(price);
-}
-
+/** @deprecated Use PriceCard with getProductPricing instead. */
 export default function ProductCardPrice({
   price,
+  product,
   className,
 }: ProductCardPriceProps) {
-  if (price == null) return null;
+  const pricing =
+    product != null
+      ? getProductPricing(product)
+      : price != null
+        ? { mrp: price, discount: 0, sellingPrice: price }
+        : getProductPricing();
 
-  return (
-    <p
-      className={cn(
-        "font-display text-lg font-semibold tracking-tight text-brand-black",
-        className
-      )}
-    >
-      {formatPrice(price)}
-      <span className="ml-2 text-[10px] font-sans font-medium uppercase tracking-[0.2em] text-brand-muted">
-        MRP
-      </span>
-    </p>
-  );
+  return <PriceCard pricing={pricing} variant="compact" className={className} />;
 }

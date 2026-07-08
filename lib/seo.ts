@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { Product } from "@/types";
 import { COMPANY } from "./constants";
 import { getProductMainImage } from "./utils";
+import { getProductPricing } from "./pricing";
 import { assetPath } from "./paths";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://jfffootwear.com";
@@ -77,6 +78,7 @@ export function createMetadata({
 
 export function createProductJsonLd(product: Product) {
   const image = `${siteUrl}${assetPath(getProductMainImage(product))}`;
+  const pricing = getProductPricing(product);
 
   return {
     "@context": "https://schema.org",
@@ -92,9 +94,9 @@ export function createProductJsonLd(product: Product) {
     offers: {
       "@type": "Offer",
       priceCurrency: "INR",
+      price: pricing.sellingPrice,
       availability: "https://schema.org/InStock",
       seller: { "@type": "Organization", name: COMPANY.fullName },
-      ...(product.price ? { price: product.price } : {}),
     },
   };
 }

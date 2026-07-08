@@ -7,10 +7,11 @@ import {
   ProductCardBadges,
   ProductCardQuickView,
   ProductCardMeta,
-  ProductCardPrice,
 } from "./card";
+import PriceCard from "@/components/pricing/PriceCard";
 import { COLOR_MAP } from "@/lib/constants";
 import { getProductMainImage } from "@/lib/utils";
+import { getProductPricing } from "@/lib/pricing";
 import type { Product } from "@/types";
 
 interface ProductCardProps {
@@ -26,6 +27,7 @@ export default function ProductCard({
 }: ProductCardProps) {
   const mainImage = getProductMainImage(product);
   const productHref = `/products/${product.slug}`;
+  const pricing = getProductPricing(product);
 
   return (
     <ProductCardShell index={index}>
@@ -55,7 +57,7 @@ export default function ProductCard({
               {product.name}
             </h3>
 
-            <ProductCardPrice price={product.price} />
+            <PriceCard pricing={pricing} variant="compact" />
 
             <div className="flex items-center gap-2.5 pt-1">
               <span
@@ -72,14 +74,8 @@ export default function ProductCard({
             </div>
           </div>
 
-          <div className="flex items-center justify-between border-t border-black/[0.05] pt-5">
-            {!product.price && (
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-muted">
-                Inquire for pricing
-              </span>
-            )}
-            {product.price && <span />}
-            <span className="ml-auto text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-black transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-brand-accent">
+          <div className="flex items-center justify-end border-t border-black/[0.05] pt-5">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-black transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-brand-accent">
               Explore →
             </span>
           </div>

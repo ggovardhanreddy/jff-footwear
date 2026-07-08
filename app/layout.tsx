@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import SiteChrome from "@/components/layout/SiteChrome";
+import ClientProviders from "@/components/providers/ClientProviders";
 import {
   createMetadata,
   createOrganizationJsonLd,
@@ -55,14 +56,16 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen antialiased">
-        <a href="#main-content" className="skip-link">
-          Skip to main content
-        </a>
-        <Navbar />
-        <main id="main-content" tabIndex={-1}>
-          {children}
-        </main>
-        <SiteChrome />
+        <ClientProviders>
+          <a href="#main-content" className="skip-link">
+            Skip to main content
+          </a>
+          <Navbar />
+          <main id="main-content" tabIndex={-1}>
+            {children}
+          </main>
+          <SiteChrome />
+        </ClientProviders>
       </body>
     </html>
   );

@@ -2,11 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, MessageCircle, Share2 } from "lucide-react";
+import Link from "next/link";
+import { Check, MessageCircle, Share2, ShoppingBag } from "lucide-react";
 import Button from "@/components/ui/Button";
 import ColorSelector from "./ColorSelector";
 import SizeSelector from "./SizeSelector";
 import QuantitySelector from "@/components/QuantitySelector";
+import PriceCard from "@/components/pricing/PriceCard";
+import { useCart } from "@/context/CartContext";
+import { ROUTES } from "@/lib/constants";
+import { getProductPricing } from "@/lib/pricing";
 import {
   buildWhatsAppUrl,
   getProductFeatures,
@@ -25,11 +30,14 @@ export default function ProductDetails({
   colorVariants,
 }: ProductDetailsProps) {
   const router = useRouter();
+  const { addItem, itemCount } = useCart();
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [shareMessage, setShareMessage] = useState("");
   const [sizeError, setSizeError] = useState("");
+  const [cartMessage, setCartMessage] = useState("");
 
+  const pricing = getProductPricing(product);
   const features = getProductFeatures(product);
   const specifications = getProductSpecifications(product);
 
@@ -39,12 +47,25 @@ export default function ProductDetails({
     }
   };
 
-  const handleInquiry = () => {
+  const requireSize = (): boolean => {
     if (!selectedSize) {
-      setSizeError("Please select a size before sending your inquiry.");
-      return;
+      setSizeError("Please select a size before continuing.");
+      return false;
     }
     setSizeError("");
+    return true;
+  };
+
+  const handleAddToCart = () => {
+    if (!requireSize()) return;
+
+    addItem({ product, size: selectedSize!, quantity });
+    setCartMessage("Added to cart!");
+    setTimeout(() => setCartMessage(""), 2500);
+  };
+
+  const handleInquiry = () => {
+    if (!requireSize()) return;
 
     const url = buildWhatsAppUrl({
       productName: product.name,
@@ -52,7 +73,7 @@ export default function ProductDetails({
       category: product.category,
       material: product.material,
       color: product.color !== "Standard" ? product.color : "Any",
-      size: selectedSize,
+      size: selectedSize!,
       quantity,
     });
 
@@ -83,6 +104,8 @@ export default function ProductDetails({
           {product.color !== "Standard" ? product.color : "All Colors"}
         </p>
       </div>
+
+      <PriceCard pricing={pricing} />
 
       <p className="text-body leading-relaxed">{product.description}</p>
 
@@ -162,13 +185,22 @@ export default function ProductDetails({
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <Button
+          variant="primary"
+          size="lg"
+          className="flex-1"
+          onClick={handleAddToCart}
+        >
+          <ShoppingBag className="h-5 w-5" />
+          Add to Cart
+        </Button>
+        <Button
           variant="whatsapp"
           size="lg"
           className="flex-1"
           onClick={handleInquiry}
         >
           <MessageCircle className="h-5 w-5" />
-          Send Inquiry
+          Quick Inquiry
         </Button>
         <Button
           variant="outline"
@@ -181,13 +213,29 @@ export default function ProductDetails({
         </Button>
       </div>
 
-      {shareMessage && (
-        <p className="text-center text-xs text-brand-accent">{shareMessage}</p>
+      {(cartMessage || shareMessage) && (
+        <p className="text-center text-xs text-brand-accent">
+          {cartMessage || shareMessage}
+        </p>
       )}
 
-      <p className="text-center text-xs text-brand-muted">
-        Inquire via WhatsApp for pricing, availability &amp; bulk orders
-      </p>
+      {itemCount > 0 && (
+        <div className="flex flex-wrap justify-center gap-4 text-center text-sm">
+          <Link
+            href={ROUTES.cart}
+            className="font-semibold text-brand-accent hover:underline"
+          >
+            View Cart ({itemCount})
+          </Link>
+          <span className="text-brand-muted">·</span>
+          <Link
+            href={ROUTES.checkout}
+            className="font-semibold text-brand-black hover:text-brand-accent"
+          >
+            Checkout →
+          </Link>
+        </div>
+      )}
 
       <div>
         <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-brand-muted">

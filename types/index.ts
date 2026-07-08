@@ -36,6 +36,59 @@ export type ProductColor =
 
 export type SortOption = "newest" | "featured" | "name";
 
+export interface ProductPricing {
+  mrp: number;
+  discount: number;
+  sellingPrice: number;
+}
+
+export type AddressType = "Home" | "Work";
+
+export interface DeliveryAddress {
+  fullName: string;
+  mobile: string;
+  alternativeMobile: string;
+  flatHouse: string;
+  area: string;
+  city: string;
+  state: string;
+  pincode: string;
+  landmark: string;
+  addressType: AddressType;
+  isDefault: boolean;
+}
+
+export type DeliveryAddressErrors = Partial<
+  Record<keyof DeliveryAddress, string>
+>;
+
+export interface CartItem {
+  id: string;
+  productId: string;
+  slug: string;
+  name: string;
+  image: string;
+  size: number;
+  quantity: number;
+  color: string;
+  pricing: ProductPricing;
+}
+
+export interface OrderSummaryBreakdown {
+  subtotal: number;
+  productDiscount: number;
+  platformFee: number;
+  deliveryCharge: number;
+  couponDiscount: number;
+  grandTotal: number;
+  totalSavings: number;
+  cartSellingTotal: number;
+  itemCount: number;
+  isFreeDelivery: boolean;
+  taxNote: string;
+  estimatedDelivery: string;
+}
+
 export interface Product {
   id: string;
   name: string;

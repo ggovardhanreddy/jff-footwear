@@ -5,14 +5,16 @@ import Link from "next/link";
 import AssetImage from "@/components/ui/AssetImage";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, MessageCircle } from "lucide-react";
-import { NAV_LINKS, COMPANY, WHATSAPP_NUMBER } from "@/lib/constants";
+import { Menu, X, MessageCircle, ShoppingBag } from "lucide-react";
+import { NAV_LINKS, COMPANY, WHATSAPP_NUMBER, ROUTES } from "@/lib/constants";
+import { useCart } from "@/context/CartContext";
 import { cn } from "@/lib/utils";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const { itemCount } = useCart();
   const menuId = useId();
   const menuRef = useRef<HTMLDivElement>(null);
   const isHome = pathname === "/";
@@ -124,6 +126,23 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <Link
+            href={ROUTES.cart}
+            className={cn(
+              "focus-ring relative rounded-lg p-2.5 transition-colors",
+              !showSolid && !isOpen && "text-white hover:text-brand-accent",
+              showSolid && "text-brand-black hover:text-brand-accent"
+            )}
+            aria-label={`Cart, ${itemCount} items`}
+          >
+            <ShoppingBag className="h-5 w-5" />
+            {itemCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-accent px-1 text-[10px] font-bold text-white">
+                {itemCount > 99 ? "99+" : itemCount}
+              </span>
+            )}
+          </Link>
+
           <a
             href={`https://wa.me/${WHATSAPP_NUMBER}`}
             target="_blank"
@@ -191,6 +210,13 @@ export default function Header() {
                   </Link>
                 </motion.div>
               ))}
+              <Link
+                href={ROUTES.cart}
+                className="focus-ring flex items-center gap-2 rounded-xl px-2 py-3 font-display text-2xl font-bold uppercase tracking-wider text-brand-black"
+              >
+                <ShoppingBag className="h-6 w-6" />
+                Cart{itemCount > 0 ? ` (${itemCount})` : ""}
+              </Link>
               <a
                 href={`https://wa.me/${WHATSAPP_NUMBER}`}
                 target="_blank"

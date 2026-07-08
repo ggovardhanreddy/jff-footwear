@@ -51,6 +51,8 @@ export const ROUTES = {
   about: "/about",
   contact: "/contact",
   faq: "/faq",
+  cart: "/cart",
+  checkout: "/checkout",
 } as const;
 
 export const PRODUCT_CATEGORIES = [
