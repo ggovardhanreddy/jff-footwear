@@ -23,7 +23,8 @@ import {
   get360Views,
   getSupplementaryImages,
 } from "@/lib/productViews";
-import Fake360Viewer from "./Fake360Viewer";
+import Product360Viewer from "./Product360Viewer";
+import { getViewerFrames } from "@/lib/viewerFrames";
 
 interface ImmersiveProductViewerProps {
   images: string[];
@@ -306,6 +307,8 @@ export default function ImmersiveProductViewer({
 }: ImmersiveProductViewerProps) {
   const isDark = variant === "dark";
   const views360 = useMemo(() => get360Views(images), [images]);
+  const viewerFrames = useMemo(() => getViewerFrames(images), [images]);
+  const supportsDragViewer = viewerFrames.frames.length >= 2;
   const supplementaryImages = useMemo(
     () => getSupplementaryImages(images, views360),
     [images, views360]
@@ -382,27 +385,15 @@ export default function ImmersiveProductViewer({
   };
 
   const renderMainViewer = (fullscreen = false) => {
-    if (views360 && show360 && !selectedExtra) {
+    if (supportsDragViewer && show360 && !selectedExtra) {
       return (
-        <div className="relative">
-          <Fake360Viewer
-            views={views360}
-            productName={productName}
-            fullscreen={fullscreen}
-            theme={isDark ? "dark" : "light"}
-            onKeyDown={handleKeyDown}
-          />
-          {!fullscreen && (
-            <button
-              type="button"
-              onClick={() => setIsFullscreen(true)}
-              className="immersive-viewer-nav absolute bottom-4 right-4 z-30"
-              aria-label="Open fullscreen viewer"
-            >
-              <Maximize2 className="h-4 w-4" />
-            </button>
-          )}
-        </div>
+        <Product360Viewer
+          images={images}
+          productName={productName}
+          theme={isDark ? "dark" : "light"}
+          autoRotate
+          showControls
+        />
       );
     }
 
@@ -538,8 +529,8 @@ export default function ImmersiveProductViewer({
           isDark ? "text-gray-500" : "text-brand-muted"
         )}
       >
-        {views360
-          ? "Drag horizontally for 360° · Swipe on mobile"
+        {supportsDragViewer
+          ? "Drag or swipe to browse · Auto-advances after 3s idle"
           : "Swipe on mobile · Arrow keys on desktop"}
       </p>
 

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import CinematicLanding from "@/components/cinematic/CinematicLanding";
 import {
   products,
@@ -5,8 +6,22 @@ import {
 } from "@/data";
 import { features, reviews } from "@/data/content";
 import { MATERIAL_INFO } from "@/lib/constants";
+import { createMetadata } from "@/lib/seo";
 import { getProductMainImage } from "@/lib/utils";
 import type { ProductColor } from "@/types";
+
+export const metadata: Metadata = createMetadata({
+  title: "Premium Slippers Manufacturer",
+  description:
+    "Discover JFF Footwear — internationally crafted premium slippers with orthopedic support, luxury materials, and precision manufacturing since 1998.",
+  path: "/",
+  keywords: [
+    "premium slippers",
+    "footwear manufacturer India",
+    "wholesale slippers",
+    "luxury flip flops",
+  ],
+});
 
 function buildColorShowcase() {
   const seen = new Set<string>();
@@ -33,16 +48,14 @@ function buildColorShowcase() {
 }
 
 function buildMaterialShowcase() {
-  return MATERIAL_INFO.map((material) => {
+  return MATERIAL_INFO.slice(0, 5).map((material) => {
     const product = products.find((p) => p.material === material.name);
     return {
       id: material.id,
       name: material.name,
       description: material.description,
-      slug: material.slug,
-      image: product
-        ? getProductMainImage(product)
-        : "/images/og-default.svg",
+      image: product ? getProductMainImage(product) : "/images/hero-banner.svg",
+      slug: product?.slug ?? "products",
     };
   });
 }

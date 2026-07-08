@@ -24,7 +24,7 @@ export default function PageShell({
       )}
     >
       {fullWidth ? children : (
-        <div className="container-custom section-padding relative z-10">
+        <div className="container-custom section-padding relative z-10 max-w-[90rem]">
           {children}
         </div>
       )}

@@ -1,4 +1,8 @@
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { buttonMotion } from "@/lib/motion";
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -7,7 +11,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", size = "md", children, ...props }, ref) => {
+  (
+    { className, variant = "primary", size = "md", children, ...props },
+    ref
+  ) => {
+    const reduced = useReducedMotion();
+    const { whileHover, whileTap, transition } = buttonMotion(reduced);
+
     const variants = {
       primary: "btn-primary",
       outline: "btn-outline",
@@ -23,13 +33,20 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     return (
-      <button
-        ref={ref}
-        className={cn(variants[variant], sizes[size], className)}
-        {...props}
+      <motion.span
+        className="inline-flex motion-gpu"
+        whileHover={whileHover}
+        whileTap={whileTap}
+        transition={transition}
       >
-        {children}
-      </button>
+        <button
+          ref={ref}
+          className={cn(variants[variant], sizes[size], className)}
+          {...props}
+        >
+          {children}
+        </button>
+      </motion.span>
     );
   }
 );

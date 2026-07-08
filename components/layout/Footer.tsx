@@ -54,14 +54,6 @@ export default function Footer() {
               ))}
               <li>
                 <Link
-                  href="/categories"
-                  className="link-underline text-sm text-gray-400 hover:text-white"
-                >
-                  Categories
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="/privacy-policy"
                   className="text-sm text-gray-400 transition-colors hover:text-white"
                 >

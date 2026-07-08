@@ -6,25 +6,33 @@ import { ArrowRight } from "lucide-react";
 import ButtonLink from "@/components/ui/ButtonLink";
 import AnimatedBackground from "@/components/ui/AnimatedBackground";
 import { COMPANY } from "@/lib/constants";
+import { floatAnimation, MOTION_GPU } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 
 export default function Hero() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
     <section className="relative flex min-h-screen items-center overflow-hidden bg-brand-black">
-      <AssetImage
-        src="/images/hero-banner.svg"
-        alt="JFF Premium Slippers"
-        fill
-        priority
-        className="object-cover opacity-40"
-        sizes="100vw"
-      />
+      <motion.div
+        className={cn("absolute inset-0", MOTION_GPU)}
+        animate={floatAnimation(prefersReducedMotion)}
+      >
+        <AssetImage
+          src="/images/hero-banner.svg"
+          alt=""
+          fill
+          priority
+          className="object-cover opacity-40"
+          sizes="100vw"
+          aria-hidden
+        />
+      </motion.div>
 
       <div className="absolute inset-0 bg-gradient-to-r from-brand-black/95 via-brand-black/75 to-brand-black/35" />
       <AnimatedBackground variant="dark" />
 
-      <div className="container-custom relative z-10 pt-20">
+      <div className="container-custom relative z-10 grid items-center gap-12 pt-20 lg:grid-cols-2">
         <div className="max-w-2xl">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -77,6 +85,27 @@ export default function Hero() {
             </ButtonLink>
           </motion.div>
         </div>
+
+        <motion.div
+          className={cn("relative mx-auto hidden aspect-square w-full max-w-md lg:block", MOTION_GPU)}
+          initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.94 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <motion.div
+            className="relative h-full w-full"
+            animate={floatAnimation(prefersReducedMotion)}
+          >
+            <AssetImage
+              src="/images/products/jff-001/front.png"
+              alt="JFF Premium Slippers"
+              fill
+              priority
+              className="object-contain drop-shadow-[0_32px_64px_rgba(0,0,0,0.45)]"
+              sizes="(max-width: 1024px) 50vw, 28vw"
+            />
+          </motion.div>
+        </motion.div>
       </div>
 
       <motion.div
@@ -91,7 +120,11 @@ export default function Hero() {
           </span>
           <motion.div
             animate={prefersReducedMotion ? undefined : { y: [0, 8, 0] }}
-            transition={prefersReducedMotion ? undefined : { repeat: Infinity, duration: 1.5 }}
+            transition={
+              prefersReducedMotion
+                ? undefined
+                : { repeat: Infinity, duration: 1.5, ease: "easeInOut" }
+            }
             className="h-8 w-px bg-brand-accent"
           />
         </div>

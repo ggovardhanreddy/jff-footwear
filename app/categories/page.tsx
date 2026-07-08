@@ -33,6 +33,7 @@ export default function CategoriesPage() {
       <SectionHeading
         subtitle="Explore"
         title="Shop by Category"
+        titleAs="h1"
         description="Find the perfect slipper collection for your needs."
       />
 

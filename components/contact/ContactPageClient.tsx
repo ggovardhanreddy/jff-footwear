@@ -21,6 +21,7 @@ export default function ContactPageClient() {
       <SectionHeading
         subtitle="Get in Touch"
         title="Contact Us"
+        titleAs="h1"
         description="Have questions about our products or want to place a bulk order? We'd love to hear from you."
       />
 

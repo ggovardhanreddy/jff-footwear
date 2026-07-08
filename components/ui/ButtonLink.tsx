@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { buttonMotion } from "@/lib/motion";
 import type { ComponentProps } from "react";
 
 type ButtonVariant = "primary" | "outline" | "whatsapp";
@@ -28,12 +32,22 @@ export default function ButtonLink({
   children,
   ...props
 }: ButtonLinkProps) {
+  const reduced = useReducedMotion();
+  const { whileHover, whileTap, transition } = buttonMotion(reduced);
+
   return (
-    <Link
-      className={cn(variants[variant], sizes[size], className)}
-      {...props}
+    <motion.span
+      className="inline-flex motion-gpu"
+      whileHover={whileHover}
+      whileTap={whileTap}
+      transition={transition}
     >
-      {children}
-    </Link>
+      <Link
+        className={cn(variants[variant], sizes[size], className)}
+        {...props}
+      >
+        {children}
+      </Link>
+    </motion.span>
   );
 }

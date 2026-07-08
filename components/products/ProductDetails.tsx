@@ -72,13 +72,13 @@ export default function ProductDetails({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10 md:space-y-12">
       <div>
         <p className="eyebrow">
           {product.category} · {product.material}
         </p>
-        <h1 className="heading-display mt-2 text-brand-black">{product.name}</h1>
-        <p className="mt-2 text-sm text-brand-muted">
+        <h1 className="heading-page mt-3 text-brand-black">{product.name}</h1>
+        <p className="mt-3 text-sm text-brand-muted">
           {product.gender} ·{" "}
           {product.color !== "Standard" ? product.color : "All Colors"}
         </p>

@@ -138,3 +138,35 @@ export function createBreadcrumbJsonLd(
     })),
   };
 }
+
+export function createFaqJsonLd(
+  faqs: { question: string; answer: string }[]
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+}
+
+export function createWebSiteJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: COMPANY.fullName,
+    url: siteUrl,
+    description: COMPANY.description,
+    publisher: {
+      "@type": "Organization",
+      name: COMPANY.fullName,
+      logo: `${siteUrl}${assetPath("/images/logo.svg")}`,
+    },
+  };
+}

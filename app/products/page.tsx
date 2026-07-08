@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { createMetadata } from "@/lib/seo";
+import { createMetadata, createBreadcrumbJsonLd } from "@/lib/seo";
 import { products, getUniqueFilterValues } from "@/data";
 import ProductsPageClient from "@/components/products/ProductsPageClient";
 import { ProductGridSkeleton } from "@/components/LoadingSkeleton";
@@ -9,16 +9,24 @@ import PageShell from "@/components/ui/PageShell";
 export const metadata = createMetadata({
   title: "Products",
   description:
-    "Browse JFF's complete collection of premium slippers. Filter by gender, category, material, color, and size.",
+    "Browse JFF Footwear's international collection of premium slippers — orthopedic, EVA, rubber, PU, and fashion styles for men, women, and kids.",
   path: "/products",
-  keywords: ["slippers catalog", "wholesale slippers", "buy slippers"],
+  keywords: ["slippers catalog", "wholesale slippers", "premium footwear"],
 });
 
 export default function ProductsPage() {
   const filterOptions = getUniqueFilterValues();
+  const breadcrumbLd = createBreadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Products", path: "/products" },
+  ]);
 
   return (
     <PageShell fullWidth ambient="light" className="relative">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <AnimatedBackground variant="cream" className="opacity-80" />
       <Suspense
         fallback={

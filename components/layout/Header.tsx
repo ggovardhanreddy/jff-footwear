@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useId } from "react";
+import { useState, useEffect, useId, useRef, useCallback } from "react";
 import Link from "next/link";
 import AssetImage from "@/components/ui/AssetImage";
 import { usePathname } from "next/navigation";
@@ -14,6 +14,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const menuId = useId();
+  const menuRef = useRef<HTMLDivElement>(null);
   const isHome = pathname === "/";
   const showSolid = scrolled || !isHome;
 
@@ -43,13 +44,42 @@ export default function Header() {
     };
   }, [isOpen]);
 
+  const handleMenuKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      if (!isOpen || event.key !== "Tab" || !menuRef.current) return;
+
+      const focusable = menuRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled])'
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    },
+    [isOpen]
+  );
+
+  useEffect(() => {
+    if (!isOpen || !menuRef.current) return;
+    const first = menuRef.current.querySelector<HTMLElement>("a[href], button");
+    first?.focus();
+  }, [isOpen]);
+
   return (
     <header
       className={cn(
-        "fixed top-0 z-50 w-full transition-all duration-500",
+        "fixed top-0 z-50 w-full transition-[background-color,box-shadow,border-color] duration-500",
         showSolid
-          ? "bg-white/95 shadow-sm backdrop-blur-md"
-          : "bg-transparent"
+          ? "border-b border-black/[0.04] bg-white/80 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.12)] backdrop-blur-xl backdrop-saturate-150"
+          : "border-b border-transparent bg-transparent backdrop-blur-none"
       )}
     >
       <div className="container-custom flex h-16 items-center justify-between md:h-[4.5rem]">
@@ -80,7 +110,8 @@ export default function Header() {
               href={link.href}
               className={cn(
                 "link-underline rounded-sm text-xs font-semibold uppercase tracking-widest transition-colors",
-                pathname === link.href
+                pathname === link.href ||
+                  (link.href === "/products" && pathname.startsWith("/products"))
                   ? "text-brand-accent"
                   : showSolid
                     ? "text-brand-black hover:text-brand-accent"
@@ -122,7 +153,12 @@ export default function Header() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            ref={menuRef}
             id={menuId}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation menu"
+            onKeyDown={handleMenuKeyDown}
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
@@ -144,7 +180,9 @@ export default function Header() {
                     href={link.href}
                     className={cn(
                       "focus-ring block rounded-xl px-2 py-3 font-display text-2xl font-bold uppercase tracking-wider",
-                      pathname === link.href
+                      pathname === link.href ||
+                        (link.href === "/products" &&
+                          pathname.startsWith("/products"))
                         ? "text-brand-accent"
                         : "text-brand-black"
                     )}

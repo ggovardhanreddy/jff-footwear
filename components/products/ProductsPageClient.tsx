@@ -67,6 +67,7 @@ export default function ProductsPageClient({
       <SectionHeading
         subtitle="Our Collection"
         title="All Products"
+        titleAs="h1"
         description="Browse our complete range of premium slippers. Filter by category, material, color, size, and more."
       />
 

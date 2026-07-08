@@ -34,11 +34,24 @@ export const COMPANY = {
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Products" },
-  { href: "/about", label: "About" },
+  { href: "/categories", label: "Categories" },
   { href: "/gallery", label: "Gallery" },
+  { href: "/about", label: "About" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" },
 ] as const;
+
+/** Core app routes (static pages). */
+export const ROUTES = {
+  home: "/",
+  products: "/products",
+  product: (slug: string) => `/products/${slug}`,
+  categories: "/categories",
+  gallery: "/gallery",
+  about: "/about",
+  contact: "/contact",
+  faq: "/faq",
+} as const;
 
 export const PRODUCT_CATEGORIES = [
   "Orthopedic",

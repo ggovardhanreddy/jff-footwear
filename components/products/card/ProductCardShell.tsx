@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { hoverLift, MOTION_GPU } from "@/lib/motion";
 
 interface ProductCardShellProps {
   children: React.ReactNode;
@@ -26,11 +27,10 @@ export default function ProductCardShell({
         delay: Math.min(index * 0.05, 0.3),
         ease: [0.22, 1, 0.36, 1],
       }}
-      className={cn("group relative", className)}
+      className={cn("group relative", MOTION_GPU, className)}
     >
       <motion.div
-        whileHover={prefersReducedMotion ? undefined : { y: -12 }}
-        transition={{ type: "spring", stiffness: 340, damping: 28 }}
+        {...hoverLift(prefersReducedMotion)}
         className="luxury-card relative overflow-hidden rounded-[28px] border border-white/60 bg-white/70 shadow-[0_12px_40px_-16px_rgba(0,0,0,0.12)] backdrop-blur-xl transition-[box-shadow,background-color] duration-500 group-hover:bg-white/85 group-hover:shadow-[0_24px_56px_-20px_rgba(0,0,0,0.16)]"
       >
         {children}

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import AssetImage from "@/components/ui/AssetImage";
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { IMAGE_ZOOM_CLASS } from "@/lib/motion";
 
 interface ProductCardImageProps {
   src: string;
@@ -28,14 +28,13 @@ export default function ProductCardImage({
       )}
     >
       {!loaded && (
-        <div className="skeleton-shimmer absolute inset-0 z-10 bg-neutral-100" aria-hidden />
+        <div
+          className="skeleton-shimmer absolute inset-0 z-10 bg-neutral-100"
+          aria-hidden
+        />
       )}
 
-      <motion.div
-        className="relative h-full w-full"
-        whileHover={{ scale: 1.08 }}
-        transition={{ type: "spring", stiffness: 260, damping: 26 }}
-      >
+      <div className="relative h-full w-full overflow-hidden">
         <AssetImage
           src={src}
           alt={alt}
@@ -45,11 +44,12 @@ export default function ProductCardImage({
           onLoad={() => setLoaded(true)}
           className={cn(
             "object-cover transition-opacity duration-500",
+            IMAGE_ZOOM_CLASS,
             loaded ? "opacity-100" : "opacity-0"
           )}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
         />
-      </motion.div>
+      </div>
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/[0.06] via-transparent to-white/30" />
     </div>

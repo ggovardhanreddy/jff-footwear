@@ -60,22 +60,24 @@ export default function HeroSection({
             Premium Footwear Since {COMPANY.founded}
           </p>
 
-          <SplitText
-            as="h1"
-            text="Crafted Comfort."
-            className="heading-display mt-4 text-white md:text-6xl lg:text-7xl"
-            delay={0.1}
-            immediate
-          />
-          <SplitText
-            as="h1"
-            text="Every Step."
-            className="heading-display text-brand-accent md:text-6xl lg:text-7xl"
-            delay={0.25}
-            immediate
-          />
+          <h1 className="heading-display mt-5 text-white md:text-6xl lg:text-7xl">
+            <SplitText
+              as="span"
+              text="Crafted Comfort."
+              className="block"
+              delay={0.1}
+              immediate
+            />
+            <SplitText
+              as="span"
+              text="Every Step."
+              className="mt-1 block text-brand-accent"
+              delay={0.25}
+              immediate
+            />
+          </h1>
 
-          <p className="mt-6 max-w-md text-base leading-relaxed text-gray-400 md:text-lg">
+          <p className="text-lead mt-7 max-w-md text-gray-400">
             A cinematic introduction to {COMPANY.fullName} — precision-made
             slippers engineered for global luxury markets.
           </p>
@@ -107,7 +109,7 @@ export default function HeroSection({
       </div>
 
       <div className="absolute bottom-20 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 md:bottom-24">
-        <span className="text-[9px] uppercase tracking-[0.35em] text-gray-500">
+        <span className="text-micro text-gray-500">
           Scroll
         </span>
         <motion.div

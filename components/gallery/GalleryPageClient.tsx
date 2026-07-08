@@ -47,6 +47,7 @@ export default function GalleryPageClient() {
       <SectionHeading
         subtitle="Visual Showcase"
         title="Gallery"
+        titleAs="h1"
         description="Explore our premium slipper collection through stunning visuals."
       />
 

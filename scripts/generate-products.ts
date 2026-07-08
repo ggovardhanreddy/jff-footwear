@@ -1,9 +1,27 @@
+/**
+ * Auto-generate data/products.ts from public/images/products
+ *
+ * Usage:
+ *   npm run generate
+ *
+ * Scans public/images/products recursively. Each folder that directly
+ * contains image files becomes one product. Subfolders like `360/` are
+ * merged into the parent product's image list (spin frames first).
+ *
+ * Supported formats: png, jpg, jpeg, svg, webp
+ * Ignores: .DS_Store and hidden files
+ */
+
 import fs from "fs";
 import path from "path";
-import { findProductFolders, loadImagesFromFolder } from "../lib/loadImages";
+import {
+  findProductFolders,
+  IMAGE_EXTENSIONS,
+  loadImagesFromFolder,
+} from "../lib/loadImages";
 
-const ROOT = path.join(process.cwd(), "public/images/products");
-const OUTPUT = path.join(process.cwd(), "data/products.ts");
+const PRODUCTS_ROOT = path.join(process.cwd(), "public/images/products");
+const OUTPUT_FILE = path.join(process.cwd(), "data/products.ts");
 
 const GENDERS = ["Men", "Women", "Kids", "Unisex"] as const;
 const CATEGORIES = [
@@ -70,17 +88,17 @@ type Category = (typeof CATEGORIES)[number];
 type Material = (typeof MATERIALS)[number];
 type Color = (typeof COLORS)[number];
 
-interface InferredProduct {
+interface GeneratedProduct {
   id: string;
-  name: string;
   slug: string;
+  name: string;
   gender: Gender;
   category: Category;
   material: Material;
   color: Color | "Standard";
   sizes: number[];
-  imageFolder: string;
   images: string[];
+  imageFolder: string;
   featured: boolean;
   newArrival: boolean;
   description: string;
@@ -97,28 +115,30 @@ function capitalize(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
 
-function inferFromPath(
+function inferFromFolderPath(
   parts: string[]
 ): Omit<
-  InferredProduct,
+  GeneratedProduct,
+  | "slug"
   | "sizes"
-  | "imageFolder"
   | "images"
+  | "imageFolder"
   | "featured"
   | "newArrival"
   | "description"
-  | "slug"
 > & { slugBase: string } {
   let gender: Gender = "Unisex";
   let category: Category = "Regular";
   let material: Material = "EVA";
   let color: Color | "Standard" = "Standard";
 
+  // Showcase folders: jff-001, jff-002, …
   if (parts.length === 1 && /^jff-\d+$/i.test(parts[0])) {
     const num = parts[0].replace(/^jff-/i, "");
+    const id = parts[0].toLowerCase();
     return {
-      id: parts[0].toLowerCase(),
-      slugBase: parts[0].toLowerCase(),
+      id,
+      slugBase: id,
       name: `JFF ${num} Premium Slippers`,
       gender: "Unisex",
       category: "Regular",
@@ -129,11 +149,12 @@ function inferFromPath(
 
   for (const part of parts) {
     const normalized = capitalize(part);
-    if ((GENDERS as readonly string[]).includes(normalized))
+
+    if ((GENDERS as readonly string[]).includes(normalized)) {
       gender = normalized as Gender;
-    else if ((CATEGORIES as readonly string[]).includes(normalized))
+    } else if ((CATEGORIES as readonly string[]).includes(normalized)) {
       category = normalized as Category;
-    else if (
+    } else if (
       (MATERIALS as readonly string[]).includes(
         part.toUpperCase() === "PU" ? "PU" : normalized
       )
@@ -165,47 +186,70 @@ function inferFromPath(
   if (color !== "Standard") nameParts.push(color);
   nameParts.push(category);
   if (gender === "Unisex" && hasMaterial) nameParts.push(`(${material})`);
-  const name = `${nameParts.join(" ")} Slippers`;
+
   const id = parts.map((p) => p.toLowerCase()).join("-");
 
-  return { id, slugBase: id, name, gender, category, material, color };
+  return {
+    id,
+    slugBase: id,
+    name: `${nameParts.join(" ")} Slippers`,
+    gender,
+    category,
+    material,
+    color,
+  };
 }
 
 function buildDescription(
-  product: Omit<InferredProduct, "description">
+  product: Omit<GeneratedProduct, "description">
 ): string {
   const colorText =
     product.color !== "Standard" ? ` in ${product.color}` : "";
   return `Premium ${product.gender.toLowerCase()} ${product.category.toLowerCase()} slippers${colorText}, crafted from high-quality ${product.material}. Designed for all-day comfort with ergonomic support, slip-resistant sole, and durable construction. Ideal for wholesale and retail inquiries.`;
 }
 
-function generateProducts(): InferredProduct[] {
-  const folders = findProductFolders(ROOT);
+function uniqueSlug(base: string, used: Set<string>): string {
+  let slug = slugify(base);
+  let counter = 1;
+  while (used.has(slug)) {
+    slug = `${slugify(base)}-${counter++}`;
+  }
+  used.add(slug);
+  return slug;
+}
+
+function scanProducts(): GeneratedProduct[] {
+  if (!fs.existsSync(PRODUCTS_ROOT)) {
+    console.warn(`Products directory not found: ${PRODUCTS_ROOT}`);
+    return [];
+  }
+
+  const folders = findProductFolders(PRODUCTS_ROOT);
   const usedSlugs = new Set<string>();
-  const products: InferredProduct[] = [];
+  const products: GeneratedProduct[] = [];
 
   folders.forEach((folderPath, index) => {
-    const relativeParts = path.relative(ROOT, folderPath).split(path.sep);
-    const images = loadImagesFromFolder(folderPath, ROOT);
+    const relativeParts = path.relative(PRODUCTS_ROOT, folderPath).split(path.sep);
+    const images = loadImagesFromFolder(folderPath, PRODUCTS_ROOT);
+
     if (images.length === 0) return;
 
-    const inferred = inferFromPath(relativeParts);
-    let slug = slugify(inferred.slugBase);
-    let counter = 1;
-    while (usedSlugs.has(slug)) {
-      slug = `${slugify(inferred.slugBase)}-${counter++}`;
-    }
-    usedSlugs.add(slug);
-
+    const inferred = inferFromFolderPath(relativeParts);
+    const slug = uniqueSlug(inferred.slugBase, usedSlugs);
     const imageFolder = relativeParts.join("/");
-    const sizes = SIZE_RANGES[inferred.gender] || SIZE_RANGES.Unisex;
+    const sizes = SIZE_RANGES[inferred.gender] ?? SIZE_RANGES.Unisex;
 
-    const base = {
-      ...inferred,
+    const base: Omit<GeneratedProduct, "description"> = {
+      id: inferred.id,
       slug,
+      name: inferred.name,
+      gender: inferred.gender,
+      category: inferred.category,
+      material: inferred.material,
+      color: inferred.color,
       sizes,
-      imageFolder,
       images,
+      imageFolder,
       featured: index < 8,
       newArrival: index >= folders.length - 12,
     };
@@ -216,36 +260,34 @@ function generateProducts(): InferredProduct[] {
     });
   });
 
-  return products;
+  return products.sort((a, b) => a.slug.localeCompare(b.slug));
 }
 
-function serializeProduct(product: InferredProduct): string {
-  const lines = [
+function serializeProduct(product: GeneratedProduct): string {
+  return [
     "  {",
     `    id: ${JSON.stringify(product.id)},`,
-    `    name: ${JSON.stringify(product.name)},`,
     `    slug: ${JSON.stringify(product.slug)},`,
+    `    name: ${JSON.stringify(product.name)},`,
     `    gender: ${JSON.stringify(product.gender)},`,
     `    category: ${JSON.stringify(product.category)},`,
     `    material: ${JSON.stringify(product.material)},`,
     `    color: ${JSON.stringify(product.color)},`,
     `    sizes: ${JSON.stringify(product.sizes)},`,
-    `    imageFolder: ${JSON.stringify(product.imageFolder)},`,
     `    images: ${JSON.stringify(product.images, null, 6).replace(/\n/g, "\n    ")},`,
+    `    imageFolder: ${JSON.stringify(product.imageFolder)},`,
     `    featured: ${product.featured},`,
     `    newArrival: ${product.newArrival},`,
     `    description: ${JSON.stringify(product.description)},`,
     "  }",
-  ];
-  return lines.join("\n");
+  ].join("\n");
 }
 
-function main() {
-  console.log(`Scanning ${ROOT}...`);
-  const products = generateProducts();
-
-  const fileContent = `// Auto-generated by scripts/generate-products.ts — do not edit manually.
-// Run \`npm run generate\` to regenerate after adding product image folders.
+function writeProductsFile(products: GeneratedProduct[]): void {
+  const content = `// Auto-generated by scripts/generate-products.ts — do not edit manually.
+// Run \`npm run generate\` after adding folders under public/images/products.
+//
+// Supported image formats: ${IMAGE_EXTENSIONS.join(", ")}
 
 import type { Product } from "@/types";
 
@@ -256,7 +298,17 @@ ${products.map(serializeProduct).join(",\n")}
 export default products;
 `;
 
-  fs.writeFileSync(OUTPUT, fileContent, "utf-8");
+  fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
+  fs.writeFileSync(OUTPUT_FILE, content, "utf-8");
+}
+
+function main(): void {
+  console.log(`Scanning ${PRODUCTS_ROOT}...`);
+  console.log(`Formats: ${IMAGE_EXTENSIONS.join(", ")}`);
+
+  const products = scanProducts();
+  writeProductsFile(products);
+
   console.log(`✓ Generated ${products.length} products → data/products.ts`);
 }
 

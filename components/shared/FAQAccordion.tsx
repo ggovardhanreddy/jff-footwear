@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import type { FAQ } from "@/types";
 import { cn } from "@/lib/utils";
+import { EASE_LUXURY } from "@/lib/motion";
 
 interface FAQAccordionProps {
   faqs: FAQ[];
@@ -24,6 +25,7 @@ export default function FAQAccordion({
         <SectionHeading
           subtitle="Support"
           title="Frequently Asked Questions"
+          titleAs="h1"
           description="Everything you need to know about JFF products and ordering."
         />
       )}
@@ -37,17 +39,17 @@ export default function FAQAccordion({
           return (
             <div
               key={faq.id}
-              className="overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-sm"
+              className="overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-sm transition-shadow duration-300 hover:shadow-md"
             >
               <button
                 id={buttonId}
                 type="button"
                 onClick={() => setOpenId(isOpen ? null : faq.id)}
-                className="focus-ring flex w-full items-center justify-between gap-4 rounded-2xl p-5 text-left"
+                className="focus-ring flex w-full items-center justify-between gap-4 rounded-2xl p-5 text-left md:p-6"
                 aria-expanded={isOpen}
                 aria-controls={panelId}
               >
-                <span className="font-medium leading-snug text-brand-black">
+                <span className="font-medium leading-snug text-brand-black md:text-lg">
                   {faq.question}
                 </span>
                 <ChevronDown
@@ -67,10 +69,10 @@ export default function FAQAccordion({
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.28 }}
+                    transition={{ duration: 0.28, ease: EASE_LUXURY }}
                     className="overflow-hidden"
                   >
-                    <p className="border-t border-gray-100 px-5 py-4 text-sm leading-relaxed text-brand-muted">
+                    <p className="border-t border-gray-100 px-5 py-4 text-sm leading-[1.7] text-brand-muted md:px-6 md:py-5 md:text-base">
                       {faq.answer}
                     </p>
                   </motion.div>
