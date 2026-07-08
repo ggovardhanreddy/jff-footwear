@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import SiteChrome from "@/components/layout/SiteChrome";
 import { createMetadata, createOrganizationJsonLd } from "@/lib/seo";
 import { assetPath } from "@/lib/paths";
 import "@/styles/globals.css";
@@ -45,8 +44,7 @@ export default function RootLayout({
         <main id="main-content" tabIndex={-1}>
           {children}
         </main>
-        <Footer />
-        <WhatsAppButton variant="floating" />
+        <SiteChrome />
       </body>
     </html>
   );

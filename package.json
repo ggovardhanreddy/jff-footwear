@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "export": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "generate": "tsx scripts/generate-products.ts",
-    "deploy": "npm run generate && NEXT_PUBLIC_BASE_PATH=/jff-footwear NEXT_PUBLIC_SITE_URL=https://ggovardhanreddy.github.io/jff-footwear next build && rm -rf docs && cp -r out docs",
+    "dev": "node node_modules/.bin/next dev",
+    "build": "node node_modules/.bin/next build",
+    "export": "node node_modules/.bin/next build",
+    "start": "node node_modules/.bin/next start",
+    "lint": "node node_modules/.bin/next lint",
+    "generate": "node node_modules/.bin/tsx scripts/generate-products.ts",
+    "deploy": "npm run generate && NEXT_PUBLIC_BASE_PATH=/jff-footwear NEXT_PUBLIC_SITE_URL=https://ggovardhanreddy.github.io/jff-footwear node node_modules/.bin/next build && rm -rf docs && cp -r out docs",
     "prebuild": "npm run generate"
   },
   "dependencies": {

@@ -28,6 +28,7 @@ import Fake360Viewer from "./Fake360Viewer";
 interface ImmersiveProductViewerProps {
   images: string[];
   productName: string;
+  variant?: "light" | "dark";
 }
 
 const SPRING = { stiffness: 260, damping: 26, mass: 0.65 };
@@ -190,9 +191,10 @@ function ViewerStage({
                 priority={activeIndex === 0}
                 loading={activeIndex === 0 ? undefined : "lazy"}
                 onLoad={() => onLoad(activeIndex)}
+                onLoadingComplete={() => onLoad(activeIndex)}
                 className={cn(
-                  "object-contain drop-shadow-[0_24px_40px_rgba(0,0,0,0.14)] transition-opacity duration-500",
-                  loadedMap[activeIndex] ? "opacity-100" : "opacity-0"
+                  "object-contain drop-shadow-[0_24px_40px_rgba(0,0,0,0.14)] transition-opacity duration-300",
+                  "opacity-100"
                 )}
                 sizes="(max-width: 768px) 90vw, 50vw"
                 draggable={false}
@@ -300,7 +302,9 @@ function FlatExtraImage({
 export default function ImmersiveProductViewer({
   images,
   productName,
+  variant = "light",
 }: ImmersiveProductViewerProps) {
+  const isDark = variant === "dark";
   const views360 = useMemo(() => get360Views(images), [images]);
   const supplementaryImages = useMemo(
     () => getSupplementaryImages(images, views360),
@@ -385,6 +389,7 @@ export default function ImmersiveProductViewer({
             views={views360}
             productName={productName}
             fullscreen={fullscreen}
+            theme={isDark ? "dark" : "light"}
             onKeyDown={handleKeyDown}
           />
           {!fullscreen && (
@@ -428,7 +433,12 @@ export default function ImmersiveProductViewer({
       {/* 360 + supplementary thumbnails */}
       {views360 && (
         <div className="space-y-3">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-muted">
+          <p
+            className={cn(
+              "text-[10px] font-semibold uppercase tracking-[0.2em]",
+              isDark ? "text-gray-400" : "text-brand-muted"
+            )}
+          >
             Views
           </p>
           <div className="flex flex-wrap gap-2">
@@ -441,8 +451,12 @@ export default function ImmersiveProductViewer({
               className={cn(
                 "rounded-full px-4 py-2 text-[10px] font-semibold uppercase tracking-widest transition-all",
                 show360 && !selectedExtra
-                  ? "bg-brand-black text-white"
-                  : "bg-white text-brand-muted ring-1 ring-black/10 hover:text-brand-black"
+                  ? isDark
+                    ? "bg-brand-accent text-brand-black shadow-md"
+                    : "bg-brand-black text-white"
+                  : isDark
+                    ? "bg-white/10 text-gray-300 ring-1 ring-white/15 hover:bg-white/15 hover:text-white"
+                    : "bg-white text-brand-muted ring-1 ring-black/10 hover:text-brand-black"
               )}
             >
               360° Rotate
@@ -458,8 +472,12 @@ export default function ImmersiveProductViewer({
                 className={cn(
                   "relative h-14 w-14 overflow-hidden rounded-xl border-2 transition-all",
                   selectedExtra === src
-                    ? "border-brand-black shadow-md"
-                    : "border-transparent ring-1 ring-black/10 hover:border-brand-accent/50"
+                    ? isDark
+                      ? "border-brand-accent shadow-md ring-1 ring-brand-accent/40"
+                      : "border-brand-black shadow-md"
+                    : isDark
+                      ? "border-transparent ring-1 ring-white/15 hover:border-brand-accent/50"
+                      : "border-transparent ring-1 ring-black/10 hover:border-brand-accent/50"
                 )}
                 aria-label={`View ${src.split("/").pop()}`}
               >
@@ -514,7 +532,12 @@ export default function ImmersiveProductViewer({
         </div>
       )}
 
-      <p className="text-center text-[10px] uppercase tracking-[0.2em] text-brand-muted sm:text-left">
+      <p
+        className={cn(
+          "text-center text-[10px] uppercase tracking-[0.2em] sm:text-left",
+          isDark ? "text-gray-500" : "text-brand-muted"
+        )}
+      >
         {views360
           ? "Drag horizontally for 360° · Swipe on mobile"
           : "Swipe on mobile · Arrow keys on desktop"}

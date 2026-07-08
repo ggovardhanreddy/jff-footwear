@@ -1,55 +1,96 @@
-import Hero from "@/components/Hero";
-import FeaturedProducts from "@/components/home/FeaturedProducts";
-import WhyChooseUs from "@/components/home/WhyChooseUs";
-import LatestCollection from "@/components/home/LatestCollection";
-import CustomerReviews from "@/components/home/CustomerReviews";
-import ManufacturingProcess from "@/components/home/ManufacturingProcess";
-import ProductCategories from "@/components/home/ProductCategories";
-import ShopByMaterial from "@/components/home/ShopByMaterial";
-import AboutSection from "@/components/home/AboutSection";
-import Statistics from "@/components/home/Statistics";
-import ContactCTA from "@/components/home/ContactCTA";
-import Newsletter from "@/components/Newsletter";
-import InstagramGallery from "@/components/InstagramGallery";
+import CinematicLanding from "@/components/cinematic/CinematicLanding";
 import {
+  products,
   getFeaturedProducts,
-  getLatestProducts,
-  getProductCountByCategory,
-  getProductCountByMaterial,
-  getGalleryImages,
 } from "@/data";
-import { categories, manufacturingSteps, reviews } from "@/data/content";
+import { features, reviews } from "@/data/content";
 import { MATERIAL_INFO } from "@/lib/constants";
+import { getProductMainImage } from "@/lib/utils";
+import type { ProductColor } from "@/types";
+
+function buildColorShowcase() {
+  const seen = new Set<string>();
+  const items: {
+    color: ProductColor;
+    image: string;
+    slug: string;
+    name: string;
+  }[] = [];
+
+  for (const product of products) {
+    if (product.color === "Standard" || seen.has(product.color)) continue;
+    seen.add(product.color);
+    items.push({
+      color: product.color,
+      image: getProductMainImage(product),
+      slug: product.slug,
+      name: product.name,
+    });
+    if (items.length >= 8) break;
+  }
+
+  return items;
+}
+
+function buildMaterialShowcase() {
+  return MATERIAL_INFO.map((material) => {
+    const product = products.find((p) => p.material === material.name);
+    return {
+      id: material.id,
+      name: material.name,
+      description: material.description,
+      slug: material.slug,
+      image: product
+        ? getProductMainImage(product)
+        : "/images/og-default.svg",
+    };
+  });
+}
 
 export default function HomePage() {
   const featured = getFeaturedProducts();
-  const latest = getLatestProducts(8);
-  const galleryImages = getGalleryImages(8);
 
-  const categoriesWithCount = categories.map((cat) => ({
-    ...cat,
-    productCount: getProductCountByCategory(cat.name),
-  }));
+  if (products.length === 0) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+        <h1 className="heading-display">No products found</h1>
+        <p className="text-body mt-4 max-w-md">
+          Run{" "}
+          <code className="rounded bg-black/5 px-2 py-1 text-sm">
+            npm run generate
+          </code>{" "}
+          then restart the dev server.
+        </p>
+      </div>
+    );
+  }
 
-  const materialCounts = Object.fromEntries(
-    MATERIAL_INFO.map((m) => [m.name, getProductCountByMaterial(m.name)])
-  );
+  const heroProduct =
+    products.find((p) => p.slug === "jff-001") ||
+    products.find((p) => p.images.some((img) => img.includes("jff-001"))) ||
+    featured[0] ||
+    products[0];
+
+  const comfortProduct =
+    products.find((p) => p.category === "Orthopedic" && p.featured) ||
+    products.find((p) => p.material === "Memory Foam") ||
+    heroProduct;
+
+  const showcaseProduct =
+    products.find((p) => p.slug === "jff-001") ||
+    products.find((p) => p.images.length >= 4) ||
+    heroProduct;
 
   return (
-    <>
-      <Hero />
-      <FeaturedProducts products={featured} />
-      <LatestCollection products={latest} />
-      <ProductCategories categories={categoriesWithCount} />
-      <ShopByMaterial productCounts={materialCounts} />
-      <ManufacturingProcess steps={manufacturingSteps} />
-      <AboutSection />
-      <WhyChooseUs />
-      <Statistics />
-      <CustomerReviews reviews={reviews} />
-      <InstagramGallery images={galleryImages} />
-      <ContactCTA />
-      <Newsletter />
-    </>
+    <CinematicLanding
+      heroProduct={heroProduct}
+      comfortProduct={comfortProduct}
+      showcaseProduct={showcaseProduct}
+      galleryProducts={featured.slice(0, 8)}
+      materials={buildMaterialShowcase()}
+      colors={buildColorShowcase()}
+      features={features}
+      reviews={reviews}
+    />
   );
 }

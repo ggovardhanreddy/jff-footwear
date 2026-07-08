@@ -2,6 +2,7 @@
 
 import {
   useCallback,
+  useEffect,
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
@@ -22,6 +23,7 @@ interface Fake360ViewerProps {
   productName: string;
   className?: string;
   fullscreen?: boolean;
+  theme?: "light" | "dark";
   onKeyDown?: (e: ReactKeyboardEvent<HTMLDivElement>) => void;
 }
 
@@ -32,6 +34,7 @@ export default function Fake360Viewer({
   productName,
   className,
   fullscreen = false,
+  theme = "light",
   onKeyDown,
 }: Fake360ViewerProps) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -39,8 +42,25 @@ export default function Fake360Viewer({
   const [loadedMap, setLoadedMap] = useState<Record<string, boolean>>({});
   const dragX = useMotionValue(0);
   const prefersReducedMotion = useReducedMotion();
+  const isDark = theme === "dark";
 
   const activeView = views[activeIndex];
+
+  const markLoaded = useCallback((src: string) => {
+    setLoadedMap((m) => (m[src] ? m : { ...m, [src]: true }));
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setLoadedMap((m) => {
+        const next = { ...m };
+        for (const view of views) next[view.src] = true;
+        return next;
+      });
+    }, 600);
+
+    return () => window.clearTimeout(timer);
+  }, [views]);
 
   const goTo = useCallback(
     (index: number) => {
@@ -112,10 +132,24 @@ export default function Fake360Viewer({
         className
       )}
     >
-      <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-b from-neutral-50 via-white to-neutral-100" />
+      <div
+        className={cn(
+          "pointer-events-none absolute inset-0 rounded-3xl",
+          isDark
+            ? "bg-gradient-to-b from-white/[0.08] via-white/[0.04] to-black/20 ring-1 ring-white/10"
+            : "bg-gradient-to-b from-neutral-50 via-white to-neutral-100"
+        )}
+      />
 
       {/* 360 badge */}
-      <div className="absolute left-4 top-4 z-20 flex items-center gap-2 rounded-full border border-white/60 bg-white/80 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-black shadow-sm backdrop-blur-md">
+      <div
+        className={cn(
+          "absolute left-4 top-4 z-20 flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] shadow-sm backdrop-blur-md",
+          isDark
+            ? "border border-white/20 bg-black/50 text-white"
+            : "border border-white/60 bg-white/80 text-brand-black"
+        )}
+      >
         <Rotate3d className="h-3.5 w-3.5 text-brand-accent" />
         360° View
       </div>
@@ -163,13 +197,9 @@ export default function Fake360Viewer({
                 fill
                 priority={activeIndex === 0}
                 loading={activeIndex === 0 ? undefined : "lazy"}
-                onLoad={() =>
-                  setLoadedMap((m) => ({ ...m, [activeView.src]: true }))
-                }
-                className={cn(
-                  "object-contain drop-shadow-[0_20px_36px_rgba(0,0,0,0.12)] transition-opacity duration-500",
-                  loadedMap[activeView.src] ? "opacity-100" : "opacity-0"
-                )}
+                onLoad={() => markLoaded(activeView.src)}
+                onLoadingComplete={() => markLoaded(activeView.src)}
+                className="object-contain opacity-100 drop-shadow-[0_20px_36px_rgba(0,0,0,0.12)] transition-opacity duration-300"
                 sizes="(max-width: 768px) 90vw, 50vw"
                 draggable={false}
               />
@@ -181,14 +211,31 @@ export default function Fake360Viewer({
       {/* View label + progress */}
       <div className="absolute bottom-4 left-4 right-4 z-20 flex items-end justify-between gap-4">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-muted">
+          <p
+            className={cn(
+              "text-[10px] font-semibold uppercase tracking-[0.22em]",
+              isDark ? "text-gray-400" : "text-brand-muted"
+            )}
+          >
             Drag to rotate
           </p>
-          <p className="mt-1 font-display text-sm font-semibold text-brand-black">
+          <p
+            className={cn(
+              "mt-1 font-display text-sm font-semibold",
+              isDark ? "text-white" : "text-brand-black"
+            )}
+          >
             {activeView.label}
           </p>
         </div>
-        <span className="rounded-full bg-white/80 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-black shadow-sm backdrop-blur-md">
+        <span
+          className={cn(
+            "rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] shadow-sm backdrop-blur-md",
+            isDark
+              ? "bg-black/50 text-white ring-1 ring-white/15"
+              : "bg-white/80 text-brand-black"
+          )}
+        >
           {activeIndex + 1} / {views.length}
         </span>
       </div>
@@ -203,8 +250,12 @@ export default function Fake360Viewer({
             className={cn(
               "rounded-full px-3 py-1 text-[9px] font-semibold uppercase tracking-widest transition-all duration-300",
               activeIndex === index
-                ? "bg-brand-black text-white shadow-md"
-                : "bg-white/70 text-brand-muted backdrop-blur-sm hover:text-brand-black"
+                ? isDark
+                  ? "bg-brand-accent text-brand-black shadow-md"
+                  : "bg-brand-black text-white shadow-md"
+                : isDark
+                  ? "bg-white/10 text-gray-300 backdrop-blur-sm hover:bg-white/20 hover:text-white"
+                  : "bg-white/70 text-brand-muted backdrop-blur-sm hover:text-brand-black"
             )}
             aria-label={`Show ${view.label} view`}
             aria-current={activeIndex === index}
