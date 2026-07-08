@@ -36,13 +36,12 @@ const CATEGORIES = [
   "EVA",
   "PVC",
   "Rubber",
-  "PU",
   "Fashion",
   "Casual",
   "House",
   "Outdoor",
 ] as const;
-const MATERIALS = ["EVA", "PVC", "Rubber", "PU", "Memory Foam"] as const;
+const MATERIALS = ["EVA", "PVC", "Rubber", "Memory Foam"] as const;
 const COLORS = [
   "Black",
   "Blue",
@@ -70,21 +69,19 @@ const MATERIAL_BY_CATEGORY: Record<string, string> = {
   Orthopedic: "Memory Foam",
   Bathroom: "PVC",
   Regular: "EVA",
-  Fashion: "PU",
+  Fashion: "EVA",
   Outdoor: "Rubber",
   Casual: "EVA",
   House: "EVA",
   EVA: "EVA",
   PVC: "PVC",
   Rubber: "Rubber",
-  PU: "PU",
 };
 
 const CATEGORY_BY_MATERIAL: Record<string, string> = {
   EVA: "Regular",
   PVC: "Bathroom",
   Rubber: "Outdoor",
-  PU: "Fashion",
   "Memory Foam": "Orthopedic",
 };
 

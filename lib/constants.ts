@@ -60,14 +60,13 @@ export const PRODUCT_CATEGORIES = [
   "EVA",
   "PVC",
   "Rubber",
-  "PU",
   "Fashion",
   "Casual",
   "House",
   "Outdoor",
 ] as const;
 
-export const MATERIALS = ["EVA", "PVC", "Rubber", "PU", "Memory Foam"] as const;
+export const MATERIALS = ["EVA", "PVC", "Rubber", "Memory Foam"] as const;
 
 export const GENDERS = ["Men", "Women", "Kids", "Unisex"] as const;
 
@@ -131,12 +130,6 @@ export const MATERIAL_INFO = [
     name: "Rubber" as const,
     slug: "rubber",
     description: "Heavy-duty grip and longevity — built for outdoor use.",
-  },
-  {
-    id: "pu",
-    name: "PU" as const,
-    slug: "pu",
-    description: "Premium finish with fashion-forward appeal and soft touch.",
   },
   {
     id: "memory-foam",

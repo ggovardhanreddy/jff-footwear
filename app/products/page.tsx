@@ -9,7 +9,7 @@ import PageShell from "@/components/ui/PageShell";
 export const metadata = createMetadata({
   title: "Products",
   description:
-    "Browse JFF Footwear's international collection of premium slippers — orthopedic, EVA, rubber, PU, and fashion styles for men, women, and kids.",
+    "Browse JFF Footwear's international collection of premium slippers — orthopedic, EVA, rubber, and fashion styles for men, women, and kids.",
   path: "/products",
   keywords: ["slippers catalog", "wholesale slippers", "premium footwear"],
 });

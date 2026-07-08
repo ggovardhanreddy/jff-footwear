@@ -16,7 +16,6 @@ const MATERIAL_GRADIENTS: Record<string, string> = {
   EVA: "from-blue-50 to-blue-100",
   PVC: "from-cyan-50 to-cyan-100",
   Rubber: "from-stone-100 to-stone-200",
-  PU: "from-amber-50 to-amber-100",
   "Memory Foam": "from-purple-50 to-purple-100",
 };
 

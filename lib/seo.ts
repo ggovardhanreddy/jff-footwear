@@ -24,7 +24,7 @@ export function createMetadata({
     : `${COMPANY.fullName} — Premium Slippers Manufacturer`;
   const desc =
     description ||
-    "JFF manufactures premium slippers including orthopedic, EVA, rubber, PU, and fashion slippers for men, women, and kids. Wholesale inquiries welcome.";
+    "JFF manufactures premium slippers including orthopedic, EVA, rubber, and fashion slippers for men, women, and kids. Wholesale inquiries welcome.";
 
   const url = `${siteUrl}${path}`;
   const ogImage = image.startsWith("http") ? image : `${siteUrl}${assetPath(image)}`;

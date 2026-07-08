@@ -7,7 +7,6 @@ export type ProductCategory =
   | "EVA"
   | "PVC"
   | "Rubber"
-  | "PU"
   | "Fashion"
   | "Casual"
   | "House"
@@ -17,7 +16,6 @@ export type Material =
   | "EVA"
   | "PVC"
   | "Rubber"
-  | "PU"
   | "Memory Foam";
 
 export type ProductColor =

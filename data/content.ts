@@ -57,7 +57,7 @@ export const reviews: Review[] = [
     location: "Pune",
     rating: 4,
     comment:
-      "Fashion slippers with premium PU finish. Great for casual outings. JFF never disappoints.",
+      "Fashion slippers with a premium finish. Great for casual outings. JFF never disappoints.",
     productName: "JFF Luxe Flow Fashion",
     avatar: "AM",
   },
@@ -83,7 +83,7 @@ export const faqs: FAQ[] = [
     category: "Products",
     question: "What materials do you use?",
     answer:
-      "We manufacture slippers in EVA, PVC, Rubber, PU, and Memory Foam. Each material is selected for specific use cases — comfort, durability, water resistance, or fashion appeal.",
+      "We manufacture slippers in EVA, PVC, Rubber, and Memory Foam. Each material is selected for specific use cases — comfort, durability, water resistance, or fashion appeal.",
   },
   {
     id: "f4",
@@ -202,7 +202,7 @@ export const features: Feature[] = [
     id: "feat-1",
     title: "Premium Materials",
     description:
-      "Sourced from certified suppliers, our EVA, PU, Rubber, PVC, and Memory Foam materials meet international quality standards.",
+      "Sourced from certified suppliers, our EVA, Rubber, PVC, and Memory Foam materials meet international quality standards.",
     icon: "Gem",
   },
   {

@@ -55,7 +55,7 @@ export default function AboutSection() {
             {[
               { label: "Orthopedic", desc: "Therapeutic support" },
               { label: "Bathroom", desc: "Water-resistant PVC" },
-              { label: "Fashion", desc: "Trend-forward PU" },
+              { label: "Fashion", desc: "Trend-forward styles" },
               { label: "Outdoor", desc: "Durable rubber soles" },
             ].map((item, i) => (
               <div
