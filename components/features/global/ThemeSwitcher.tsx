@@ -30,7 +30,7 @@ export default function ThemeSwitcher({
         type="button"
         onClick={() => setTheme(next)}
         className={cn(
-          "rounded-full p-2 text-brand-muted transition-colors hover:bg-black/5 hover:text-brand-black dark:hover:bg-white/10 dark:hover:text-white",
+          "rounded-full p-2 text-brand-black transition-colors hover:bg-black/5 hover:text-brand-accent dark:text-white dark:hover:bg-white/10",
           className
         )}
         aria-label={`Theme: ${theme}. Click to change.`}

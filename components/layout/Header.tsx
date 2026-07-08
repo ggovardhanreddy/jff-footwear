@@ -22,23 +22,15 @@ export default function Header() {
   const { count: wishlistCount } = useWishlist();
   const menuId = useId();
   const menuRef = useRef<HTMLDivElement>(null);
-  const isHome = pathname === "/";
-  const showSolid = scrolled || !isHome;
+  /** Always use solid header for readable nav on every page and during cinematic load. */
+  const showSolid = true;
 
   useEffect(() => {
-    if (!isHome) return;
-
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isHome]);
-
-  useEffect(() => {
-    if (isHome) return;
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isHome]);
+  }, []);
 
   useEffect(() => {
     setIsOpen(false);
@@ -82,16 +74,13 @@ export default function Header() {
 
   return (
     <motion.header
-      animate={scrolled && !isHome ? "shrunk" : "expanded"}
+      animate={scrolled ? "shrunk" : "expanded"}
       variants={{
         expanded: { height: "auto" },
         shrunk: {},
       }}
       className={cn(
-        "fixed top-0 z-50 w-full transition-[background-color,box-shadow,border-color,padding] duration-500",
-        showSolid
-          ? "border-b border-black/[0.04] bg-white/80 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.12)] backdrop-blur-xl backdrop-saturate-150"
-          : "border-b border-transparent bg-transparent backdrop-blur-none",
+        "fixed top-0 z-50 w-full border-b border-black/[0.06] bg-white/90 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.08)] backdrop-blur-xl backdrop-saturate-150 transition-[box-shadow,padding] duration-500 dark:border-white/10 dark:bg-brand-black/90",
         scrolled && "md:shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]"
       )}
     >
@@ -111,10 +100,7 @@ export default function Header() {
             width={80}
             height={30}
             priority
-            className={cn(
-              "h-7 w-auto transition-all md:h-8",
-              !showSolid && "brightness-0 invert"
-            )}
+            className="h-7 w-auto transition-all dark:brightness-0 dark:invert md:h-8"
           />
         </Link>
 
@@ -131,9 +117,7 @@ export default function Header() {
                 "link-underline rounded-sm text-xs font-semibold uppercase tracking-widest transition-colors",
                 pathname === link.href
                   ? "text-brand-accent"
-                  : showSolid
-                    ? "text-brand-black hover:text-brand-accent"
-                    : "text-white/90 hover:text-brand-accent"
+                  : "text-brand-black hover:text-brand-accent dark:text-white/90"
               )}
             >
               {link.label}
@@ -152,7 +136,7 @@ export default function Header() {
 
           <Link
             href={ROUTES.customize}
-            className="focus-ring hidden rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent lg:inline-flex"
+            className="focus-ring hidden rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white lg:inline-flex"
             aria-label="Customize slippers"
           >
             <span className="text-[10px] font-bold uppercase tracking-widest">Custom</span>
@@ -160,11 +144,7 @@ export default function Header() {
 
           <Link
             href={ROUTES.compare}
-            className={cn(
-              "focus-ring relative hidden rounded-lg p-2.5 transition-colors sm:inline-flex",
-              !showSolid && !isOpen && "text-white hover:text-brand-accent",
-              showSolid && "text-brand-black hover:text-brand-accent"
-            )}
+            className="focus-ring relative hidden rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white sm:inline-flex"
             aria-label="Compare products"
           >
             <Scale className="h-5 w-5" />
@@ -172,11 +152,7 @@ export default function Header() {
 
           <Link
             href={ROUTES.wishlist}
-            className={cn(
-              "focus-ring relative rounded-lg p-2.5 transition-colors",
-              !showSolid && !isOpen && "text-white hover:text-brand-accent",
-              showSolid && "text-brand-black hover:text-brand-accent"
-            )}
+            className="focus-ring relative rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white"
             aria-label={`Wishlist, ${wishlistCount} items`}
           >
             <Heart className="h-5 w-5" />
@@ -189,11 +165,7 @@ export default function Header() {
 
           <Link
             href={ROUTES.cart}
-            className={cn(
-              "focus-ring relative rounded-lg p-2.5 transition-colors",
-              !showSolid && !isOpen && "text-white hover:text-brand-accent",
-              showSolid && "text-brand-black hover:text-brand-accent"
-            )}
+            className="focus-ring relative rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white"
             aria-label={`Cart, ${itemCount} items`}
           >
             <ShoppingBag className="h-5 w-5" />
@@ -217,10 +189,7 @@ export default function Header() {
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className={cn(
-              "focus-ring relative z-10 rounded-lg p-2.5 lg:hidden",
-              !showSolid && !isOpen && "text-white"
-            )}
+            className="focus-ring relative z-10 rounded-lg p-2.5 text-brand-black dark:text-white lg:hidden"
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
             aria-controls={menuId}
