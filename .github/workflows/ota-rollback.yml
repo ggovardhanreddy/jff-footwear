@@ -1,0 +1,76 @@
+name: OTA Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: EAS branch to roll back
+        required: true
+        default: production
+        type: choice
+        options:
+          - production
+          - preview
+          - development
+      republish_group:
+        description: Optional — EAS update group ID to republish instead of rolling back one step
+        required: false
+        type: string
+
+concurrency:
+  group: ota-rollback-${{ inputs.branch }}
+  cancel-in-progress: false
+
+jobs:
+  rollback:
+    name: Roll Back EAS Update
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Republish specific update group
+        if: inputs.republish_group != ''
+        working-directory: apps/mobile
+        run: >
+          eas update:republish
+          --group "${{ inputs.republish_group }}"
+          --branch "${{ inputs.branch }}"
+          --non-interactive
+        env:
+          EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}
+
+      - name: Roll back to previous update
+        if: inputs.republish_group == ''
+        working-directory: apps/mobile
+        run: >
+          eas update:rollback
+          --branch "${{ inputs.branch }}"
+          --non-interactive
+        env:
+          EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}
+
+      - name: Summary
+        run: |
+          {
+            echo "## 🔄 OTA Rollback Complete"
+            echo ""
+            echo "- **Branch:** \`${{ inputs.branch }}\`"
+            if [ -n "${{ inputs.republish_group }}" ]; then
+              echo "- **Action:** Republished group \`${{ inputs.republish_group }}\`"
+            else
+              echo "- **Action:** Rolled back to previous update on branch"
+            fi
+            echo ""
+            echo "Users receive the rolled-back bundle on their next OTA check (app launch, resume, or within 6 hours)."
+            echo ""
+            echo "See [docs/OTA_UPDATES.md](docs/OTA_UPDATES.md) for full rollback runbook."
+          } >> "$GITHUB_STEP_SUMMARY"

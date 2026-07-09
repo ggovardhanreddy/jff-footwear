@@ -1,0 +1,282 @@
+name: Deploy Main
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "project-docs/**"
+      - "**.md"
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
+env:
+  SITE_URL: ${{ secrets.VERCEL_SITE_URL || 'https://ggovardhanreddy.github.io/jff-footwear' }}
+  PAGES_URL: https://ggovardhanreddy.github.io/jff-footwear
+
+jobs:
+  setup:
+    name: Check Deploy Secrets
+    runs-on: ubuntu-latest
+    outputs:
+      has_vercel: ${{ steps.secrets.outputs.has_vercel }}
+      has_expo: ${{ steps.secrets.outputs.has_expo }}
+    steps:
+      - id: secrets
+        run: |
+          if [ -n "${{ secrets.VERCEL_TOKEN }}" ]; then
+            echo "has_vercel=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_vercel=false" >> "$GITHUB_OUTPUT"
+          fi
+          if [ -n "${{ secrets.EXPO_TOKEN }}" ]; then
+            echo "has_expo=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_expo=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      native: ${{ steps.filter.outputs.native }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            native:
+              - 'apps/mobile/app.config.ts'
+              - 'apps/mobile/eas.json'
+              - 'apps/mobile/package.json'
+              - 'apps/mobile/babel.config.js'
+              - 'apps/mobile/metro.config.js'
+              - 'apps/mobile/assets/**'
+              - 'apps/mobile/ios/**'
+              - 'apps/mobile/android/**'
+              - 'package-lock.json'
+
+  lint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  test:
+    name: Type Check & Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run test
+
+  build:
+    name: Build Website
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
+
+  sitemap:
+    name: Generate Sitemap
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      url_count: ${{ steps.verify.outputs.url_count }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace=@jff/web
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
+      - id: verify
+        working-directory: apps/web
+        run: |
+          npm run verify:sitemap
+          echo "url_count=$(grep -c '<loc>' out/sitemap.xml)" >> "$GITHUB_OUTPUT"
+
+  lighthouse:
+    name: Lighthouse Audit
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace=@jff/web
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
+      - working-directory: apps/web
+        run: npx --yes @lhci/cli@0.14.0 autorun
+
+  deploy-github-pages:
+    name: Deploy GitHub Pages
+    needs: [sitemap, lighthouse]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run deploy:pages
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ env.PAGES_URL }}
+      - name: Commit and push docs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs
+          if git diff --staged --quiet; then
+            echo "No changes to docs/"
+            exit 0
+          fi
+          git commit -m "chore: update GitHub Pages build [skip pages]"
+          git push
+
+  deploy-web:
+    name: Deploy Website (Vercel)
+    needs: [setup, sitemap, lighthouse]
+    if: ${{ needs.setup.outputs.has_vercel == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace=@jff/web
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
+      - uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: apps/web
+          vercel-args: "--prod"
+
+  ota-update:
+    name: Publish OTA Update (Expo)
+    needs: [deploy-web, deploy-github-pages, changes, setup]
+    if: >-
+      ${{ needs.changes.outputs.native != 'true' &&
+      needs.setup.outputs.has_expo == 'true' &&
+      (needs.deploy-web.result == 'success' || needs.deploy-web.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - working-directory: apps/mobile
+        run: >
+          eas update
+          --branch production
+          --channel production
+          --non-interactive
+          --message "${{ github.event.head_commit.message }}"
+        env:
+          EXPO_PUBLIC_WEB_ASSET_BASE_URL: ${{ env.SITE_URL }}
+          EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}
+
+  native-build:
+    name: Native Build (Store Submission Required)
+    needs: [deploy-web, deploy-github-pages, changes, setup]
+    if: >-
+      ${{ needs.changes.outputs.native == 'true' && needs.setup.outputs.has_expo == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - working-directory: apps/mobile
+        run: eas build --platform android --profile production --non-interactive --no-wait
+        env:
+          EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}
+      - working-directory: apps/mobile
+        run: eas build --platform ios --profile production --non-interactive --no-wait
+        env:
+          EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}
+      - run: |
+          echo "::warning title=Store submission required::Native configuration changed. New Android and iOS builds were triggered. Submit to Google Play and App Store after builds complete."
+          echo "## ⚠️ Native Change Detected" >> "$GITHUB_STEP_SUMMARY"
+          echo "OTA was **skipped** because native/mobile config files changed." >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Triggered paths include \`app.config.ts\`, \`eas.json\`, \`package.json\`, \`assets/\`, \`ios/\`, \`android/\`, or root \`package-lock.json\`." >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "1. Wait for EAS builds to finish at https://expo.dev" >> "$GITHUB_STEP_SUMMARY"
+          echo "2. Run \`eas submit --platform all --profile production\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "3. See [project-docs/OTA_UPDATES.md](../project-docs/OTA_UPDATES.md) for rollback procedures" >> "$GITHUB_STEP_SUMMARY"
+
+  notify:
+    name: Notify Deployment Success
+    needs: [deploy-web, deploy-github-pages, ota-update, native-build, sitemap, lighthouse]
+    if: >-
+      always() &&
+      (needs.deploy-github-pages.result == 'success' || needs.deploy-web.result == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Post deployment summary
+        run: bash scripts/notify-deployment.sh
+        env:
+          VERCEL_SITE_URL: ${{ env.PAGES_URL }}
+          PAGES_STATUS: ${{ needs.deploy-github-pages.result == 'success' && '✅ GitHub Pages' || '❌ Failed' }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          WEB_STATUS: ${{ needs.deploy-web.result == 'success' && '✅ Vercel' || '⏭ Vercel skipped (no secrets)' }}
+          SITEMAP_URLS: ${{ needs.sitemap.outputs.url_count }}
+          LIGHTHOUSE_STATUS: ${{ needs.lighthouse.result == 'success' && '✅ Passed' || '⚠️ See job logs' }}
+          OTA_STATUS: ${{ needs.native-build.result == 'success' && '⚠️ Native builds triggered (no OTA)' || needs.ota-update.result == 'success' && '✅ Published to production' || '⏭ Skipped' }}
+          DEPLOY_WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}

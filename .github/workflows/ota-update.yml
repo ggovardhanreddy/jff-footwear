@@ -1,0 +1,43 @@
+# Superseded by deploy-main.yml for pushes to main.
+# Use workflow_dispatch for manual OTA publishes.
+
+name: Publish Mobile OTA Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "EAS branch (production, preview, development)"
+        required: true
+        default: "production"
+
+jobs:
+  ota:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Publish OTA update
+        working-directory: apps/mobile
+        run: >
+          eas update
+          --branch ${{ inputs.branch }}
+          --channel ${{ inputs.branch }}
+          --message "Manual OTA from ${{ github.sha }}"
+        env:
+          EXPO_PUBLIC_WEB_ASSET_BASE_URL: ${{ secrets.VERCEL_SITE_URL || 'https://jfffootwear.com' }}
+          EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}

@@ -2,7 +2,7 @@
 
 Turborepo monorepo: **Next.js website** + **Expo mobile** (Android/iOS) with shared packages.
 
-**Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+**Architecture:** [project-docs/ARCHITECTURE.md](project-docs/ARCHITECTURE.md)
 
 ## Structure
 
@@ -37,25 +37,28 @@ See [.env.example](.env.example). Per-app:
 
 ## CI/CD (`git push origin main`)
 
-| Step | Action |
-|------|--------|
-| Lint + tests + build | Quality gates |
-| Sitemap + Lighthouse | SEO audit |
-| Vercel | Website deploy |
-| EAS Update | OTA to production (or native builds if config changed) |
+| Step                 | Action                             |
+| -------------------- | ---------------------------------- |
+| Lint + tests + build | Quality gates                      |
+| Sitemap + Lighthouse | SEO audit                          |
+| GitHub Pages         | Static site at `/docs` (always)    |
+| Vercel               | Optional — when secrets configured |
+| EAS Update           | Optional — OTA to production       |
 
-Docs: [AUTOMATED_DEPLOYMENT.md](docs/AUTOMATED_DEPLOYMENT.md) · [OTA_UPDATES.md](docs/OTA_UPDATES.md)
+**Live site:** https://ggovardhanreddy.github.io/jff-footwear/
+
+Docs: [project-docs/AUTOMATED_DEPLOYMENT.md](project-docs/AUTOMATED_DEPLOYMENT.md) · [project-docs/OTA_UPDATES.md](project-docs/OTA_UPDATES.md) · [project-docs/SECRETS_SETUP.md](project-docs/SECRETS_SETUP.md)
 
 ## GitHub Secrets
 
-| Secret | Purpose |
-|--------|---------|
-| `EXPO_TOKEN` | Expo / EAS API access |
-| `EAS_PROJECT_ID` | Expo project UUID |
-| `VERCEL_TOKEN` | Vercel deploy token |
-| `VERCEL_ORG_ID` | Vercel team ID |
-| `VERCEL_PROJECT_ID` | Vercel project ID |
-| `VERCEL_SITE_URL` | Production site URL |
+| Secret               | Purpose                                      |
+| -------------------- | -------------------------------------------- |
+| `EXPO_TOKEN`         | Expo / EAS API access                        |
+| `EAS_PROJECT_ID`     | Expo project UUID                            |
+| `VERCEL_TOKEN`       | Vercel deploy token                          |
+| `VERCEL_ORG_ID`      | Vercel team ID                               |
+| `VERCEL_PROJECT_ID`  | Vercel project ID                            |
+| `VERCEL_SITE_URL`    | Production site URL                          |
 | `DEPLOY_WEBHOOK_URL` | Optional — Slack/Discord deploy notification |
 
 ## Shared code
