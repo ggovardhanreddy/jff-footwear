@@ -5,11 +5,7 @@ import SiteChrome from "@/components/layout/SiteChrome";
 import ClientProviders from "@/components/providers/ClientProviders";
 import JsonLd from "@/components/seo/JsonLd";
 import { ThemeInitScript } from "@/components/brand";
-import {
-  createMetadata,
-  createOrganizationJsonLd,
-  createWebSiteJsonLd,
-} from "@/lib/seo";
+import { createMetadata, createOrganizationJsonLd, createWebSiteJsonLd } from "@/lib/seo";
 import { assetPath } from "@/lib/paths";
 import { brandAssets } from "@jff/ui/brand";
 import "@/styles/globals.css";
@@ -41,31 +37,16 @@ export const viewport: Viewport = {
   colorScheme: "light dark",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const structuredData = [createOrganizationJsonLd(), createWebSiteJsonLd()];
 
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${playfair.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
       <head>
         <ThemeInitScript />
         <link rel="manifest" href={assetPath("/manifest.webmanifest")} />
-        <link
-          rel="icon"
-          href={assetPath(brandAssets.favicon)}
-          type="image/svg+xml"
-        />
-        <link
-          rel="apple-touch-icon"
-          href={assetPath(brandAssets.appleTouchIcon)}
-        />
+        <link rel="icon" href={assetPath(brandAssets.favicon)} type="image/png" />
+        <link rel="apple-touch-icon" href={assetPath(brandAssets.appleTouchIcon)} />
         <JsonLd data={structuredData} />
       </head>
       <body className="min-h-screen antialiased">

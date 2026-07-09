@@ -46,16 +46,16 @@ export const typography = {
 } as const;
 
 export const brandAssets = {
-  logoLight: "/images/brand/logo-light.svg",
-  logoDark: "/images/brand/logo-dark.svg",
-  logoMark: "/images/brand/logo-mark.svg",
-  favicon: "/images/brand/favicon.svg",
-  appleTouchIcon: "/images/brand/apple-touch-icon.svg",
-  ogImage: "/images/brand/og-image.svg",
-  ogImageDark: "/images/brand/og-image-dark.svg",
-  twitterImage: "/images/brand/twitter-card.svg",
-  pwa192: "/images/brand/icon-192.svg",
-  pwa512: "/images/brand/icon-512.svg",
+  logoLight: "/images/brand/logo-light.png",
+  logoDark: "/images/brand/logo-dark.png",
+  logoMark: "/images/brand/logo-mark.png",
+  favicon: "/images/brand/favicon-48.png",
+  appleTouchIcon: "/images/brand/apple-touch-icon.png",
+  ogImage: "/images/brand/og-image.png",
+  ogImageDark: "/images/brand/og-image-dark.png",
+  twitterImage: "/images/brand/twitter-card.png",
+  pwa192: "/images/brand/icon-192.png",
+  pwa512: "/images/brand/icon-512.png",
 } as const;
 
 export const glassmorphism = {

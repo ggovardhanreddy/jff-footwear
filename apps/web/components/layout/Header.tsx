@@ -48,7 +48,7 @@ export default function Header() {
       if (!isOpen || event.key !== "Tab" || !menuRef.current) return;
 
       const focusable = menuRef.current.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled])'
+        "a[href], button:not([disabled])"
       );
       if (focusable.length === 0) return;
 
@@ -90,16 +90,13 @@ export default function Header() {
           scrolled ? "h-14 md:h-16" : "h-16 md:h-[4.5rem]"
         )}
       >
-        <Link
-          href="/"
-          className="focus-ring relative z-10 flex items-center gap-2 rounded-lg"
-        >
+        <Link href="/" className="focus-ring relative z-10 flex items-center gap-2 rounded-lg">
           <BrandLogo
             alt={COMPANY.fullName}
-            width={80}
-            height={30}
+            width={52}
+            height={52}
             priority
-            className={cn(scrolled ? "md:h-7" : "md:h-8")}
+            className={cn(scrolled ? "h-11 w-11 md:h-12 md:w-12" : "h-12 w-12 md:h-14 md:w-14")}
           />
         </Link>
 
@@ -245,8 +242,7 @@ export default function Header() {
                     className={cn(
                       "focus-ring block rounded-xl px-2 py-3 font-display text-2xl font-bold uppercase tracking-wider",
                       pathname === link.href ||
-                        (link.href === "/products" &&
-                          pathname.startsWith("/products"))
+                        (link.href === "/products" && pathname.startsWith("/products"))
                         ? "text-brand-accent"
                         : "text-brand-black"
                     )}

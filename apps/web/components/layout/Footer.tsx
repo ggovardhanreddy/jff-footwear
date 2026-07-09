@@ -1,20 +1,8 @@
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand";
-import {
-  MapPin,
-  Phone,
-  Mail,
-  MessageCircle,
-} from "lucide-react";
-import {
-  NAV_LINKS,
-  COMPANY,
-  WHATSAPP_NUMBER,
-  ROUTES,
-} from "@/lib/constants";
-import {
-  getBusinessPagesByCategory,
-} from "@jff/config/business-pages";
+import { MapPin, Phone, Mail, MessageCircle } from "lucide-react";
+import { NAV_LINKS, COMPANY, WHATSAPP_NUMBER, ROUTES } from "@/lib/constants";
+import { getBusinessPagesByCategory } from "@jff/config/business-pages";
 
 const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}`;
 
@@ -40,14 +28,12 @@ export default function Footer() {
           <div className="space-y-6 lg:col-span-2">
             <BrandLogo
               alt={COMPANY.fullName}
-              width={80}
-              height={32}
+              width={56}
+              height={56}
               variant="dark"
-              className="h-8"
+              className="h-14 w-14"
             />
-            <p className="text-sm leading-relaxed text-gray-400">
-              {COMPANY.description}
-            </p>
+            <p className="text-sm leading-relaxed text-gray-400">{COMPANY.description}</p>
             <a
               href={whatsappUrl}
               target="_blank"
@@ -163,12 +149,9 @@ export default function Footer() {
 
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-gray-800 pt-8 md:flex-row">
           <p className="text-xs text-gray-500">
-            &copy; {new Date().getFullYear()} {COMPANY.fullName}. All rights
-            reserved.
+            &copy; {new Date().getFullYear()} {COMPANY.fullName}. All rights reserved.
           </p>
-          <p className="text-xs text-gray-500">
-            Founded {COMPANY.foundedYear} · Made in India
-          </p>
+          <p className="text-xs text-gray-500">Founded {COMPANY.foundedYear} · Made in India</p>
         </div>
       </div>
     </footer>

@@ -1,5 +1,5 @@
 /* JFF Footwear — lightweight PWA service worker (static export) */
-const CACHE_VERSION = "jff-v2";
+const CACHE_VERSION = "jff-v3";
 const OFFLINE_URL = "offline.html";
 
 const PRECACHE_URLS = [
@@ -7,8 +7,8 @@ const PRECACHE_URLS = [
   "./offline.html",
   "./manifest.webmanifest",
   "./products/",
-  "./images/brand/favicon.svg",
-  "./images/brand/icon-192.svg",
+  "./images/brand/favicon-48.png",
+  "./images/brand/icon-192.png",
 ];
 
 self.addEventListener("install", (event) => {

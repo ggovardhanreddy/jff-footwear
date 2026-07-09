@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { Product } from "@/types";
 import { COMPANY } from "@jff/config/constants";
+import { brandAssets } from "@jff/ui/brand";
 import { getProductMainImage } from "./utils";
 import { getProductPricing } from "./pricing";
 
@@ -16,7 +17,7 @@ export function createMetadata({
   title,
   description,
   path = "",
-  image = "/images/brand/og-image.svg",
+  image = brandAssets.ogImage,
   keywords = [],
   index = true,
 }: {
@@ -117,7 +118,7 @@ export function createOrganizationJsonLd() {
     "@type": "Organization",
     name: COMPANY.fullName,
     url: siteUrl,
-    logo: absoluteAsset("/images/brand/logo-mark.svg"),
+    logo: absoluteAsset(brandAssets.logoMark),
     description: COMPANY.description,
     contactPoint: {
       "@type": "ContactPoint",
@@ -144,7 +145,7 @@ export function createLocalBusinessJsonLd() {
     "@type": "LocalBusiness",
     "@id": `${siteUrl}/contact`,
     name: COMPANY.fullName,
-    image: absoluteAsset("/images/brand/logo-mark.svg"),
+    image: absoluteAsset(brandAssets.logoMark),
     url: siteUrl,
     telephone: COMPANY.phone,
     email: COMPANY.email,
@@ -209,7 +210,7 @@ export function createWebSiteJsonLd() {
     publisher: {
       "@type": "Organization",
       name: COMPANY.fullName,
-      logo: absoluteAsset("/images/brand/logo-mark.svg"),
+      logo: absoluteAsset(brandAssets.logoMark),
     },
     potentialAction: {
       "@type": "SearchAction",
