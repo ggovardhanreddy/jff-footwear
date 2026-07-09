@@ -3,10 +3,10 @@
 import { motion, useReducedMotion } from "framer-motion";
 import ButtonLink from "@/components/ui/ButtonLink";
 import { cn } from "@/lib/utils";
-import type { LucideIcon } from "lucide-react";
+import { PackageSearch, type LucideIcon } from "lucide-react";
 
 interface EmptyStateProps {
-  icon: LucideIcon;
+  icon?: LucideIcon;
   title: string;
   description: string;
   actionLabel?: string;
@@ -15,7 +15,7 @@ interface EmptyStateProps {
 }
 
 export default function EmptyState({
-  icon: Icon,
+  icon: Icon = PackageSearch,
   title,
   description,
   actionLabel = "Explore Collection",
@@ -43,9 +43,7 @@ export default function EmptyState({
         </div>
       </div>
       <h2 className="font-display text-2xl font-bold text-brand-black">{title}</h2>
-      <p className="mt-3 text-[15px] leading-relaxed text-brand-muted">
-        {description}
-      </p>
+      <p className="mt-3 text-[15px] leading-relaxed text-brand-muted">{description}</p>
       {actionHref && (
         <div className="mt-8">
           <ButtonLink href={actionHref} size="lg">

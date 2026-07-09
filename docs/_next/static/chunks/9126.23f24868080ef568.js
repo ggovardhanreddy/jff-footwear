@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[9126],{79126:(e,s,l)=>{l.r(s),l.d(s,{default:()=>c});var n=l(54568),u=l(55471),t=l(13844);function c(e){let{open:s,index:l,slides:c,onClose:i}=e;return s?(0,n.jsx)(u.Ay,{open:s,close:i,index:l,slides:c,plugins:[t.A]}):null}l(93702)}}]);

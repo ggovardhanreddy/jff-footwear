@@ -9,14 +9,11 @@ import {
   RecentlyViewedStrip,
   ShippingCalculator,
   GSTInvoiceOption,
-  CareInstructions,
-  SizeGuide,
 } from "@/components/features";
+import CareInstructions from "@/components/features/sections/CareInstructions";
+import SizeGuide from "@/components/features/sections/SizeGuide";
 import ProductCarousel from "@/components/features/discovery/ProductCarousel";
-import {
-  getTrendingProducts,
-  getRecentlyPurchasedPlaceholder,
-} from "@/lib/product-sections";
+import { getTrendingProducts, getRecentlyPurchasedPlaceholder } from "@/lib/product-sections";
 import { getRelatedProducts } from "@/lib/utils";
 import { products } from "@/data/products";
 
@@ -24,9 +21,7 @@ interface ProductPageSectionsProps {
   product: Product;
 }
 
-export default function ProductPageSections({
-  product,
-}: ProductPageSectionsProps) {
+export default function ProductPageSections({ product }: ProductPageSectionsProps) {
   const related = getRelatedProducts(products, product);
   const trending = getTrendingProducts(4).filter((p) => p.id !== product.id);
 
@@ -52,10 +47,7 @@ export default function ProductPageSections({
             horizontal={false}
           />
         )}
-        <ProductCarousel
-          title="Trending Products"
-          products={trending}
-        />
+        <ProductCarousel title="Trending Products" products={trending} />
         <ProductCarousel
           title="Recently Purchased"
           subtitle="Popular with buyers"

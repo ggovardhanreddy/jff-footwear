@@ -1,26 +1,20 @@
 "use client";
 
-import {
-  Share2,
-  Link2,
-  Printer,
-  Download,
-  GitCompare,
-  FileText,
-} from "lucide-react";
+import { Share2, Link2, Printer, Download, GitCompare, FileText } from "lucide-react";
 import { CATALOG_PATHS, MOQ_BY_ORDER_TYPE } from "@jff/config/wholesale-config";
+import { getWholesaleUnitPrice } from "@jff/utils/wholesale";
 import type { Product } from "@/types";
-import { cn } from "@/lib/utils";
+import { useCompare } from "@/context/CompareContext";
+import { useToast } from "@/context/ToastContext";
+import { formatINR, getProductPricing } from "@/lib/pricing";
+import { cn, shareProduct } from "@/lib/utils";
 
 interface ProductActionsProps {
   product: Product;
   className?: string;
 }
 
-export default function ProductActions({
-  product,
-  className,
-}: ProductActionsProps) {
+export default function ProductActions({ product, className }: ProductActionsProps) {
   const { toggle, isComparing } = useCompare();
   const { show } = useToast();
 
@@ -91,9 +85,7 @@ td,th{border:1px solid #ddd;padding:.5rem;text-align:left}th{background:#f5f5f5}
   const handleCompare = () => {
     toggle(product);
     show(
-      isComparing(product.slug)
-        ? "Removed from compare"
-        : "Added to compare (max 4)",
+      isComparing(product.slug) ? "Removed from compare" : "Added to compare (max 4)",
       "success"
     );
   };
@@ -101,7 +93,12 @@ td,th{border:1px solid #ddd;padding:.5rem;text-align:left}th{background:#f5f5f5}
   const actions = [
     { icon: Share2, label: "Share", onClick: handleShare },
     { icon: Link2, label: "Copy Link", onClick: handleCopy },
-    { icon: GitCompare, label: "Compare", onClick: handleCompare, active: isComparing(product.slug) },
+    {
+      icon: GitCompare,
+      label: "Compare",
+      onClick: handleCompare,
+      active: isComparing(product.slug),
+    },
     { icon: Printer, label: "Print", onClick: handlePrint },
     { icon: Download, label: "Catalogue CSV", onClick: handleCatalogue },
     { icon: FileText, label: "Quotation", onClick: handleQuotation },

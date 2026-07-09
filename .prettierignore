@@ -1,0 +1,5 @@
+docs/
+out/
+node_modules/
+.next/
+apps/web/out/

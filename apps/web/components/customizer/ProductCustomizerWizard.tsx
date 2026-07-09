@@ -11,6 +11,7 @@ import CustomizerPricePanel from "./CustomizerPricePanel";
 import CustomizerDeliveryStep from "./CustomizerDeliveryStep";
 import CustomizerReviewStep from "./CustomizerReviewStep";
 import ColorSelector from "@/components/products/ColorSelector";
+import { cn } from "@/lib/utils";
 import {
   CUSTOMIZER_CATEGORIES,
   CUSTOMIZER_COLORS,
@@ -32,10 +33,7 @@ import { getPreviewImageForColor } from "@/lib/customizer/images";
 import { buildCustomOrderWhatsAppUrl } from "@/lib/customizer/whatsapp";
 import { GENDERS } from "@/lib/constants";
 import { readStorage, writeStorage } from "@/lib/storage";
-import {
-  EMPTY_CUSTOMIZATION,
-  type ProductCustomization,
-} from "@/types/customizer";
+import { EMPTY_CUSTOMIZATION, type ProductCustomization } from "@/types/customizer";
 import type { ColorVariant, Gender, ProductColor } from "@/types";
 import { getMoqForOrderType, validateQuantityForOrderType } from "@jff/utils/wholesale";
 
@@ -70,9 +68,10 @@ export default function ProductCustomizerWizard() {
 
   const materialDescriptions = useMemo(
     () =>
-      Object.fromEntries(
-        CUSTOMIZER_MATERIALS.map((m) => [m.value, m.description])
-      ) as Record<string, string>,
+      Object.fromEntries(CUSTOMIZER_MATERIALS.map((m) => [m.value, m.description])) as Record<
+        string,
+        string
+      >,
     []
   );
 
@@ -89,9 +88,7 @@ export default function ProductCustomizerWizard() {
   const canContinue = canProceedStep(step, config);
   const moqValidation = useMemo(
     () =>
-      config.orderType
-        ? validateQuantityForOrderType(config.quantity, config.orderType)
-        : null,
+      config.orderType ? validateQuantityForOrderType(config.quantity, config.orderType) : null,
     [config.orderType, config.quantity]
   );
 
@@ -131,8 +128,7 @@ export default function ProductCustomizerWizard() {
     reader.readAsDataURL(file);
   };
 
-  const sizes =
-    config.gender ? getSizesForGender(config.gender as Gender) : [];
+  const sizes = config.gender ? getSizesForGender(config.gender as Gender) : [];
 
   return (
     <div className="pb-16">
@@ -149,9 +145,7 @@ export default function ProductCustomizerWizard() {
                 exit={reduced ? undefined : { opacity: 0, x: -20 }}
                 transition={{ duration: 0.35 }}
               >
-                <p className="eyebrow text-brand-accent">
-                  {CUSTOMIZER_STEPS[step - 1]?.label}
-                </p>
+                <p className="eyebrow text-brand-accent">{CUSTOMIZER_STEPS[step - 1]?.label}</p>
                 <h2 className="heading-section mt-2 text-brand-black dark:text-white">
                   {getStepTitle(step)}
                 </h2>
@@ -252,10 +246,7 @@ export default function ProductCustomizerWizard() {
                           value={config.quantity}
                           onChange={(e) =>
                             update({
-                              quantity: Math.max(
-                                1,
-                                parseInt(e.target.value, 10) || 1
-                              ),
+                              quantity: Math.max(1, parseInt(e.target.value, 10) || 1),
                             })
                           }
                           className="input-field w-24 text-center text-lg font-bold"
@@ -264,9 +255,7 @@ export default function ProductCustomizerWizard() {
                         <button
                           type="button"
                           className="focus-ring flex h-12 w-12 items-center justify-center rounded-xl border text-xl font-bold"
-                          onClick={() =>
-                            update({ quantity: config.quantity + 1 })
-                          }
+                          onClick={() => update({ quantity: config.quantity + 1 })}
                           aria-label="Increase quantity"
                         >
                           +
@@ -277,11 +266,7 @@ export default function ProductCustomizerWizard() {
                           {moqValidation.message}
                         </p>
                       ) : null}
-                      <CustomizerPricePanel
-                        config={config}
-                        showBulkTiers
-                        className="lg:hidden"
-                      />
+                      <CustomizerPricePanel config={config} showBulkTiers className="lg:hidden" />
                     </div>
                   )}
 
@@ -324,24 +309,16 @@ export default function ProductCustomizerWizard() {
                             <input
                               type="file"
                               accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                              onChange={(e) =>
-                                handleLogoFile(e.target.files?.[0])
-                              }
+                              onChange={(e) => handleLogoFile(e.target.files?.[0])}
                               className="text-sm"
                             />
-                            {logoError && (
-                              <p className="mt-2 text-sm text-red-600">{logoError}</p>
-                            )}
+                            {logoError && <p className="mt-2 text-sm text-red-600">{logoError}</p>}
                             {config.logoFileName && (
-                              <p className="mt-2 text-xs text-brand-muted">
-                                {config.logoFileName}
-                              </p>
+                              <p className="mt-2 text-xs text-brand-muted">{config.logoFileName}</p>
                             )}
                           </div>
                           <div>
-                            <p className="eyebrow mb-3 text-brand-muted">
-                              Logo Position
-                            </p>
+                            <p className="eyebrow mb-3 text-brand-muted">Logo Position</p>
                             <OptionGrid
                               options={LOGO_POSITIONS}
                               value={config.logoPosition}
@@ -373,8 +350,7 @@ export default function ProductCustomizerWizard() {
                       />
                       {config.orderType ? (
                         <p className="text-sm text-brand-muted">
-                          MOQ for {config.orderType}:{" "}
-                          {getMoqForOrderType(config.orderType)} pairs
+                          MOQ for {config.orderType}: {getMoqForOrderType(config.orderType)} pairs
                           {moqValidation && !moqValidation.valid ? (
                             <span className="mt-1 block text-amber-700" role="alert">
                               {moqValidation.message}
@@ -393,9 +369,7 @@ export default function ProductCustomizerWizard() {
                           id="special-instructions"
                           rows={3}
                           value={config.specialInstructions}
-                          onChange={(e) =>
-                            update({ specialInstructions: e.target.value })
-                          }
+                          onChange={(e) => update({ specialInstructions: e.target.value })}
                           placeholder="Delivery notes, branding details, etc."
                           className="input-field w-full resize-none"
                         />
@@ -403,9 +377,7 @@ export default function ProductCustomizerWizard() {
                     </div>
                   )}
 
-                  {step === 12 && (
-                    <CustomizerDeliveryStep config={config} onUpdate={update} />
-                  )}
+                  {step === 12 && <CustomizerDeliveryStep config={config} onUpdate={update} />}
 
                   {step === 13 && <CustomizerReviewStep config={config} />}
                 </div>
@@ -418,11 +390,7 @@ export default function ProductCustomizerWizard() {
                     </Button>
                   )}
                   {step < TOTAL ? (
-                    <Button
-                      type="button"
-                      onClick={goNext}
-                      disabled={!canContinue}
-                    >
+                    <Button type="button" onClick={goNext} disabled={!canContinue}>
                       Continue
                       <ChevronRight className="h-4 w-4" />
                     </Button>
@@ -446,10 +414,7 @@ export default function ProductCustomizerWizard() {
             <CustomizerPreview config={config} />
             <div className="mt-6 hidden lg:block">
               <p className="eyebrow mb-3 text-brand-accent">Live Pricing</p>
-              <CustomizerPricePanel
-                config={config}
-                showBulkTiers={step === 8}
-              />
+              <CustomizerPricePanel config={config} showBulkTiers={step === 8} />
             </div>
           </aside>
         </div>

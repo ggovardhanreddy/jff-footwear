@@ -1,7 +1,3 @@
-import {
-  products as catalog,
-  default as catalogDefault,
-} from "@jff/shared/products";
-
-export const products = catalog;
-export default catalogDefault;
+// Auto-generated re-export — source of truth: @jff/shared/products
+export * from "@jff/shared/products";
+export { default } from "@jff/shared/products";

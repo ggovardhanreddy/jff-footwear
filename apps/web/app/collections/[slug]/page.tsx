@@ -5,13 +5,8 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import ProductGrid from "@/components/products/ProductGrid";
 import JsonLd from "@/components/seo/JsonLd";
 import EmptyState from "@/components/ui/EmptyState";
-import { ShoppingBag } from "lucide-react";
 import { products } from "@/data";
-import {
-  getAllCollections,
-  getCollectionBySlug,
-  getCollectionProducts,
-} from "@/lib/collections";
+import { getAllCollections, getCollectionBySlug, getCollectionProducts } from "@/lib/collections";
 import { createMetadata, createBreadcrumbJsonLd, createItemListJsonLd } from "@/lib/seo";
 import { ROUTES } from "@/lib/constants";
 import { getProductMainImage } from "@/lib/utils";
@@ -80,7 +75,6 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
 
       {collectionProducts.length === 0 ? (
         <EmptyState
-          icon={ShoppingBag}
           title="No products in this collection yet"
           description="Check back soon or browse our full catalogue."
           actionLabel="Shop All Products"
@@ -89,8 +83,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
       ) : (
         <>
           <p className="mb-8 text-sm text-brand-muted">
-            {collectionProducts.length}{" "}
-            {collectionProducts.length === 1 ? "style" : "styles"}
+            {collectionProducts.length} {collectionProducts.length === 1 ? "style" : "styles"}
           </p>
           <ProductGrid products={collectionProducts} />
         </>
