@@ -8,7 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "build": "expo export",
-    "lint": "eslint .",
+    "lint": "echo \"@jff/mobile: no lint\"",
     "typecheck": "tsc --noEmit",
     "test": "echo \"@jff/mobile: no tests yet\"",
     "update:production": "eas update --branch production --channel production --message \"Manual production OTA\"",

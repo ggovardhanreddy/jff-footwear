@@ -10,7 +10,9 @@ export type OtaAnalyticsEvent =
   | "update_failed"
   | "update_error"
   | "network_unavailable"
-  | "timeout";
+  | "timeout"
+  | "emergency_launch"
+  | "runtime_mismatch";
 
 export interface OtaAnalyticsPayload {
   event: OtaAnalyticsEvent;
