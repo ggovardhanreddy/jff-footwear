@@ -1,24 +1,47 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import AssetImage from "@/components/ui/AssetImage";
 import { useTheme } from "@/context/ThemeContext";
-import { brandDark, brandLight } from "@jff/ui/brand";
+import { assetPath } from "@/lib/paths";
+import { brandAssets, brandDark, brandLight } from "@jff/ui/brand";
+import { cn } from "@/lib/utils";
 
-/** Ambient gradient orbs — adapts to light/dark theme; respects reduced motion. */
+/** Ambient gradient orbs + subtle brand watermark — adapts to light/dark theme. */
 export default function BrandAtmosphere() {
   const { resolved } = useTheme();
   const reduced = useReducedMotion();
   const tokens = resolved === "dark" ? brandDark : brandLight;
+  const isDark = resolved === "dark";
+  const backgroundLogo = assetPath(
+    isDark ? brandAssets.backgroundLogoDark : brandAssets.backgroundLogoLight
+  );
 
   return (
-    <div
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
-      aria-hidden
-    >
-      <div
-        className="absolute inset-0"
-        style={{ background: tokens.gradient }}
-      />
+    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
+      <div className="absolute inset-0" style={{ background: tokens.gradient }} />
+
+      {/* Large brand watermark — blend mode removes solid PNG backgrounds */}
+      <div className="absolute inset-0 flex items-center justify-center pt-12">
+        <motion.div
+          animate={
+            reduced
+              ? undefined
+              : {
+                  scale: [1, 1.03, 1],
+                  y: [0, -12, 0],
+                }
+          }
+          transition={{ duration: 32, repeat: Infinity, ease: "easeInOut" }}
+          className={cn(
+            "relative h-[min(88vw,680px)] w-[min(88vw,680px)]",
+            isDark ? "opacity-[0.11] mix-blend-screen" : "opacity-[0.06] mix-blend-multiply"
+          )}
+        >
+          <AssetImage src={backgroundLogo} alt="" fill sizes="100vw" className="object-contain" />
+        </motion.div>
+      </div>
+
       {!reduced ? (
         <>
           <motion.div

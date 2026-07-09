@@ -56,6 +56,9 @@ export const brandAssets = {
   twitterImage: "/images/brand/twitter-card.png",
   pwa192: "/images/brand/icon-192.png",
   pwa512: "/images/brand/icon-512.png",
+  /** Watermark logos — pair with mix-blend-multiply (light) or mix-blend-screen (dark) */
+  backgroundLogoLight: "/images/brand/logo-watermark-light.png",
+  backgroundLogoDark: "/images/brand/logo-watermark-dark.png",
 } as const;
 
 export const glassmorphism = {
