@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "plugins": [{ "name": "next" }],
+    "paths": {
+      "@/*": ["./*"],
+      "@jff/types": ["../../packages/types/src/index.ts"],
+      "@jff/types/*": ["../../packages/types/src/*"],
+      "@jff/config": ["../../packages/config/src/index.ts"],
+      "@jff/config/*": ["../../packages/config/src/*"],
+      "@jff/utils": ["../../packages/utils/src/index.ts"],
+      "@jff/utils/*": ["../../packages/utils/src/*"],
+      "@jff/shared": ["../../packages/shared/src/index.ts"],
+      "@jff/shared/*": ["../../packages/shared/src/*"],
+      "@jff/hooks": ["../../packages/hooks/src/index.ts"],
+      "@jff/hooks/*": ["../../packages/hooks/src/*"],
+      "@jff/ui": ["../../packages/ui/src/index.ts"],
+      "@jff/ui/*": ["../../packages/ui/src/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}

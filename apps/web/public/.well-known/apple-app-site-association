@@ -1,0 +1,24 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAMID.com.jfffootwear.app",
+        "paths": [
+          "/products/*",
+          "/product/*",
+          "/cart",
+          "/wishlist",
+          "/checkout",
+          "/wholesale",
+          "/oem",
+          "/dealer",
+          "/distributor",
+          "/search",
+          "/categories",
+          "/contact"
+        ]
+      }
+    ]
+  }
+}

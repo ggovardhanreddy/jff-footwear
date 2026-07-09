@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <rect width="180" height="180" rx="40" fill="#ffffff"/>
+  <rect x="8" y="8" width="164" height="164" rx="36" fill="#2563eb"/>
+  <text x="90" y="108" text-anchor="middle" fill="#ffffff" font-family="system-ui,sans-serif" font-size="52" font-weight="800" letter-spacing="4">JFF</text>
+</svg>

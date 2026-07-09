@@ -1,6 +1,6 @@
 # dependencies
-/node_modules
-/.pnp
+node_modules
+.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -8,15 +8,25 @@
 !.yarn/releases
 !.yarn/versions
 
+# turbo
+.turbo
+
 # testing
-/coverage
+coverage
 
 # next.js
-/.next/
-/out/
+.next/
+out/
+apps/web/.next/
+apps/web/out/
+
+# expo
+apps/mobile/.expo/
+apps/mobile/dist/
 
 # production
-/build
+build
+dist
 
 # misc
 .DS_Store
@@ -30,7 +40,11 @@ yarn-error.log*
 
 # env files
 .env*
+!.env.example
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# legacy github pages output (optional local deploy)
+docs/

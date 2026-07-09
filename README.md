@@ -1,103 +1,74 @@
-# JFF Footwear
+# JFF Footwear Monorepo
 
-Premium slippers manufacturer website built with Next.js, TypeScript, and Tailwind CSS.
+Turborepo monorepo: **Next.js website** + **Expo mobile** (Android/iOS) with shared packages.
 
-## Tech Stack
+**Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
-- **Next.js 15** (App Router)
-- **React 19** + **TypeScript**
-- **Tailwind CSS** + **Framer Motion**
-- **Lucide React** icons
-- **JSON-only** product data — no database, no backend, no paid services
+## Structure
 
-## Quick Start
+```
+apps/web/          Next.js 15 → Vercel
+apps/mobile/       Expo 52 → EAS Update + store builds
+packages/
+  types/           Shared TypeScript types
+  config/          Constants, shipping, pricing
+  utils/           Business logic (pricing, delivery, pincode)
+  shared/          Products catalog, content, validation
+  hooks/           TanStack Query keys + factories
+  ui/              Brand theme + format helpers
+```
+
+## Quick start
 
 ```bash
 npm install
-npm run generate
-npm run dev
+npm run dev:web       # http://localhost:3000
+npm run dev:mobile    # Expo
+npm run build         # Build all
+npm run generate      # Regenerate products from images
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+## Environment
 
-## Live Site
+See [.env.example](.env.example). Per-app:
 
-**https://ggovardhanreddy.github.io/jff-footwear/**
+- `apps/web` — `NEXT_PUBLIC_SITE_URL`
+- `apps/mobile` — `EXPO_PUBLIC_WEB_ASSET_BASE_URL`, `EAS_PROJECT_ID`
 
-Deployed automatically via GitHub Pages on every push to `main`.
+## CI/CD (`git push origin main`)
 
-## Product Discovery
+| Step | Action |
+|------|--------|
+| Lint + tests + build | Quality gates |
+| Sitemap + Lighthouse | SEO audit |
+| Vercel | Website deploy |
+| EAS Update | OTA to production (or native builds if config changed) |
 
-Products are **automatically generated** from image folders in:
+Docs: [AUTOMATED_DEPLOYMENT.md](docs/AUTOMATED_DEPLOYMENT.md) · [OTA_UPDATES.md](docs/OTA_UPDATES.md)
 
-```
-public/images/products/
-```
+## GitHub Secrets
 
-Supported image formats: `.jpg`, `.jpeg`, `.png`, `.svg`, `.webp`
+| Secret | Purpose |
+|--------|---------|
+| `EXPO_TOKEN` | Expo / EAS API access |
+| `EAS_PROJECT_ID` | Expo project UUID |
+| `VERCEL_TOKEN` | Vercel deploy token |
+| `VERCEL_ORG_ID` | Vercel team ID |
+| `VERCEL_PROJECT_ID` | Vercel project ID |
+| `VERCEL_SITE_URL` | Production site URL |
+| `DEPLOY_WEBHOOK_URL` | Optional — Slack/Discord deploy notification |
 
-### Adding New Products
+## Shared code
 
-1. Create a folder inside `public/images/products/` with your product images
-2. Run `npm run generate`
-3. The new product appears on the website automatically
-
-### Folder Structure Examples
-
-```
-public/images/products/jff-051/main.png
-public/images/products/Men/Bathroom/Black/F1.png
-public/images/products/Women/Fashion/Red/
-public/images/products/Unisex/EVA/
-```
-
-The generator infers **gender**, **category**, **material**, and **color** from folder names.
-
-## Project Structure
-
-```
-app/                  # Pages (App Router)
-components/           # UI components
-data/                 # Generated products + static content
-hooks/                # Custom React hooks
-lib/                  # Utilities, constants, SEO
-public/images/        # Static assets
-scripts/              # Product generator
-styles/               # Global CSS
-types/                # TypeScript types
-```
-
-## Pages
-
-| Route | Description |
-|-------|-------------|
-| `/` | Home — hero, featured, categories, testimonials |
-| `/products` | Product catalog with filters |
-| `/products/[slug]` | Product detail with gallery & WhatsApp inquiry |
-| `/about` | Company story, mission, manufacturing |
-| `/gallery` | Masonry gallery with lightbox |
-| `/contact` | Contact form & WhatsApp |
-| `/faq` | FAQ accordion |
-| `/privacy-policy` | Privacy policy |
-| `/terms` | Terms of service |
-
-## WhatsApp Inquiries
-
-Instead of a cart, customers use **Send Inquiry** which opens WhatsApp with pre-filled product details.
-
-Update the WhatsApp number in `lib/constants.ts`:
+Import from packages — never duplicate:
 
 ```ts
-export const WHATSAPP_NUMBER = "918106407372";
+import { products } from "@jff/shared/products";
+import { formatINR } from "@jff/utils/pricing";
+import { COMPANY } from "@jff/config/constants";
+import type { Product } from "@jff/types";
 ```
 
-## SEO
+## Company
 
-- Dynamic metadata per page
-- OpenGraph & Twitter Cards
-- `robots.txt` and `sitemap.xml`
-- Schema.org JSON-LD (Organization, Product, Breadcrumb)
-
-## License
-
-Private — JFF Footwear © 2026
+**JFF Footwear** — Rayachoty, Andhra Pradesh (founded January 2021). WhatsApp: +91 81064 07372
