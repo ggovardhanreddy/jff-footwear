@@ -4,7 +4,7 @@ import { COMPANY } from "@jff/config/constants";
 import { getProductMainImage } from "./utils";
 import { getProductPricing } from "./pricing";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://jfffootwear.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://jffstores.com";
 
 /** Build absolute URL for public assets (siteUrl already includes GitHub Pages base path). */
 function absoluteAsset(path: string): string {
@@ -170,9 +170,7 @@ export function createLocalBusinessJsonLd() {
   };
 }
 
-export function createBreadcrumbJsonLd(
-  items: { name: string; path: string }[]
-) {
+export function createBreadcrumbJsonLd(items: { name: string; path: string }[]) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -185,9 +183,7 @@ export function createBreadcrumbJsonLd(
   };
 }
 
-export function createFaqJsonLd(
-  faqs: { question: string; answer: string }[]
-) {
+export function createFaqJsonLd(faqs: { question: string; answer: string }[]) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",

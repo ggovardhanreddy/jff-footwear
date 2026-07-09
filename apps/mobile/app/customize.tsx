@@ -3,15 +3,14 @@ import { Link } from "expo-router";
 import BusinessScreen from "@/components/BusinessScreen";
 import { ROUTES } from "@jff/config/constants";
 
-const SITE_URL = "https://jfffootwear.com";
+const SITE_URL = "https://jffstores.com";
 
 export default function CustomizeScreen() {
   return (
     <BusinessScreen title="Customize Your Slippers">
       <Text className="mb-4 text-base leading-7 text-brand-muted dark:text-zinc-400">
-        The full product configurator — materials, sole, branding, packaging, and live
-        pricing — is available on the JFF website. Configure your order and place it via
-        WhatsApp.
+        The full product configurator — materials, sole, branding, packaging, and live pricing — is
+        available on the JFF website. Configure your order and place it via WhatsApp.
       </Text>
       <Pressable
         className="mb-3 rounded-2xl bg-brand-black py-4 dark:bg-white"

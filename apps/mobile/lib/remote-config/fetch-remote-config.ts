@@ -27,7 +27,7 @@ function getConfigUrl(): string {
   const base =
     process.env.EXPO_PUBLIC_WEB_ASSET_BASE_URL ??
     Constants.expoConfig?.extra?.webAssetBaseUrl ??
-    "https://ggovardhanreddy.github.io/jff-footwear";
+    "https://jffstores.com";
 
   return `${base.replace(/\/$/, "")}${REMOTE_APP_CONFIG_PATH}`;
 }

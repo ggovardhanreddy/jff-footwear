@@ -9,7 +9,7 @@ import {
 import { ROUTES } from "@jff/config/constants";
 import { Link } from "expo-router";
 
-const SITE_URL = "https://jfffootwear.com";
+const SITE_URL = "https://jffstores.com";
 
 export default function WholesaleScreen() {
   return (
@@ -41,9 +41,7 @@ export default function WholesaleScreen() {
 
       <Link href="/distributor" asChild>
         <Pressable className="mb-3 rounded-2xl border border-brand-black py-4">
-          <Text className="text-center font-semibold text-brand-black">
-            Distributor Enquiry
-          </Text>
+          <Text className="text-center font-semibold text-brand-black">Distributor Enquiry</Text>
         </Pressable>
       </Link>
 

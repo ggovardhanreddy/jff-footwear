@@ -2,7 +2,7 @@ import { Text, Pressable, Linking } from "react-native";
 import BusinessScreen from "@/components/BusinessScreen";
 import { ROUTES } from "@jff/config/constants";
 
-const SITE_URL = "https://jfffootwear.com";
+const SITE_URL = "https://jffstores.com";
 
 const COLLECTIONS = [
   {
@@ -37,15 +37,11 @@ export default function CollectionsScreen() {
         <Pressable
           key={collection.slug}
           className="mb-4 rounded-2xl bg-white px-4 py-4 dark:border dark:border-zinc-800 dark:bg-zinc-900"
-          onPress={() =>
-            Linking.openURL(`${SITE_URL}${ROUTES.collection(collection.slug)}`)
-          }
+          onPress={() => Linking.openURL(`${SITE_URL}${ROUTES.collection(collection.slug)}`)}
           accessibilityRole="button"
           accessibilityLabel={`Open ${collection.title} on website`}
         >
-          <Text className="font-semibold text-brand-black dark:text-white">
-            {collection.title}
-          </Text>
+          <Text className="font-semibold text-brand-black dark:text-white">{collection.title}</Text>
           <Text className="mt-1 text-sm text-brand-muted dark:text-zinc-400">
             {collection.description}
           </Text>

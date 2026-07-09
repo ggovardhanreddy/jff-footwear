@@ -45,7 +45,7 @@ See [.env.example](.env.example). Per-app:
 | Vercel               | Optional — when secrets configured |
 | EAS Update           | Optional — OTA to production       |
 
-**Live site:** https://ggovardhanreddy.github.io/jff-footwear/
+**Live site:** https://jffstores.com/
 
 Docs: [project-docs/AUTOMATED_DEPLOYMENT.md](project-docs/AUTOMATED_DEPLOYMENT.md) · [project-docs/OTA_UPDATES.md](project-docs/OTA_UPDATES.md) · [project-docs/SECRETS_SETUP.md](project-docs/SECRETS_SETUP.md)
 

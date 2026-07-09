@@ -3,7 +3,7 @@ import { NOINDEX_PATHS } from "@/lib/sitemap-config";
 
 export const dynamic = "force-static";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://jfffootwear.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://jffstores.com";
 
 export default function robots(): MetadataRoute.Robots {
   return {

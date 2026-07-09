@@ -38,7 +38,7 @@ jobs:
       - name: Build static export
         run: npm run deploy:pages
         env:
-          NEXT_PUBLIC_SITE_URL: https://ggovardhanreddy.github.io/jff-footwear
+          NEXT_PUBLIC_SITE_URL: https://jffstores.com
 
       - name: Commit and push docs
         env:

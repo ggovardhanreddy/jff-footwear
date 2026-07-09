@@ -13,8 +13,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  SITE_URL: ${{ secrets.VERCEL_SITE_URL || 'https://ggovardhanreddy.github.io/jff-footwear' }}
-  PAGES_URL: https://ggovardhanreddy.github.io/jff-footwear
+  SITE_URL: ${{ secrets.VERCEL_SITE_URL || 'https://jffstores.com' }}
+  PAGES_URL: https://jffstores.com
 
 jobs:
   setup:

@@ -34,7 +34,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: "com.jfffootwear.app",
-    associatedDomains: ["applinks:jfffootwear.com", "applinks:www.jfffootwear.com"],
+    associatedDomains: ["applinks:jffstores.com", "applinks:www.jffstores.com"],
   },
   android: {
     adaptiveIcon: {
@@ -47,8 +47,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         action: "VIEW",
         autoVerify: true,
         data: [
-          { scheme: "https", host: "jfffootwear.com", pathPrefix: "/" },
-          { scheme: "https", host: "www.jfffootwear.com", pathPrefix: "/" },
+          { scheme: "https", host: "jffstores.com", pathPrefix: "/" },
+          { scheme: "https", host: "www.jffstores.com", pathPrefix: "/" },
         ],
         category: ["BROWSABLE", "DEFAULT"],
       },
@@ -85,10 +85,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     eas: {
       projectId: EAS_PROJECT_ID,
     },
-    webAssetBaseUrl:
-      process.env.EXPO_PUBLIC_WEB_ASSET_BASE_URL ??
-      "https://ggovardhanreddy.github.io/jff-footwear",
-    remoteConfigUrl:
-      process.env.EXPO_PUBLIC_REMOTE_CONFIG_URL ?? undefined,
+    webAssetBaseUrl: process.env.EXPO_PUBLIC_WEB_ASSET_BASE_URL ?? "https://jffstores.com",
+    remoteConfigUrl: process.env.EXPO_PUBLIC_REMOTE_CONFIG_URL ?? undefined,
   },
 });

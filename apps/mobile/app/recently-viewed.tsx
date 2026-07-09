@@ -3,14 +3,14 @@ import { Link } from "expo-router";
 import BusinessScreen from "@/components/BusinessScreen";
 import { ROUTES } from "@jff/config/constants";
 
-const SITE_URL = "https://jfffootwear.com";
+const SITE_URL = "https://jffstores.com";
 
 export default function RecentlyViewedScreen() {
   return (
     <BusinessScreen title="Recently Viewed">
       <Text className="mb-4 text-base leading-7 text-brand-muted dark:text-zinc-400">
-        Your recently viewed styles sync on the website when you browse products there.
-        Continue shopping in the app or open your history on the web.
+        Your recently viewed styles sync on the website when you browse products there. Continue
+        shopping in the app or open your history on the web.
       </Text>
       <Pressable
         className="mb-3 rounded-2xl bg-brand-black py-4 dark:bg-white"
