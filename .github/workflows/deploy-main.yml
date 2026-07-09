@@ -138,37 +138,6 @@ jobs:
       - working-directory: apps/web
         run: npx --yes @lhci/cli@0.14.0 autorun
 
-  deploy-github-pages:
-    name: Deploy GitHub Pages
-    needs: [sitemap, lighthouse]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: npm run deploy:pages
-        env:
-          NEXT_PUBLIC_SITE_URL: ${{ env.PAGES_URL }}
-      - name: Commit and push docs
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs
-          if git diff --staged --quiet; then
-            echo "No changes to docs/"
-            exit 0
-          fi
-          git commit -m "chore: update GitHub Pages build [skip pages]"
-          git push
-
   deploy-web:
     name: Deploy Website (Vercel)
     needs: [setup, sitemap, lighthouse]
@@ -194,7 +163,7 @@ jobs:
 
   ota-update:
     name: Publish OTA Update (Expo)
-    needs: [deploy-web, deploy-github-pages, changes, setup]
+    needs: [deploy-web, sitemap, lighthouse, changes, setup]
     if: >-
       ${{ needs.changes.outputs.native != 'true' &&
       needs.setup.outputs.has_expo == 'true' &&
@@ -224,7 +193,7 @@ jobs:
 
   native-build:
     name: Native Build (Store Submission Required)
-    needs: [deploy-web, deploy-github-pages, changes, setup]
+    needs: [deploy-web, sitemap, lighthouse, changes, setup]
     if: >-
       ${{ needs.changes.outputs.native == 'true' && needs.setup.outputs.has_expo == 'true' }}
     runs-on: ubuntu-latest
@@ -260,10 +229,11 @@ jobs:
 
   notify:
     name: Notify Deployment Success
-    needs: [deploy-web, deploy-github-pages, ota-update, native-build, sitemap, lighthouse]
+    needs: [deploy-web, ota-update, native-build, sitemap, lighthouse]
     if: >-
       always() &&
-      (needs.deploy-github-pages.result == 'success' || needs.deploy-web.result == 'success')
+      needs.sitemap.result == 'success' &&
+      needs.lighthouse.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -271,7 +241,7 @@ jobs:
         run: bash scripts/notify-deployment.sh
         env:
           VERCEL_SITE_URL: ${{ env.PAGES_URL }}
-          PAGES_STATUS: ${{ needs.deploy-github-pages.result == 'success' && '✅ GitHub Pages' || '❌ Failed' }}
+          PAGES_STATUS: "✅ GitHub Pages (deploy-pages.yml)"
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_ACTOR: ${{ github.actor }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
