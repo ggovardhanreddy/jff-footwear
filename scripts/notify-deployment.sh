@@ -2,7 +2,8 @@
 # Post-deploy notification — GitHub Step Summary + optional webhook
 set -euo pipefail
 
-SITE_URL="${VERCEL_SITE_URL:-https://jfffootwear.com}"
+SITE_URL="${VERCEL_SITE_URL:-https://ggovardhanreddy.github.io/jff-footwear}"
+PAGES_STATUS="${PAGES_STATUS:-—}"
 COMMIT_SHA="${GITHUB_SHA:-local}"
 COMMIT_MSG="${COMMIT_MESSAGE:-No message}"
 ACTOR="${GITHUB_ACTOR:-developer}"
@@ -19,6 +20,7 @@ SUMMARY_FILE="${GITHUB_STEP_SUMMARY:-/dev/stdout}"
   echo "| Step | Status |"
   echo "|------|--------|"
   echo "| Lint & Tests | ✅ Passed |"
+  echo "| Website (GitHub Pages) | ${PAGES_STATUS} |"
   echo "| Website (Vercel) | ${WEB_STATUS} |"
   echo "| Sitemap | ✅ ${SITEMAP_URLS} URLs |"
   echo "| Lighthouse | ${LIGHTHOUSE_STATUS} |"
