@@ -76,7 +76,7 @@ export function mapWebPathToMobile(path: string): string {
 }
 
 /** Build a universal link for a product (website format) */
-export function productUniversalLink(slug: string, siteUrl = "https://jffstores.com"): string {
+export function productUniversalLink(slug: string, siteUrl = "https://www.jffstores.com"): string {
   return `${siteUrl.replace(/\/$/, "")}/products/${slug}`;
 }
 

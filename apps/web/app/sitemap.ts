@@ -9,7 +9,7 @@ import {
 
 export const dynamic = "force-static";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://jffstores.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.jffstores.com";
 
 /** Set once per static export build. */
 const BUILD_DATE = new Date();

@@ -2,7 +2,7 @@ import { Text, Pressable, Linking } from "react-native";
 import { CATALOG_PATHS } from "@jff/config/wholesale-config";
 import BusinessScreen from "@/components/BusinessScreen";
 
-const SITE_URL = "https://jffstores.com";
+const SITE_URL = "https://www.jffstores.com";
 
 export default function CatalogScreen() {
   return (

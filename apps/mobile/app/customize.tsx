@@ -3,7 +3,7 @@ import { Link } from "expo-router";
 import BusinessScreen from "@/components/BusinessScreen";
 import { ROUTES } from "@jff/config/constants";
 
-const SITE_URL = "https://jffstores.com";
+const SITE_URL = "https://www.jffstores.com";
 
 export default function CustomizeScreen() {
   return (

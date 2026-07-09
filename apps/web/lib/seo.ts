@@ -4,7 +4,7 @@ import { COMPANY } from "@jff/config/constants";
 import { getProductMainImage } from "./utils";
 import { getProductPricing } from "./pricing";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://jffstores.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.jffstores.com";
 
 /** Build absolute URL for public assets (siteUrl already includes GitHub Pages base path). */
 function absoluteAsset(path: string): string {

@@ -2,7 +2,7 @@ import { Text, Pressable, Linking } from "react-native";
 import BusinessScreen from "@/components/BusinessScreen";
 import { ROUTES } from "@jff/config/constants";
 
-const SITE_URL = "https://jffstores.com";
+const SITE_URL = "https://www.jffstores.com";
 
 const COLLECTIONS = [
   {

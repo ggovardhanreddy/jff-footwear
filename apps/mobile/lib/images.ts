@@ -3,7 +3,7 @@ import Constants from "expo-constants";
 const base =
   process.env.EXPO_PUBLIC_WEB_ASSET_BASE_URL ??
   Constants.expoConfig?.extra?.webAssetBaseUrl ??
-  "https://jffstores.com";
+  "https://www.jffstores.com";
 
 /** Resolve a web-relative product image path to an absolute URL for mobile. */
 export function resolveProductImage(path: string): string {

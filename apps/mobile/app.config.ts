@@ -85,7 +85,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     eas: {
       projectId: EAS_PROJECT_ID,
     },
-    webAssetBaseUrl: process.env.EXPO_PUBLIC_WEB_ASSET_BASE_URL ?? "https://jffstores.com",
+    webAssetBaseUrl: process.env.EXPO_PUBLIC_WEB_ASSET_BASE_URL ?? "https://www.jffstores.com",
     remoteConfigUrl: process.env.EXPO_PUBLIC_REMOTE_CONFIG_URL ?? undefined,
   },
 });

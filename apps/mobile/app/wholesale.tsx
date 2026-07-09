@@ -9,7 +9,7 @@ import {
 import { ROUTES } from "@jff/config/constants";
 import { Link } from "expo-router";
 
-const SITE_URL = "https://jffstores.com";
+const SITE_URL = "https://www.jffstores.com";
 
 export default function WholesaleScreen() {
   return (
