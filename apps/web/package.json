@@ -13,6 +13,7 @@
     "generate:catalog": "tsx scripts/generate-catalog.ts",
     "verify:sitemap": "tsx scripts/verify-sitemap.ts",
     "lighthouse": "lhci autorun",
+    "deploy:pages": "npm run generate && npm run generate:catalog && NEXT_PUBLIC_BASE_PATH=/jff-footwear NEXT_PUBLIC_SITE_URL=https://ggovardhanreddy.github.io/jff-footwear npm run build && rm -rf ../../docs && cp -r out ../../docs",
     "prebuild": "npm run generate && npm run generate:catalog"
   },
   "dependencies": {

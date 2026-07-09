@@ -15,6 +15,7 @@
     "typecheck": "turbo typecheck",
     "test": "turbo test",
     "generate": "turbo generate --filter=@jff/web",
+    "deploy:pages": "npm run deploy:pages --workspace=@jff/web",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "prepare": "husky"
   },
