@@ -36,6 +36,36 @@ export async function invokeEdgeFunction<T>(
   const { data, error } = await client.functions.invoke(name, {
     body: body as Record<string, unknown>,
   });
-  if (error) return { data: null, error: error.message };
+
+  if (error) {
+    let message = error.message || "Edge Function request failed";
+    const ctx = (error as { context?: Response }).context;
+    if (ctx && typeof ctx.json === "function") {
+      try {
+        const payload = (await ctx.json()) as { error?: string; message?: string };
+        if (payload?.error) message = String(payload.error);
+        else if (payload?.message) message = String(payload.message);
+      } catch {
+        /* keep default message */
+      }
+    }
+    // Some clients still put the error body on data
+    if (message.includes("non-2xx") && data && typeof data === "object") {
+      const payload = data as { error?: string; message?: string };
+      if (payload.error) message = String(payload.error);
+      else if (payload.message) message = String(payload.message);
+    }
+    return { data: (data as T) ?? null, error: message };
+  }
+
+  if (
+    data &&
+    typeof data === "object" &&
+    "error" in (data as object) &&
+    !(data as T & { analysis?: unknown }).analysis
+  ) {
+    return { data: data as T, error: String((data as { error: string }).error) };
+  }
+
   return { data: data as T, error: null };
 }

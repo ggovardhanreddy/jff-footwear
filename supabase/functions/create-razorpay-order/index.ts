@@ -1,6 +1,6 @@
--- Edge Function: create-razorpay-order
--- Deploy: supabase functions deploy create-razorpay-order
--- Secrets: RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET
+// Edge Function: create-razorpay-order
+// Deploy: supabase functions deploy create-razorpay-order
+// Secrets: RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 

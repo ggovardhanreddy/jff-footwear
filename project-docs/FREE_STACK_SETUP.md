@@ -48,6 +48,23 @@ Then open http://localhost:3000/admin/
 
 > **Catalog stance:** Keep shipping products from static JSON. Use Supabase tables for orders, coins, coupons, banners, and future admin edits — full catalog cutover only after admin CRUD is proven.
 
+### AI product analyzer (admin image → copy)
+
+1. Run [`supabase/migrations/004_product_ai_fields.sql`](../supabase/migrations/004_product_ai_fields.sql) in the SQL Editor (adds AI columns + `product-images` Storage bucket).
+2. Create a free [Google AI Studio](https://aistudio.google.com/apikey) API key (Gemini).
+3. Deploy the Edge Function and set the secret (never put this in `NEXT_PUBLIC_*` or the browser):
+
+```bash
+npx supabase login
+npx supabase link --project-ref YOUR_REF
+npx supabase secrets set GEMINI_API_KEY=your_gemini_key
+npx supabase functions deploy analyze-product-images
+```
+
+4. Open `/admin/products` → upload 1–6 photos → **Analyze with AI** → edit the form → **Save product**.
+
+Smoke checklist: upload → analyze fills name/descriptions/specs/SEO → low-confidence fields show “Needs Manual Review” → save creates `catalog_products` + `product_images` rows.
+
 ## 2. Edge Functions (optional — deploy when online pay is ready)
 
 Until Razorpay live keys + Edge Functions are deployed, checkout works via **WhatsApp** and **COD** (signed-in).
@@ -59,8 +76,10 @@ npx supabase login
 npx supabase link --project-ref YOUR_REF
 npx supabase secrets set RAZORPAY_KEY_ID=rzp_test_xxx RAZORPAY_KEY_SECRET=xxx
 npx supabase secrets set SUPABASE_SERVICE_ROLE_KEY=eyJ...   # Dashboard → Settings → API
+npx supabase secrets set GEMINI_API_KEY=...                 # AI product analyzer
 npx supabase functions deploy place-order
 npx supabase functions deploy create-razorpay-order
+npx supabase functions deploy analyze-product-images
 ```
 
 Do **not** put the service role key in the browser or `.env.local` for the Next app.

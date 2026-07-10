@@ -1,5 +1,5 @@
--- Edge Function: place-order
--- Creates order, applies coin redeem/earn, writes ledger. Works without Razorpay.
+// Edge Function: place-order
+// Creates order, applies coin redeem/earn, writes ledger. Works without Razorpay.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
