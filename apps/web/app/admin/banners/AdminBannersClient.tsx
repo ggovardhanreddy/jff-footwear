@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import AdminShell from "@/components/admin/AdminShell";
 import { getSupabaseBrowserClient } from "@jff/api";
 import Button from "@/components/ui/Button";
+import { useRealtimeRefresh } from "@/lib/useRealtimeRefresh";
 
 type Banner = {
   id: string;
@@ -19,16 +20,18 @@ export default function AdminBannersClient() {
   const [subtitle, setSubtitle] = useState("");
   const [href, setHref] = useState("/products/");
 
-  const load = async () => {
+  const load = useCallback(async () => {
     const client = getSupabaseBrowserClient();
     if (!client) return;
     const { data } = await client.from("banners").select("*").order("sort_order");
     setRows((data as Banner[]) || []);
-  };
+  }, []);
 
   useEffect(() => {
     void load();
-  }, []);
+  }, [load]);
+
+  useRealtimeRefresh(["banners"], load);
 
   const add = async () => {
     const client = getSupabaseBrowserClient();

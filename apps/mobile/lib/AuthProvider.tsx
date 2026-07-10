@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import type { Profile } from "@jff/api";
+import { subscribeTable } from "@jff/api";
 import { getMobileSupabase, isMobileSupabaseConfigured } from "@/lib/supabase";
 
 type AuthValue = {
@@ -74,6 +75,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     void refreshProfile();
   }, [refreshProfile]);
+
+  useEffect(() => {
+    if (!client || !session?.user) return;
+    const userId = session.user.id;
+    return subscribeTable(client, "jff_coins_ledger", {
+      channelName: `jff-mobile:coins:${userId}`,
+      filter: `user_id=eq.${userId}`,
+      onChange: () => {
+        void refreshProfile();
+      },
+    });
+  }, [client, session?.user, refreshProfile]);
 
   const signIn = useCallback(
     async (email: string, password: string) => {

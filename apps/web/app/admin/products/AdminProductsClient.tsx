@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import AdminShell from "@/components/admin/AdminShell";
 import ProductAiForm, {
   emptyProductForm,
@@ -18,6 +18,7 @@ import {
 } from "@jff/api";
 import { formatINR } from "@/lib/pricing";
 import { slugify } from "@/lib/utils";
+import { useRealtimeRefresh } from "@/lib/useRealtimeRefresh";
 
 type ProductRow = {
   id: string;
@@ -102,7 +103,7 @@ export default function AdminProductsClient() {
     []
   );
 
-  const load = async () => {
+  const load = useCallback(async () => {
     const client = getSupabaseBrowserClient();
     if (!client) return;
     const { data } = await client
@@ -111,11 +112,13 @@ export default function AdminProductsClient() {
       .order("created_at", { ascending: false })
       .limit(100);
     setRows((data as ProductRow[]) || []);
-  };
+  }, []);
 
   useEffect(() => {
     void load();
-  }, []);
+  }, [load]);
+
+  useRealtimeRefresh(["catalog_products", "product_images"], load);
 
   const analyze = async () => {
     if (!images.length) return;

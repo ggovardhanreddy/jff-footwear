@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import AdminShell from "@/components/admin/AdminShell";
 import { getSupabaseBrowserClient } from "@jff/api";
 import Button from "@/components/ui/Button";
+import { useRealtimeRefresh } from "@/lib/useRealtimeRefresh";
 
 type Coupon = {
   id: string;
@@ -20,7 +21,7 @@ export default function AdminCouponsClient() {
   const [label, setLabel] = useState("");
   const [discount, setDiscount] = useState("10");
 
-  const load = async () => {
+  const load = useCallback(async () => {
     const client = getSupabaseBrowserClient();
     if (!client) return;
     const { data } = await client
@@ -28,11 +29,13 @@ export default function AdminCouponsClient() {
       .select("*")
       .order("created_at", { ascending: false });
     setRows((data as Coupon[]) || []);
-  };
+  }, []);
 
   useEffect(() => {
     void load();
-  }, []);
+  }, [load]);
+
+  useRealtimeRefresh(["coupons"], load);
 
   const add = async () => {
     const client = getSupabaseBrowserClient();

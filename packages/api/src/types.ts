@@ -10,6 +10,8 @@ export type Profile = {
   delivery_pincode: string | null;
   role?: "customer" | "admin" | "wholesale";
   is_wholesale?: boolean;
+  expo_push_token?: string | null;
+  notification_prefs?: Record<string, boolean> | null;
   created_at: string;
   updated_at: string;
 };

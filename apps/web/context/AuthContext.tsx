@@ -13,6 +13,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import {
   getSupabaseBrowserClient,
   isSupabaseConfigured,
+  subscribeTable,
   type CoinLedgerRow,
   type NotificationRow,
   type Profile,
@@ -141,6 +142,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void refreshCoins();
     void refreshNotifications();
   }, [session?.user, refreshProfile, refreshCoins, refreshNotifications]);
+
+  useEffect(() => {
+    if (!client || !session?.user) return;
+    const userId = session.user.id;
+    const unsubNotifications = subscribeTable(client, "notifications", {
+      channelName: `jff:notifications:${userId}`,
+      filter: `user_id=eq.${userId}`,
+      onChange: () => {
+        void refreshNotifications();
+      },
+    });
+    const unsubCoins = subscribeTable(client, "jff_coins_ledger", {
+      channelName: `jff:coins:${userId}`,
+      filter: `user_id=eq.${userId}`,
+      onChange: () => {
+        void refreshCoins();
+      },
+    });
+    return () => {
+      unsubNotifications();
+      unsubCoins();
+    };
+  }, [client, session?.user, refreshNotifications, refreshCoins]);
 
   const signInWithEmail = useCallback(
     async (email: string) => {

@@ -9,7 +9,23 @@ Add these in **GitHub → Settings → Secrets and variables → Actions**.
 | `VERCEL_TOKEN`      | [vercel.com/account/tokens](https://vercel.com/account/tokens) |
 | `VERCEL_ORG_ID`     | Vercel project → Settings → General                            |
 | `VERCEL_PROJECT_ID` | Same page                                                      |
-| `VERCEL_SITE_URL`   | e.g. `https://jfffootwear.com`                                 |
+| `VERCEL_SITE_URL`   | e.g. `https://www.jffstores.com`                               |
+
+### Pause — credentials required
+
+Until these secrets exist, `deploy-main.yml` **skips** the Vercel job and GitHub Pages remains the live host (`https://www.jffstores.com/`).
+
+Add secrets, then either re-run the failed/skipped workflow or push an empty commit to `main`:
+
+```bash
+# After creating a Vercel project linked to this repo:
+gh secret set VERCEL_TOKEN
+gh secret set VERCEL_ORG_ID
+gh secret set VERCEL_PROJECT_ID
+gh secret set VERCEL_SITE_URL -b'https://www.jffstores.com'
+```
+
+Also set the same `NEXT_PUBLIC_SUPABASE_*` and `NEXT_PUBLIC_SITE_URL` in the **Vercel project Environment Variables** (Production + Preview).
 
 ## Required for Expo OTA
 

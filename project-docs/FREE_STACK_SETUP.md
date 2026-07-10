@@ -65,6 +65,10 @@ npx supabase functions deploy analyze-product-images
 
 Smoke checklist: upload → analyze fills name/descriptions/specs/SEO → low-confidence fields show “Needs Manual Review” → save creates `catalog_products` + `product_images` rows.
 
+### Realtime (admin sync)
+
+Run [`supabase/migrations/005_realtime_publication.sql`](../supabase/migrations/005_realtime_publication.sql) so admin product/order/banner/coupon/notification changes stream to open clients. Also adds `expo_push_token` + `notification_prefs` on `profiles` for Expo Push (no Firebase).
+
 ## 2. Edge Functions (optional — deploy when online pay is ready)
 
 Until Razorpay live keys + Edge Functions are deployed, checkout works via **WhatsApp** and **COD** (signed-in).

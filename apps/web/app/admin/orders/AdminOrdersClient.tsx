@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import AdminShell from "@/components/admin/AdminShell";
 import { getSupabaseBrowserClient, type OrderRow } from "@jff/api";
 import { formatINR } from "@/lib/pricing";
+import { useRealtimeRefresh } from "@/lib/useRealtimeRefresh";
 
 const STATUSES = [
   "pending",
@@ -18,7 +19,7 @@ const STATUSES = [
 export default function AdminOrdersClient() {
   const [orders, setOrders] = useState<OrderRow[]>([]);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     const client = getSupabaseBrowserClient();
     if (!client) return;
     const { data } = await client
@@ -27,15 +28,19 @@ export default function AdminOrdersClient() {
       .order("created_at", { ascending: false })
       .limit(50);
     setOrders((data as OrderRow[]) || []);
-  };
+  }, []);
 
   useEffect(() => {
     void load();
-  }, []);
+  }, [load]);
+
+  useRealtimeRefresh(["orders", "order_events"], load);
 
   const updateStatus = async (id: string, status: string) => {
     const client = getSupabaseBrowserClient();
     if (!client) return;
+    // Optimistic UI
+    setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
     await client
       .from("orders")
       .update({ status, updated_at: new Date().toISOString() })

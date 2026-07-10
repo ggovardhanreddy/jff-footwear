@@ -8,7 +8,8 @@
     ".": "./src/index.ts",
     "./supabase": "./src/supabase.ts",
     "./types": "./src/types.ts",
-    "./coins": "./src/coins.ts"
+    "./coins": "./src/coins.ts",
+    "./realtime": "./src/realtime.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

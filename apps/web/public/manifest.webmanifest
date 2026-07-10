@@ -4,9 +4,8 @@
   "description": "Premium Indian slippers — retail & wholesale",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#c8a96e",
   "background_color": "#0a0a0a",
+  "theme_color": "#c8a96e",
   "orientation": "portrait-primary",
   "categories": ["shopping", "business"],
   "shortcuts": [
