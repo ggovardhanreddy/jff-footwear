@@ -29,11 +29,10 @@ Checklist completed for the JFF Footwear monorepo (web + mobile).
 
 ## Deploy targets
 
-| Target       | Status        | URL                                             |
-| ------------ | ------------- | ----------------------------------------------- |
-| GitHub Pages | Live          | https://ggovardhanreddy.github.io/jff-footwear/ |
-| Vercel       | Needs secrets | See `SECRETS_SETUP.md`                          |
-| Expo OTA     | Needs secrets | See `OTA_UPDATES.md`                            |
+| Target       | Status        | URL                        |
+| ------------ | ------------- | -------------------------- |
+| GitHub Pages | Live          | https://www.jffstores.com/ |
+| Expo OTA     | Needs secrets | See `OTA_UPDATES.md`       |
 
 ## Manual smoke test
 

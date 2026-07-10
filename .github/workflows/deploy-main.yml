@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  SITE_URL: ${{ secrets.VERCEL_SITE_URL || 'https://www.jffstores.com' }}
+  SITE_URL: https://www.jffstores.com
   PAGES_URL: https://www.jffstores.com
 
 jobs:
@@ -22,16 +22,10 @@ jobs:
     name: Check Deploy Secrets
     runs-on: ubuntu-latest
     outputs:
-      has_vercel: ${{ steps.secrets.outputs.has_vercel }}
       has_expo: ${{ steps.secrets.outputs.has_expo }}
     steps:
       - id: secrets
         run: |
-          if [ -n "${{ secrets.VERCEL_TOKEN }}" ]; then
-            echo "has_vercel=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "has_vercel=false" >> "$GITHUB_OUTPUT"
-          fi
           if [ -n "${{ secrets.EXPO_TOKEN }}" ]; then
             echo "has_expo=true" >> "$GITHUB_OUTPUT"
           else
@@ -124,32 +118,12 @@ jobs:
       - working-directory: apps/web
         run: npx --yes @lhci/cli@0.14.0 autorun
 
-  deploy-web:
-    name: Deploy Website (Vercel)
-    needs: [setup, sitemap, lighthouse]
-    if: ${{ needs.setup.outputs.has_vercel == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-node
-      - name: Deploy to Vercel (production)
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
-        run: |
-          # Project Root Directory is already apps/web on Vercel — run from monorepo root
-          npx --yes vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
-          npx --yes vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"
-
   ota-update:
     name: Publish OTA Update (Expo)
-    needs: [deploy-web, sitemap, lighthouse, changes, setup]
+    needs: [sitemap, lighthouse, changes, setup]
     if: >-
       ${{ needs.changes.outputs.native != 'true' &&
-      needs.setup.outputs.has_expo == 'true' &&
-      (needs.deploy-web.result == 'success' || needs.deploy-web.result == 'skipped') }}
+      needs.setup.outputs.has_expo == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -172,7 +146,7 @@ jobs:
 
   native-build:
     name: Native Build (Store Submission Required)
-    needs: [deploy-web, sitemap, lighthouse, changes, setup]
+    needs: [sitemap, lighthouse, changes, setup]
     if: >-
       ${{ needs.changes.outputs.native == 'true' && needs.setup.outputs.has_expo == 'true' }}
     runs-on: ubuntu-latest
@@ -205,7 +179,7 @@ jobs:
 
   notify:
     name: Notify Deployment Success
-    needs: [deploy-web, ota-update, native-build, sitemap, lighthouse]
+    needs: [ota-update, native-build, sitemap, lighthouse]
     if: >-
       always() &&
       needs.sitemap.result == 'success' &&
@@ -216,12 +190,12 @@ jobs:
       - name: Post deployment summary
         run: bash scripts/notify-deployment.sh
         env:
-          VERCEL_SITE_URL: ${{ env.PAGES_URL }}
+          SITE_URL: ${{ env.PAGES_URL }}
           PAGES_STATUS: "✅ GitHub Pages (deploy-pages.yml)"
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_ACTOR: ${{ github.actor }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-          WEB_STATUS: ${{ needs.deploy-web.result == 'success' && '✅ Vercel' || '⏭ Vercel skipped (no secrets)' }}
+          WEB_STATUS: "✅ GitHub Pages"
           SITEMAP_URLS: ${{ needs.sitemap.outputs.url_count }}
           LIGHTHOUSE_STATUS: ${{ needs.lighthouse.result == 'success' && '✅ Passed' || '⚠️ See job logs' }}
           OTA_STATUS: ${{ needs.native-build.result == 'success' && '⚠️ Native builds triggered (no OTA)' || needs.ota-update.result == 'success' && '✅ Published to production' || '⏭ Skipped' }}

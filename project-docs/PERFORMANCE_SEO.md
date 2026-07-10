@@ -1,6 +1,6 @@
 # Performance & SEO
 
-JFF Footwear web app (`apps/web`) is optimized for static export on GitHub Pages and future Vercel hosting.
+JFF Footwear web app (`apps/web`) is optimized for static export on **GitHub Pages**.
 
 ## SEO (`apps/web/lib/seo.ts`)
 
@@ -17,14 +17,13 @@ JFF Footwear web app (`apps/web`) is optimized for static export on GitHub Pages
 ## Static export
 
 - `output: "export"` in `apps/web/next.config.ts`
-- `basePath` / `assetPrefix` for GitHub Pages (`/jff-footwear`)
 - Deploy script: `npm run deploy:pages` → copies `apps/web/out` to `/docs`
 
 ## Performance
 
 - **Images:** `AssetImage` with lazy loading defaults
 - **Code splitting:** cinematic home hero, gallery lightbox loaded on demand
-- **Caching:** `vercel.json` headers (for Vercel); GitHub Pages CDN for static assets
+- **Caching:** GitHub Pages CDN for static assets; service worker `apps/web/public/sw.js`
 - **Budgets:** `apps/web/performance-budgets.json`
 - **Lighthouse CI:** `apps/web/lighthouserc.cjs` (runs in `deploy-main` workflow)
 
@@ -36,7 +35,5 @@ JFF Footwear web app (`apps/web`) is optimized for static export on GitHub Pages
 ## Environment
 
 ```bash
-NEXT_PUBLIC_SITE_URL=https://ggovardhanreddy.github.io/jff-footwear
+NEXT_PUBLIC_SITE_URL=https://www.jffstores.com
 ```
-
-For production custom domain, set `VERCEL_SITE_URL` secret in GitHub.

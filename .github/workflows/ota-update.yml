@@ -36,5 +36,5 @@ jobs:
           --channel ${{ inputs.branch }}
           --message "Manual OTA from ${{ github.sha }}"
         env:
-          EXPO_PUBLIC_WEB_ASSET_BASE_URL: ${{ secrets.VERCEL_SITE_URL || 'https://jfffootwear.com' }}
+          EXPO_PUBLIC_WEB_ASSET_BASE_URL: ${{ secrets.SITE_URL || 'https://www.jffstores.com' }}
           EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}

@@ -18,4 +18,4 @@ Items from the full “production ecosystem” prompt that are **intentionally n
 ## Content vs code updates
 
 - **Supabase content** (orders, banners, coupons, AI products, notifications): live immediately via API/Realtime — no app store release.
-- **Application code**: website = Vercel/Pages deploy; mobile JS = EAS OTA; native modules = new store binary.
+- **Application code**: website = GitHub Pages deploy; mobile JS = EAS OTA; native modules = new store binary.

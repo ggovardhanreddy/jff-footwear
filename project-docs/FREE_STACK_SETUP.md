@@ -10,7 +10,7 @@ Zero monthly cost path for auth, coins, orders, payments (test), and PWA install
 | Catalog source of truth (now)  | **Static JSON** in the repo (`apps/web` data generators)                   |
 | Supabase `catalog_products`    | Optional admin overlay — **do not migrate the full catalog yet**           |
 | Payments                       | Razorpay **test** keys + WhatsApp / COD fallback                           |
-| Hosting                        | Vercel Hobby and/or GitHub Pages static export                             |
+| Hosting                        | **GitHub Pages** static export (`docs/` → www.jffstores.com)               |
 | Native stores                  | **Deferred** — PWA `/install` first (no Play $25 / Apple $99 until proven) |
 | Firebase / AWS / paid APIs     | **Out of scope**                                                           |
 
@@ -100,16 +100,15 @@ NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_test_...
 
 `RAZORPAY_KEY_SECRET` belongs only in Edge Function secrets.
 
-## 4. Hosting — Vercel Hobby (free)
+## 4. Hosting — GitHub Pages (free)
 
-Static GitHub Pages remains available, but for Supabase auth redirects prefer Vercel:
+Production site: **https://www.jffstores.com/** (custom domain on GitHub Pages).
 
-1. Import the repo on [vercel.com](https://vercel.com) (Hobby).
-2. Root / filter: `apps/web` (or monorepo settings).
-3. Add the same env vars.
-4. Set `NEXT_PUBLIC_SITE_URL` to your Vercel URL.
+1. Push to `main` → `deploy-pages.yml` builds the static export into `/docs`.
+2. Set `NEXT_PUBLIC_SITE_URL=https://www.jffstores.com` in local `.env.local` and CI (`deploy-main.yml` / `deploy-pages.yml`).
+3. Supabase Auth redirect URLs should include `https://www.jffstores.com/**` and `http://localhost:3000/**`.
 
-> Note: `output: "export"` keeps a static build for Pages. Client-side Supabase + Edge Functions work with static export. If you later need Next.js Route Handlers, remove `output: "export"` on the Vercel deploy only.
+> Note: `output: "export"` in Next.js produces a fully static site. Client-side Supabase + Edge Functions work with this setup. Next.js Route Handlers are not used (static export).
 
 ## 5. PWA install (free — no Play / App Store)
 

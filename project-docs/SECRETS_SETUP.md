@@ -2,30 +2,16 @@
 
 Add these in **GitHub → Settings → Secrets and variables → Actions**.
 
-## Required for Vercel (custom domain)
+## Website hosting
 
-| Secret              | How to get it                                                  |
-| ------------------- | -------------------------------------------------------------- |
-| `VERCEL_TOKEN`      | [vercel.com/account/tokens](https://vercel.com/account/tokens) |
-| `VERCEL_ORG_ID`     | Vercel project → Settings → General                            |
-| `VERCEL_PROJECT_ID` | Same page                                                      |
-| `VERCEL_SITE_URL`   | e.g. `https://www.jffstores.com`                               |
+The site deploys to **GitHub Pages** only (`deploy-pages.yml` → `docs/` → https://www.jffstores.com/).  
+No Vercel (or other third-party web host) secrets are required.
 
-### Pause — credentials required
+Optional:
 
-Until these secrets exist, `deploy-main.yml` **skips** the Vercel job and GitHub Pages remains the live host (`https://www.jffstores.com/`).
-
-Add secrets, then either re-run the failed/skipped workflow or push an empty commit to `main`:
-
-```bash
-# After creating a Vercel project linked to this repo:
-gh secret set VERCEL_TOKEN
-gh secret set VERCEL_ORG_ID
-gh secret set VERCEL_PROJECT_ID
-gh secret set VERCEL_SITE_URL -b'https://www.jffstores.com'
-```
-
-Also set the same `NEXT_PUBLIC_SUPABASE_*` and `NEXT_PUBLIC_SITE_URL` in the **Vercel project Environment Variables** (Production + Preview).
+| Secret     | Purpose                                      |
+| ---------- | -------------------------------------------- |
+| `SITE_URL` | Override public site URL (default jffstores) |
 
 ## Required for Expo OTA
 
@@ -45,7 +31,7 @@ Also set the same `NEXT_PUBLIC_SUPABASE_*` and `NEXT_PUBLIC_SITE_URL` in the **V
 Works out of the box via `/docs` on `main`. Workflows:
 
 - `deploy-pages.yml` — build + commit docs on source changes
-- `deploy-main.yml` — full pipeline (skips Vercel/Expo if secrets missing)
+- `deploy-main.yml` — CI, Lighthouse, optional Expo OTA (skips Expo if secrets missing)
 
 ## Enable workflow push (one-time, local)
 
@@ -55,6 +41,11 @@ If `git push` fails with “workflow scope”:
 gh auth refresh -h github.com -s workflow
 ```
 
-## Workflow OAuth scope
+## Remove old Vercel secrets (if present)
 
-Cursor/GitHub OAuth must include `workflow` to push `.github/workflows/*` from the IDE.
+```bash
+gh secret delete VERCEL_TOKEN
+gh secret delete VERCEL_ORG_ID
+gh secret delete VERCEL_PROJECT_ID
+gh secret delete VERCEL_SITE_URL
+```

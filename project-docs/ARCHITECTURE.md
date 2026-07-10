@@ -3,7 +3,7 @@
 ```
 jff-footwear/
 ├── apps/
-│   ├── web/          Next.js 15 static export → GitHub Pages / Vercel + PWA
+│   ├── web/          Next.js 15 static export → GitHub Pages + PWA
 │   └── mobile/       Expo 52 → EAS Update + store builds
 ├── packages/
 │   ├── api/          Supabase client, Edge invoke, Realtime helpers, coins
@@ -55,6 +55,6 @@ Turbo orchestrates `dev`, `build`, `lint`, `typecheck`, `test` across workspaces
 | Change                   | Trigger                   |
 | ------------------------ | ------------------------- |
 | `apps/web`, `packages/*` | CI + GitHub Pages rebuild |
-| Secrets configured       | + Vercel + Expo OTA       |
+| Expo secrets configured  | + Expo OTA                |
 
 See [AUTOMATED_DEPLOYMENT.md](./AUTOMATED_DEPLOYMENT.md) · [SECRETS_SETUP.md](./SECRETS_SETUP.md) · [DEFERRED_ROADMAP.md](./DEFERRED_ROADMAP.md) · [ADMIN_GUIDE.md](./ADMIN_GUIDE.md) · [STORE_CHECKLIST.md](./STORE_CHECKLIST.md).
