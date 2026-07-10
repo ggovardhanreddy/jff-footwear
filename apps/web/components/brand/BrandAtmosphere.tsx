@@ -35,7 +35,7 @@ export default function BrandAtmosphere() {
           transition={{ duration: 32, repeat: Infinity, ease: "easeInOut" }}
           className={cn(
             "relative h-[min(88vw,680px)] w-[min(88vw,680px)]",
-            isDark ? "opacity-[0.11] mix-blend-screen" : "opacity-[0.06] mix-blend-multiply"
+            isDark ? "opacity-[0.22] mix-blend-screen" : "opacity-[0.12] mix-blend-multiply"
           )}
         >
           <AssetImage src={backgroundLogo} alt="" fill sizes="100vw" className="object-contain" />
