@@ -38,7 +38,7 @@ jobs:
     outputs:
       native: ${{ steps.filter.outputs.native }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -58,7 +58,7 @@ jobs:
     name: ESLint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-node
       - run: npm ci
       - run: npm run lint
@@ -67,7 +67,7 @@ jobs:
     name: Type Check & Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-node
       - run: npm ci
       - run: npm run typecheck
@@ -78,7 +78,7 @@ jobs:
     needs: [lint, test]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-node
       - run: npm ci
       - run: npm run build
@@ -92,7 +92,7 @@ jobs:
     outputs:
       url_count: ${{ steps.verify.outputs.url_count }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-node
       - run: npm ci
       - run: npm run build --workspace=@jff/web
@@ -109,7 +109,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-node
       - run: npm ci
       - run: npm run build --workspace=@jff/web
@@ -126,7 +126,7 @@ jobs:
       needs.setup.outputs.has_expo == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-node
       - run: npm ci
       - uses: expo/expo-github-action@v8
@@ -151,7 +151,7 @@ jobs:
       ${{ needs.changes.outputs.native == 'true' && needs.setup.outputs.has_expo == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-node
       - run: npm ci
       - uses: expo/expo-github-action@v8
@@ -186,7 +186,7 @@ jobs:
       needs.lighthouse.result == 'success'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Post deployment summary
         run: bash scripts/notify-deployment.sh
         env:
