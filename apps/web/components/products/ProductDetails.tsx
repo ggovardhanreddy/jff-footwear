@@ -2,27 +2,23 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, MessageCircle, ShoppingBag } from "lucide-react";
+import { Check, Coins, MessageCircle, ShoppingBag, Sparkles, Zap } from "lucide-react";
 import Button from "@/components/ui/Button";
 import SuccessBurst from "@/components/motion/SuccessBurst";
 import ColorSelector from "./ColorSelector";
 import SizeSelector from "./SizeSelector";
 import QuantitySelector from "@/components/QuantitySelector";
 import PriceCard from "@/components/pricing/PriceCard";
-import {
-  WishlistButton,
-  ProductActions,
-  StickyProductBar,
-} from "@/components/features";
+import { WishlistButton, ProductActions, StickyProductBar } from "@/components/features";
+import { FlipText } from "@/components/premium";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/context/ToastContext";
+import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
 import { getProductPricing } from "@/lib/pricing";
-import {
-  buildWhatsAppUrl,
-  getProductFeatures,
-  getProductSpecifications,
-} from "@/lib/utils";
+import { coinsEarnedForProduct, formatCoins } from "@jff/api/coins";
+import { PRICING_CONFIG } from "@jff/config/pricing-config";
+import { buildWhatsAppUrl, getProductFeatures, getProductSpecifications } from "@/lib/utils";
 import type { Product, ColorVariant } from "@/types";
 
 interface ProductDetailsProps {
@@ -38,12 +34,14 @@ export default function ProductDetails({
 }: ProductDetailsProps) {
   const { addItem, itemCount } = useCart();
   const { show } = useToast();
+  const router = useRouter();
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [sizeError, setSizeError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
 
   const pricing = getProductPricing(product);
+  const coins = coinsEarnedForProduct(product);
   const features = getProductFeatures(product);
   const specifications = getProductSpecifications(product);
 
@@ -74,6 +72,13 @@ export default function ProductDetails({
     window.setTimeout(() => setShowSuccess(false), 1200);
   };
 
+  /** Buy Now adds to cart then opens checkout (login required there for guests). */
+  const handleBuyNow = () => {
+    if (!requireSize()) return;
+    addItem({ product, size: selectedSize!, quantity });
+    router.push(ROUTES.checkout);
+  };
+
   const handleInquiry = () => {
     if (!requireSize()) return;
     const url = buildWhatsAppUrl({
@@ -98,17 +103,40 @@ export default function ProductDetails({
               {product.category} · {product.material}
             </p>
             <h1 className="heading-page mt-3 text-brand-black dark:text-white">
-              {product.name}
+              <FlipText text={product.name} as="span" className="heading-page" />
             </h1>
             <p className="mt-3 text-sm text-brand-muted">
-              {product.gender} ·{" "}
-              {product.color !== "Standard" ? product.color : "All Colors"}
+              {product.gender} · {product.color !== "Standard" ? product.color : "All Colors"}
             </p>
           </div>
           <WishlistButton product={product} />
         </div>
 
         <PriceCard pricing={pricing} />
+
+        <div className="flex flex-wrap items-center gap-3 text-sm">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-accent/15 px-3 py-1.5 font-semibold text-brand-accent">
+            <Coins className="h-4 w-4" />
+            Earn {formatCoins(coins)} JFF Coins
+          </span>
+          <span className="text-brand-muted">
+            Delivery {PRICING_CONFIG.estimatedDelivery.label}
+          </span>
+          <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+            In stock
+          </span>
+        </div>
+
+        <button
+          type="button"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-brand-accent/40 bg-brand-accent/5 px-4 py-3 text-sm font-medium text-brand-muted transition hover:border-brand-accent hover:text-brand-black dark:hover:text-white"
+          onClick={() =>
+            show("AR View coming soon — open in the JFF app for immersive try-on.", "info")
+          }
+        >
+          <Sparkles className="h-4 w-4 text-brand-accent" />
+          AR View (placeholder)
+        </button>
 
         <p className="text-body leading-relaxed">{product.description}</p>
 
@@ -189,33 +217,29 @@ export default function ProductDetails({
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button
-            variant="primary"
-            size="lg"
-            magnetic
-            className="flex-1"
-            onClick={handleAddToCart}
-          >
+          <Button variant="outline" size="lg" className="flex-1" onClick={handleAddToCart}>
             <ShoppingBag className="h-5 w-5" />
             Add to Cart
           </Button>
           <Button
-            variant="whatsapp"
+            variant="primary"
             size="lg"
-            className="flex-1"
-            onClick={handleInquiry}
+            magnetic
+            className="flex-1 shadow-[0_0_24px_rgba(200,169,110,0.35)]"
+            onClick={handleBuyNow}
           >
+            <Zap className="h-5 w-5" />
+            Buy Now
+          </Button>
+          <Button variant="whatsapp" size="lg" className="flex-1" onClick={handleInquiry}>
             <MessageCircle className="h-5 w-5" />
-            Quick Inquiry
+            WhatsApp
           </Button>
         </div>
 
         {itemCount > 0 && (
           <div className="flex flex-wrap justify-center gap-4 text-center text-sm">
-            <Link
-              href={ROUTES.cart}
-              className="font-semibold text-brand-accent hover:underline"
-            >
+            <Link href={ROUTES.cart} className="font-semibold text-brand-accent hover:underline">
               View Cart ({itemCount})
             </Link>
             <span className="text-brand-muted">·</span>
@@ -234,10 +258,7 @@ export default function ProductDetails({
           </h2>
           <dl className="divide-y divide-gray-100 border border-gray-100 dark:divide-white/10 dark:border-white/10">
             {specifications.map((spec) => (
-              <div
-                key={spec.label}
-                className="grid grid-cols-2 gap-4 px-4 py-3 text-sm"
-              >
+              <div key={spec.label} className="grid grid-cols-2 gap-4 px-4 py-3 text-sm">
                 <dt className="font-medium text-brand-muted">{spec.label}</dt>
                 <dd>{spec.value}</dd>
               </div>
@@ -250,7 +271,9 @@ export default function ProductDetails({
         productName={product.name}
         pricing={pricing}
         onAddToCart={handleAddToCart}
+        onBuyNow={handleBuyNow}
         onWhatsApp={handleInquiry}
+        coinsEarned={coins}
         disabled={!selectedSize}
       />
     </>

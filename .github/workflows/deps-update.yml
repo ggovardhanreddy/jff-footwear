@@ -1,0 +1,92 @@
+name: Dependency Updates
+
+# Keeps web + mobile deps current. Opens a PR when the lockfile/package.json change.
+# Safe default: minor/patch. Majors for Next/React/Expo/RN stay manual (see Dependabot ignores).
+
+on:
+  schedule:
+    - cron: "30 22 * * *" # 04:00 IST
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "ncu target (minor | latest)"
+        required: true
+        default: minor
+        type: choice
+        options:
+          - minor
+          - latest
+  workflow_call:
+    inputs:
+      target:
+        description: "ncu target"
+        required: false
+        type: string
+        default: minor
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: deps-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Refresh dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: npm
+
+      - name: Upgrade npm to latest
+        run: npm install -g npm@latest
+
+      - name: Install current lockfile
+        run: npm ci
+
+      - name: Update dependencies
+        env:
+          TARGET: ${{ github.event.inputs.target || inputs.target || 'minor' }}
+        run: |
+          chmod +x scripts/update-deps.sh
+          ./scripts/update-deps.sh "$TARGET"
+
+      - name: Quality gates
+        run: |
+          npm run lint
+          npm run typecheck
+          npm run test
+          npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://www.jffstores.com
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "deps: refresh web and mobile packages"
+          title: "deps: auto-refresh package versions"
+          body: |
+            ## Summary
+            Automated dependency refresh for the monorepo (web + mobile + packages).
+
+            - Node from `.nvmrc` (22 LTS line)
+            - Expo / React Native / Next / React **majors** are not auto-bumped
+            - Lint, typecheck, test, and build passed in this workflow
+
+            ## Test plan
+            - [ ] Review lockfile diff
+            - [ ] Smoke web home + checkout
+            - [ ] Smoke Expo start (if mobile packages changed)
+          branch: deps/auto-update
+          delete-branch: true
+          labels: |
+            dependencies
+            automated

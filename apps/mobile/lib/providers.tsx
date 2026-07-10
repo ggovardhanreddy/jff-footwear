@@ -6,6 +6,7 @@ import type { CartItem } from "@jff/types";
 import { getJson, setJson, storageKeys } from "@/lib/storage";
 import { ThemeProvider } from "@/lib/theme/ThemeProvider";
 import { NetworkProvider } from "@/lib/network/NetworkProvider";
+import { AuthProvider } from "@/lib/AuthProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,9 +66,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
 
   const updateQuantity = useCallback((id: string, quantity: number) => {
     setItems((prev) =>
-      prev
-        .map((i) => (i.id === id ? { ...i, quantity } : i))
-        .filter((i) => i.quantity > 0)
+      prev.map((i) => (i.id === id ? { ...i, quantity } : i)).filter((i) => i.quantity > 0)
     );
   }, []);
 
@@ -104,11 +103,13 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
         <ThemeProvider>
           <NetworkProvider>
             <QueryClientProvider client={queryClient}>
-              <CartContext.Provider value={cartValue}>
-                <WishlistContext.Provider value={wishlistValue}>
-                  {children}
-                </WishlistContext.Provider>
-              </CartContext.Provider>
+              <AuthProvider>
+                <CartContext.Provider value={cartValue}>
+                  <WishlistContext.Provider value={wishlistValue}>
+                    {children}
+                  </WishlistContext.Provider>
+                </CartContext.Provider>
+              </AuthProvider>
             </QueryClientProvider>
           </NetworkProvider>
         </ThemeProvider>

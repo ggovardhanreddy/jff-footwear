@@ -27,8 +27,7 @@ export const COMPANY = {
   phone: "+91 81064 07372",
   founded: "January 2021",
   foundedYear: "2021",
-  address:
-    "Plot 42, Rayachoty, Annamayya District, Andhra Pradesh – 516269, India",
+  address: "Plot 42, Rayachoty, Annamayya District, Andhra Pradesh – 516269, India",
   locationShort: "Rayachoty, Andhra Pradesh",
   description:
     "JFF Footwear is an Indian slipper manufacturer specializing in comfortable, durable, and stylish footwear for everyday use.",
@@ -50,6 +49,7 @@ export const NAV_LINKS = [
 /** Core app routes (static pages). */
 export const ROUTES = {
   home: "/",
+  brand: "/brand",
   products: "/products",
   product: (slug: string) => `/products/${slug}`,
   categories: "/categories",
@@ -78,7 +78,102 @@ export const ROUTES = {
   returns: "/returns",
   privacy: "/privacy-policy",
   terms: "/terms",
+  login: "/login",
+  account: "/account",
+  accountOrders: "/account/orders",
+  accountRewards: "/account/rewards",
+  accountAddresses: "/account/addresses",
+  notifications: "/notifications",
+  install: "/install",
+  admin: "/admin",
+  adminProducts: "/admin/products",
+  adminOrders: "/admin/orders",
+  adminCoupons: "/admin/coupons",
+  adminCustomers: "/admin/customers",
+  adminBanners: "/admin/banners",
 } as const;
+
+/** JFF Coins loyalty — earn rate is % of selling price rounded down. */
+export const JFF_COINS = {
+  earnPerRupee: 0.05,
+  redeemValueInr: 0.1,
+  minRedeem: 100,
+  welcomeBonus: 50,
+  levels: [
+    { id: "bronze", name: "Bronze", minCoins: 0 },
+    { id: "silver", name: "Silver", minCoins: 500 },
+    { id: "gold", name: "Gold", minCoins: 2000 },
+    { id: "platinum", name: "Platinum", minCoins: 5000 },
+  ],
+} as const;
+
+/** App store / deep-link placeholders (PWA-first until store accounts exist). */
+export const APP_LINKS = {
+  playStore: "",
+  appStore: "",
+  deepLinkScheme: "jff://",
+  installPath: "/install",
+} as const;
+
+/** Public social / contact links for footer & share surfaces.
+ *  Empty string = hidden (do not ship placeholder social URLs).
+ *  Verified today: WhatsApp + email from COMPANY.
+ *  Fill Instagram / Facebook / YouTube / LinkedIn when accounts go live.
+ */
+export const SOCIAL_LINKS = {
+  instagram: "",
+  facebook: "",
+  youtube: "",
+  whatsapp: `https://wa.me/${WHATSAPP_NUMBER}`,
+  email: `mailto:${COMPANY.email}`,
+  linkedin: "",
+  /** Dev-only; Footer shows when NODE_ENV === development */
+  github: "https://github.com/jff-footwear",
+} as const;
+
+export type SocialLinkKey = keyof typeof SOCIAL_LINKS;
+
+const SOCIAL_LABELS: Record<SocialLinkKey, string> = {
+  instagram: "Instagram",
+  facebook: "Facebook",
+  youtube: "YouTube",
+  whatsapp: "WhatsApp",
+  email: "Email",
+  linkedin: "LinkedIn",
+  github: "GitHub",
+};
+
+/** Active social entries for UI (skips empty hrefs). */
+export function getConfiguredSocialLinks(options?: { includeGithub?: boolean }): Array<{
+  network: SocialLinkKey;
+  href: string;
+  label: string;
+}> {
+  const includeGithub = options?.includeGithub ?? false;
+  return (Object.keys(SOCIAL_LINKS) as SocialLinkKey[])
+    .filter((key) => {
+      if (key === "github") return includeGithub && Boolean(SOCIAL_LINKS.github);
+      return Boolean(SOCIAL_LINKS[key]);
+    })
+    .map((network) => ({
+      network,
+      href: SOCIAL_LINKS[network],
+      label: SOCIAL_LABELS[network],
+    }));
+}
+
+/** Primary spotlight navbar destinations. */
+export const SPOTLIGHT_NAV = [
+  { href: "/", label: "Home" },
+  { href: "/categories", label: "Categories" },
+  { href: "/products?new=1", label: "New Arrivals" },
+  { href: "/products", label: "Offers" },
+  { href: "/collections", label: "Collections" },
+  { href: "/wholesale", label: "Wholesale" },
+  { href: "/account/rewards", label: "Rewards" },
+  { href: "/faq", label: "Support" },
+  { href: "/account", label: "Account" },
+] as const;
 
 export const PRODUCT_CATEGORIES = [
   "Orthopedic",

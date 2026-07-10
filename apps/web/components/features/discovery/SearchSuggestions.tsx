@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Search, Clock, TrendingUp, Mic, ScanLine } from "lucide-react";
 import { POPULAR_SEARCHES } from "@/data/popular-searches";
 import { useSearchHistory } from "@/context/SearchHistoryContext";
-import { useLanguage } from "@/context/LanguageContext";
 import { ROUTES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -14,12 +13,8 @@ interface SearchSuggestionsProps {
   onSelect?: (query: string) => void;
 }
 
-export default function SearchSuggestions({
-  className,
-  onSelect,
-}: SearchSuggestionsProps) {
+export default function SearchSuggestions({ className, onSelect }: SearchSuggestionsProps) {
   const { recent, add } = useSearchHistory();
-  const { t } = useLanguage();
   const [query, setQuery] = useState("");
 
   const submit = (q: string) => {
@@ -48,7 +43,7 @@ export default function SearchSuggestions({
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={t("search")}
+          placeholder="Search or tap mic for voice…"
           className="input-field w-full rounded-2xl py-3.5 pl-11 pr-24"
           aria-label="Search products"
         />
@@ -56,8 +51,27 @@ export default function SearchSuggestions({
           <button
             type="button"
             className="rounded-lg p-2 text-brand-muted hover:bg-black/5"
-            aria-label="Voice search (coming soon)"
-            title="Voice search — coming soon"
+            aria-label="Voice search"
+            title="Voice search"
+            onClick={() => {
+              const SpeechRecognition =
+                // @ts-expect-error webkit
+                window.SpeechRecognition || window.webkitSpeechRecognition;
+              if (!SpeechRecognition) {
+                alert("Voice search is not supported in this browser.");
+                return;
+              }
+              const recognition = new SpeechRecognition();
+              recognition.lang = "en-IN";
+              recognition.onresult = (event: {
+                results: { [key: number]: { [key: number]: { transcript: string } } };
+              }) => {
+                const transcript = event.results[0][0].transcript;
+                setQuery(transcript);
+                submit(transcript);
+              };
+              recognition.start();
+            }}
           >
             <Mic className="h-4 w-4" />
           </button>
@@ -96,7 +110,7 @@ export default function SearchSuggestions({
       <div>
         <p className="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-brand-muted">
           <TrendingUp className="h-3.5 w-3.5" aria-hidden />
-          Popular Searches
+          Trending Searches
         </p>
         <div className="flex flex-wrap gap-2">
           {POPULAR_SEARCHES.map((term) => (

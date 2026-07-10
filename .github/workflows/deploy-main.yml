@@ -64,11 +64,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
+      - uses: ./.github/actions/setup-node
       - run: npm ci
+      - name: Float packages to newest versions within package.json ranges
+        run: npm update
       - run: npm run lint
 
   test:
@@ -76,11 +75,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
+      - uses: ./.github/actions/setup-node
       - run: npm ci
+      - name: Float packages to newest versions within package.json ranges
+        run: npm update
       - run: npm run typecheck
       - run: npm run test
 
@@ -90,11 +88,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
+      - uses: ./.github/actions/setup-node
       - run: npm ci
+      - name: Float packages to newest versions within package.json ranges
+        run: npm update
       - run: npm run build
         env:
           NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
@@ -107,11 +104,10 @@ jobs:
       url_count: ${{ steps.verify.outputs.url_count }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
+      - uses: ./.github/actions/setup-node
       - run: npm ci
+      - name: Float packages to newest versions within package.json ranges
+        run: npm update
       - run: npm run build --workspace=@jff/web
         env:
           NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
@@ -127,11 +123,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
+      - uses: ./.github/actions/setup-node
       - run: npm ci
+      - name: Float packages to newest versions within package.json ranges
+        run: npm update
       - run: npm run build --workspace=@jff/web
         env:
           NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
@@ -145,11 +140,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
+      - uses: ./.github/actions/setup-node
       - run: npm ci
+      - name: Float packages to newest versions within package.json ranges
+        run: npm update
       - run: npm run build --workspace=@jff/web
         env:
           NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
@@ -171,11 +165,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
+      - uses: ./.github/actions/setup-node
       - run: npm ci
+      - name: Float packages to newest versions within package.json ranges
+        run: npm update
       - uses: expo/expo-github-action@v8
         with:
           eas-version: latest
@@ -199,11 +192,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
+      - uses: ./.github/actions/setup-node
       - run: npm ci
+      - name: Float packages to newest versions within package.json ranges
+        run: npm update
       - uses: expo/expo-github-action@v8
         with:
           eas-version: latest

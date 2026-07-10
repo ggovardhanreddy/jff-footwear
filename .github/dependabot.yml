@@ -1,0 +1,78 @@
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "03:30"
+      timezone: Asia/Kolkata
+    open-pull-requests-limit: 15
+    labels:
+      - dependencies
+      - automated
+    commit-message:
+      prefix: "deps"
+    groups:
+      web-next:
+        patterns:
+          - "next"
+          - "eslint-config-next"
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+        exclude-patterns:
+          - "react-native*"
+      web-tooling:
+        patterns:
+          - "eslint*"
+          - "prettier"
+          - "typescript"
+          - "turbo"
+          - "tailwindcss"
+          - "postcss"
+          - "autoprefixer"
+          - "framer-motion"
+          - "gsap"
+          - "lucide-react"
+          - "@supabase/*"
+          - "zod"
+          - "react-hook-form"
+          - "@hookform/*"
+      mobile-expo-patch:
+        patterns:
+          - "expo*"
+          - "react-native*"
+          - "@expo/*"
+          - "nativewind"
+        update-types:
+          - "patch"
+          - "minor"
+      monorepo-dev:
+        patterns:
+          - "husky"
+          - "lint-staged"
+          - "@types/node"
+    ignore:
+      # Expo / RN majors need a coordinated upgrade, not auto-bump
+      - dependency-name: "expo"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-native"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "next"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: "ci"

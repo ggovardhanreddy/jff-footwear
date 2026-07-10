@@ -16,6 +16,8 @@
     "test": "turbo test",
     "generate": "turbo generate --filter=@jff/web",
     "deploy:pages": "npm run deploy:pages --workspace=@jff/web",
+    "deps:update": "bash scripts/update-deps.sh minor",
+    "deps:update:latest": "bash scripts/update-deps.sh latest",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "prepare": "husky"
   },
@@ -45,6 +47,6 @@
   },
   "packageManager": "npm@10.9.2",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   }
 }

@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
 import PageShell from "@/components/ui/PageShell";
 import PageHeader from "@/components/ui/PageHeader";
+import Button from "@/components/ui/Button";
 import ButtonLink from "@/components/ui/ButtonLink";
 import { OrderSummary, PricingBreakdown } from "@/components/pricing";
 import CouponCard from "@/components/checkout/CouponCard";
@@ -23,6 +25,7 @@ import { ROUTES } from "@/lib/constants";
 import { PRICING_CONFIG } from "@/lib/pricing-config";
 
 export default function CartPageClient() {
+  const router = useRouter();
   const { items, itemCount, updateQuantity, removeItem } = useCart();
   const baseSummary = useMemo(() => calculateOrderSummary(items), [items]);
   const coupon = useCoupon(baseSummary.cartSellingTotal);
@@ -30,6 +33,10 @@ export default function CartPageClient() {
     () => calculateOrderSummary(items, coupon.appliedCode),
     [items, coupon.appliedCode]
   );
+
+  const goCheckout = () => {
+    router.push(ROUTES.checkout);
+  };
 
   return (
     <PageShell className="pb-12">
@@ -44,9 +51,7 @@ export default function CartPageClient() {
         eyebrow="Shopping Cart"
         title={items.length === 0 ? "Your Cart" : "Your Cart"}
         description={
-          items.length === 0
-            ? undefined
-            : `${itemCount} ${itemCount === 1 ? "item" : "items"}`
+          items.length === 0 ? undefined : `${itemCount} ${itemCount === 1 ? "item" : "items"}`
         }
         actions={
           items.length > 0 ? (
@@ -121,15 +126,16 @@ export default function CartPageClient() {
                   <TrustBadges className="mt-6" />
 
                   <div className="mt-6">
-                    <ButtonLink
-                      href={ROUTES.checkout}
+                    <Button
+                      type="button"
                       size="lg"
                       magnetic
                       className="w-full justify-center"
+                      onClick={goCheckout}
                     >
                       Proceed to Checkout
                       <ArrowRight className="h-5 w-5" />
-                    </ButtonLink>
+                    </Button>
                   </div>
                 </div>
               </div>

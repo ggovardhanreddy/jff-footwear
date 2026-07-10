@@ -12,13 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
+      - uses: ./.github/actions/setup-node
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Float packages to newest versions within package.json ranges
+        run: npm update
 
       - name: Build web app
         run: npm run build --workspace=@jff/web

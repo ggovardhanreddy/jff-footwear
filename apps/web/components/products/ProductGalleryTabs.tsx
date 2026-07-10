@@ -6,15 +6,12 @@ import ImmersiveProductViewer from "./ImmersiveProductViewer";
 import { cn } from "@/lib/utils";
 
 const Product360Viewer = dynamic(() => import("./Product360Viewer"), {
-  loading: () => (
-    <div className="skeleton-shimmer aspect-square w-full rounded-3xl" />
-  ),
+  loading: () => <div className="skeleton-shimmer aspect-square w-full rounded-3xl" />,
 });
 
 interface ProductGalleryTabsProps {
   images: string[];
   productName: string;
-  /** Changes trigger image morph when color variant switches */
   morphKey?: string;
 }
 

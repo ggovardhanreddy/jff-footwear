@@ -15,7 +15,9 @@
       "@jff/hooks": ["../../packages/hooks/src/index.ts"],
       "@jff/hooks/*": ["../../packages/hooks/src/*"],
       "@jff/ui": ["../../packages/ui/src/index.ts"],
-      "@jff/ui/*": ["../../packages/ui/src/*"]
+      "@jff/ui/*": ["../../packages/ui/src/*"],
+      "@jff/api": ["../../packages/api/src/index.ts"],
+      "@jff/api/*": ["../../packages/api/src/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"]

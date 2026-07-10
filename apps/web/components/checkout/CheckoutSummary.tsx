@@ -7,8 +7,8 @@ import FreeDeliveryProgress from "./FreeDeliveryProgress";
 import SavingsCard from "./SavingsCard";
 import TrustBadges from "./TrustBadges";
 import PriceBreakdown from "./PriceBreakdown";
-import PaymentSection from "./PaymentSection";
-import { calculateOrderSummary } from "@/lib/pricing";
+import PaymentSection, { type CheckoutPaymentMethod } from "./PaymentSection";
+import { calculateOrderSummary, formatINR } from "@/lib/pricing";
 import { PRICING_CONFIG } from "@/lib/pricing-config";
 import { SHIPPING_CONFIG } from "@/config/shipping";
 import {
@@ -20,12 +20,8 @@ import {
 } from "@/lib/checkout-styles";
 import { checkoutPanelReveal, CHECKOUT_MOTION_GPU } from "@/lib/checkout-motion";
 import { cn } from "@/lib/utils";
-import type {
-  CartItem,
-  CodAvailability,
-  DeliveryAvailability,
-  DeliveryEstimate,
-} from "@/types";
+import { coinsToInr } from "@jff/api/coins";
+import type { CartItem, CodAvailability, DeliveryAvailability, DeliveryEstimate } from "@/types";
 
 interface CheckoutSummaryProps {
   items: CartItem[];
@@ -39,6 +35,13 @@ interface CheckoutSummaryProps {
   estimate?: DeliveryEstimate;
   checkoutDisabled?: boolean;
   className?: string;
+  paymentMethod: CheckoutPaymentMethod;
+  onPaymentMethodChange: (method: CheckoutPaymentMethod) => void;
+  coinBalance: number;
+  coinsToRedeem: number;
+  onCoinsToRedeemChange: (coins: number) => void;
+  razorpayAvailable: boolean;
+  signedIn: boolean;
 }
 
 export default function CheckoutSummary({
@@ -53,6 +56,13 @@ export default function CheckoutSummary({
   estimate,
   checkoutDisabled = false,
   className,
+  paymentMethod,
+  onPaymentMethodChange,
+  coinBalance,
+  coinsToRedeem,
+  onCoinsToRedeemChange,
+  razorpayAvailable,
+  signedIn,
 }: CheckoutSummaryProps) {
   const reduced = useReducedMotion();
   const [localCoupon, setLocalCoupon] = useState(couponCode);
@@ -66,10 +76,7 @@ export default function CheckoutSummary({
     }
   }, [couponCode]);
 
-  const summary = useMemo(
-    () => calculateOrderSummary(items, localCoupon),
-    [items, localCoupon]
-  );
+  const summary = useMemo(() => calculateOrderSummary(items, localCoupon), [items, localCoupon]);
 
   const handleApplyCoupon = () => {
     const code = localCoupon.trim().toUpperCase();
@@ -100,13 +107,10 @@ export default function CheckoutSummary({
     onCouponChange?.("");
   };
 
-  const couponApplied =
-    couponSuccess && localCoupon.trim().length > 0;
+  const couponApplied = couponSuccess && localCoupon.trim().length > 0;
 
   const cannotCheckout = Boolean(
-    checkoutDisabled ||
-      items.length === 0 ||
-      (delivery?.checked && !delivery.available)
+    checkoutDisabled || items.length === 0 || (delivery?.checked && !delivery.available)
   );
 
   return (
@@ -162,6 +166,16 @@ export default function CheckoutSummary({
               Price Details
             </p>
             <PriceBreakdown summary={summary} />
+            {coinsToRedeem > 0 && (
+              <p className="mt-2 text-sm text-brand-accent">
+                Coin discount −{formatINR(coinsToInr(coinsToRedeem))}
+              </p>
+            )}
+            <p className="mt-2 text-xs text-brand-muted">
+              You&apos;ll earn ~
+              {Math.floor(Math.max(0, summary.grandTotal - coinsToInr(coinsToRedeem)) * 0.05)} JFF
+              Coins
+            </p>
           </div>
 
           <SavingsCard totalSavings={summary.totalSavings} className="mb-6" />
@@ -186,6 +200,13 @@ export default function CheckoutSummary({
             isSubmitting={isSubmitting}
             onPlaceOrder={onPlaceOrder}
             submitError={submitError}
+            paymentMethod={paymentMethod}
+            onPaymentMethodChange={onPaymentMethodChange}
+            coinBalance={coinBalance}
+            coinsToRedeem={coinsToRedeem}
+            onCoinsToRedeemChange={onCoinsToRedeemChange}
+            razorpayAvailable={razorpayAvailable}
+            signedIn={signedIn}
           />
         </div>
       </div>

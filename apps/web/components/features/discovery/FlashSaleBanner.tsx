@@ -12,12 +12,13 @@ interface FlashSaleBannerProps {
   hoursLeft?: number;
 }
 
-export default function FlashSaleBanner({
-  className,
-  hoursLeft = 24,
-}: FlashSaleBannerProps) {
+export default function FlashSaleBanner({ className, hoursLeft = 24 }: FlashSaleBannerProps) {
   const reduced = useReducedMotion();
-  const endTime = useState(() => Date.now() + hoursLeft * 3600_000)[0];
+  const [endTime, setEndTime] = useState<number | null>(null);
+
+  useEffect(() => {
+    setEndTime(Date.now() + hoursLeft * 3600_000);
+  }, [hoursLeft]);
 
   return (
     <motion.div
@@ -29,7 +30,10 @@ export default function FlashSaleBanner({
       )}
       role="banner"
     >
-      <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-brand-accent/20 blur-3xl" aria-hidden />
+      <div
+        className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-brand-accent/20 blur-3xl"
+        aria-hidden
+      />
       <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-accent/20">
@@ -39,15 +43,16 @@ export default function FlashSaleBanner({
             <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-brand-accent">
               Flash Sale
             </p>
-            <h2 className="font-display text-2xl font-bold sm:text-3xl">
-              Up to 60% Off Premium Footwear
+            <h2 className="mt-1 font-display text-2xl font-bold sm:text-3xl">
+              Limited-time JFF deals
             </h2>
-            <p className="mt-2 text-sm text-white/70">
-              Limited-time factory-direct pricing. While stocks last.
-            </p>
           </div>
         </div>
-        <OfferCountdown endTime={endTime} />
+        {endTime != null ? (
+          <OfferCountdown endTime={endTime} />
+        ) : (
+          <div className="h-[4.5rem] w-48 animate-pulse rounded-2xl bg-white/10" aria-hidden />
+        )}
       </div>
     </motion.div>
   );

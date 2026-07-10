@@ -1,10 +1,21 @@
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand";
 import { MapPin, Phone, Mail, MessageCircle } from "lucide-react";
-import { NAV_LINKS, COMPANY, WHATSAPP_NUMBER, ROUTES } from "@/lib/constants";
+import {
+  NAV_LINKS,
+  COMPANY,
+  WHATSAPP_NUMBER,
+  ROUTES,
+  getConfiguredSocialLinks,
+} from "@/lib/constants";
 import { getBusinessPagesByCategory } from "@jff/config/business-pages";
+import { SocialFlipButton } from "@/components/premium";
 
 const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}`;
+
+const socialLinks = getConfiguredSocialLinks({
+  includeGithub: process.env.NODE_ENV === "development",
+});
 
 const SHOPPING_LINKS = [
   { href: ROUTES.search, label: "Search" },
@@ -43,6 +54,12 @@ export default function Footer() {
               <MessageCircle className="h-4 w-4 text-brand-accent" aria-hidden />
               Chat on WhatsApp
             </a>
+            <div className="pt-2">
+              <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-brand-accent">
+                Follow JFF
+              </p>
+              <SocialFlipButton links={socialLinks} size="md" />
+            </div>
           </div>
 
           <div>

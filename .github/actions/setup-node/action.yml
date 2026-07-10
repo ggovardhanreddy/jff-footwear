@@ -1,0 +1,21 @@
+name: Setup Node (LTS from .nvmrc)
+
+description: Install Node from .nvmrc and latest npm for web/mobile CI & deploy
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: ".nvmrc"
+        cache: npm
+
+    - name: Upgrade npm to latest
+      shell: bash
+      run: npm install -g npm@latest
+
+    - name: Show versions
+      shell: bash
+      run: |
+        echo "node $(node -v)"
+        echo "npm $(npm -v)"

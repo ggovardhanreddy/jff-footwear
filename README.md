@@ -2,7 +2,7 @@
 
 Turborepo monorepo: **Next.js website** + **Expo mobile** (Android/iOS) with shared packages.
 
-**Architecture:** [project-docs/ARCHITECTURE.md](project-docs/ARCHITECTURE.md)
+**Architecture:** [project-docs/ARCHITECTURE.md](project-docs/ARCHITECTURE.md) · **Free backend setup:** [project-docs/FREE_STACK_SETUP.md](project-docs/FREE_STACK_SETUP.md)
 
 ## Structure
 
@@ -16,6 +16,7 @@ packages/
   shared/          Products catalog, content, validation
   hooks/           TanStack Query keys + factories
   ui/              Brand theme + format helpers
+  api/             Supabase client, coins helpers, order types
 ```
 
 ## Quick start

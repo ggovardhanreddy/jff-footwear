@@ -38,7 +38,13 @@ export default function BrandAtmosphere() {
             isDark ? "opacity-[0.18]" : "opacity-[0.10]"
           )}
         >
-          <AssetImage src={backgroundLogo} alt="" fill sizes="100vw" className="object-contain" />
+          <AssetImage
+            src={backgroundLogo}
+            alt=""
+            fill
+            sizes="100vw"
+            className={cn("object-contain", isDark ? "mix-blend-screen" : "mix-blend-multiply")}
+          />
         </motion.div>
       </div>
 

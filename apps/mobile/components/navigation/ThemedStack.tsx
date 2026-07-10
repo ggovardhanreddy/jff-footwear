@@ -19,6 +19,7 @@ export default function ThemedStack() {
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="login" options={{ title: "Sign in" }} />
         <Stack.Screen name="product/[slug]" options={{ title: "Product" }} />
         <Stack.Screen name="checkout" options={{ title: "Checkout" }} />
         <Stack.Screen name="search" options={{ title: "Search" }} />

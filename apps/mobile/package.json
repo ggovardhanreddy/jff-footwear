@@ -24,6 +24,8 @@
     "@jff/types": "*",
     "@jff/ui": "*",
     "@jff/utils": "*",
+    "@jff/api": "*",
+    "@supabase/supabase-js": "^2.49.1",
     "@tanstack/react-query": "^5.64.1",
     "expo": "~52.0.30",
     "expo-application": "~6.0.2",

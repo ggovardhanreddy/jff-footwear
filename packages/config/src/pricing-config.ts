@@ -12,10 +12,7 @@ export const PRICING_CONFIG = {
   },
 
   /** Per-slug overrides (optional). */
-  productOverrides: {} as Record<
-    string,
-    { mrp?: number; sellingPrice?: number }
-  >,
+  productOverrides: {} as Record<string, { mrp?: number; sellingPrice?: number }>,
 
   fees: {
     platformFee: SHIPPING_CONFIG.PLATFORM_FEE,
@@ -44,10 +41,7 @@ export const PRICING_CONFIG = {
     codes: {
       JFF20: { type: "flat" as const, discount: 20, label: "₹20 off" },
       WELCOME10: { type: "percent" as const, discount: 10, label: "10% off" },
-    } as Record<
-      string,
-      { type: "flat" | "percent"; discount: number; label: string }
-    >,
+    } as Record<string, { type: "flat" | "percent"; discount: number; label: string }>,
   },
 
   estimatedDelivery: {
@@ -57,6 +51,9 @@ export const PRICING_CONFIG = {
   },
 
   taxNote: "Inclusive of all taxes",
+
+  /** Coins earned ≈ 5% of selling price (floored). */
+  coinsEarnRate: 0.05,
 } as const;
 
 export type PricingConfig = typeof PRICING_CONFIG;
