@@ -21,7 +21,7 @@ export default function BrandAtmosphere() {
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
       <div className="absolute inset-0" style={{ background: tokens.gradient }} />
 
-      {/* Large brand watermark — blend mode removes solid PNG backgrounds */}
+      {/* Large brand watermark — transparent PNG assets */}
       <div className="absolute inset-0 flex items-center justify-center pt-12">
         <motion.div
           animate={
@@ -35,7 +35,7 @@ export default function BrandAtmosphere() {
           transition={{ duration: 32, repeat: Infinity, ease: "easeInOut" }}
           className={cn(
             "relative h-[min(88vw,680px)] w-[min(88vw,680px)]",
-            isDark ? "opacity-[0.22] mix-blend-screen" : "opacity-[0.12] mix-blend-multiply"
+            isDark ? "opacity-[0.18]" : "opacity-[0.10]"
           )}
         >
           <AssetImage src={backgroundLogo} alt="" fill sizes="100vw" className="object-contain" />
