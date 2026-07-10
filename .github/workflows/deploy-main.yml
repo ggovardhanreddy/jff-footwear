@@ -66,8 +66,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node
       - run: npm ci
-      - name: Float packages to newest versions within package.json ranges
-        run: npm update
       - run: npm run lint
 
   test:
@@ -77,8 +75,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node
       - run: npm ci
-      - name: Float packages to newest versions within package.json ranges
-        run: npm update
       - run: npm run typecheck
       - run: npm run test
 
@@ -90,8 +86,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node
       - run: npm ci
-      - name: Float packages to newest versions within package.json ranges
-        run: npm update
       - run: npm run build
         env:
           NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
@@ -106,8 +100,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node
       - run: npm ci
-      - name: Float packages to newest versions within package.json ranges
-        run: npm update
       - run: npm run build --workspace=@jff/web
         env:
           NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
@@ -125,8 +117,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node
       - run: npm ci
-      - name: Float packages to newest versions within package.json ranges
-        run: npm update
       - run: npm run build --workspace=@jff/web
         env:
           NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
@@ -142,8 +132,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node
       - run: npm ci
-      - name: Float packages to newest versions within package.json ranges
-        run: npm update
       - run: npm run build --workspace=@jff/web
         env:
           NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
@@ -167,8 +155,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node
       - run: npm ci
-      - name: Float packages to newest versions within package.json ranges
-        run: npm update
       - uses: expo/expo-github-action@v8
         with:
           eas-version: latest
@@ -194,8 +180,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node
       - run: npm ci
-      - name: Float packages to newest versions within package.json ranges
-        run: npm update
       - uses: expo/expo-github-action@v8
         with:
           eas-version: latest
