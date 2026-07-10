@@ -167,7 +167,7 @@ export function createLocalBusinessJsonLd() {
         closes: "18:00",
       },
     ],
-    sameAs: [`https://wa.me/918106407372`],
+    sameAs: [`https://wa.me/917780307058`],
   };
 }
 

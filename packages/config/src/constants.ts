@@ -17,14 +17,14 @@ export const COLOR_MAP: Record<ProductColor, string> = {
   Standard: "#9ca3af",
 };
 
-export const WHATSAPP_NUMBER = "918106407372";
+export const WHATSAPP_NUMBER = "917780307058";
 
 export const COMPANY = {
   name: "JFF",
   fullName: "JFF Footwear",
   tagline: "Crafted Comfort. Every Step.",
   email: "govardhan.reddy.g.94@gmail.com",
-  phone: "+91 81064 07372",
+  phone: "+91 77803 07058",
   founded: "January 2021",
   foundedYear: "2021",
   address: "Plot 42, Rayachoty, Annamayya District, Andhra Pradesh – 516269, India",

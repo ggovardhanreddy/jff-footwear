@@ -74,7 +74,7 @@ export const faqs: FAQ[] = [
     category: "Support",
     question: "How do I contact support?",
     answer:
-      "Reach us on WhatsApp at +91 81064 07372, email at govardhan.reddy.g.94@gmail.com, or through our Contact page. Business hours: Monday – Saturday, 9:00 AM – 6:00 PM IST.",
+      "Reach us on WhatsApp at +91 77803 07058, email at govardhan.reddy.g.94@gmail.com, or through our Contact page. Business hours: Monday – Saturday, 9:00 AM – 6:00 PM IST.",
   },
   {
     id: "f10",

@@ -49,7 +49,7 @@ export default function WholesaleScreen() {
         className="mb-3 rounded-2xl bg-brand-black py-4"
         onPress={() =>
           Linking.openURL(
-            `https://wa.me/918106407372?text=${encodeURIComponent(
+            `https://wa.me/917780307058?text=${encodeURIComponent(
               "Hello JFF, I would like a wholesale / bulk order quote."
             )}`
           )

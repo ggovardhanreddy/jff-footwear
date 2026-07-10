@@ -58,4 +58,4 @@ See [.env.example](.env.example). Never put `GEMINI_API_KEY` or service-role key
 
 ## Company
 
-**JFF Footwear** — Rayachoty, Andhra Pradesh (founded January 2021). WhatsApp: +91 81064 07372
+**JFF Footwear** — Rayachoty, Andhra Pradesh (founded January 2021). WhatsApp: +91 77803 07058

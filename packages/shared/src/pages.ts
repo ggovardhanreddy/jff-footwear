@@ -295,7 +295,8 @@ export const SHIPPING_DETAILS = [
   {
     id: "ship-6",
     title: "Order Tracking",
-    description: "Tracking details will be shared when available. Full tracking integration coming soon.",
+    description:
+      "Tracking details will be shared when available. Full tracking integration coming soon.",
     icon: "Radar",
   },
 ] as const;
@@ -418,7 +419,7 @@ export const PRIVACY_SECTIONS: PolicySection[] = [
     id: "contact",
     title: "Contact Information",
     paragraphs: [
-      "For privacy-related questions, contact JFF Footwear at govardhan.reddy.g.94@gmail.com or +91 81064 07372.",
+      "For privacy-related questions, contact JFF Footwear at govardhan.reddy.g.94@gmail.com or +91 77803 07058.",
       "Plot 42, Rayachoty, Annamayya District, Andhra Pradesh – 516269, India.",
     ],
   },
@@ -491,7 +492,7 @@ export const TERMS_SECTIONS: PolicySection[] = [
     id: "contact",
     title: "Contact Information",
     paragraphs: [
-      "Questions about these terms? Contact JFF Footwear at govardhan.reddy.g.94@gmail.com or +91 81064 07372.",
+      "Questions about these terms? Contact JFF Footwear at govardhan.reddy.g.94@gmail.com or +91 77803 07058.",
       "Plot 42, Rayachoty, Annamayya District, Andhra Pradesh – 516269, India.",
     ],
   },
