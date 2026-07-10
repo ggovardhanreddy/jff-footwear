@@ -18,7 +18,8 @@ export default function InstallExperience() {
     isInstalled,
     dismissedBanner,
     dismissBanner,
-    promptInstall,
+    openAppDownload,
+    downloadAction,
     platform,
     browseCount,
     shouldSuggestInstall,
@@ -54,12 +55,17 @@ export default function InstallExperience() {
   const name = profile?.full_name?.split(" ")[0] || user?.email?.split("@")[0];
   const onProduct = pathname.startsWith("/products/");
   const onCart = pathname.startsWith("/cart") || pathname.startsWith("/checkout");
+  const ctaLabel =
+    platform === "ios"
+      ? "Get iPhone App"
+      : platform === "android"
+        ? canInstall
+          ? "Install App"
+          : "Get Android App"
+        : downloadAction.label;
 
-  const handleInstall = async () => {
-    const result = await promptInstall();
-    if (result === "unavailable") {
-      window.location.href = ROUTES.install;
-    }
+  const handleInstall = () => {
+    void openAppDownload();
   };
 
   return (
@@ -79,6 +85,13 @@ export default function InstallExperience() {
                 <div>
                   <p className="font-display text-xl font-semibold text-brand-black dark:text-white">
                     Get the Full JFF Experience
+                  </p>
+                  <p className="mt-1 text-xs font-medium uppercase tracking-wider text-brand-accent">
+                    {platform === "ios"
+                      ? "iPhone detected"
+                      : platform === "android"
+                        ? "Android detected"
+                        : "Available on iOS & Android"}
                   </p>
                   <ul className="mt-2 space-y-1 text-sm text-brand-muted">
                     <li>Faster Shopping</li>
@@ -106,10 +119,10 @@ export default function InstallExperience() {
               <div className="mt-4 flex flex-wrap gap-2">
                 <button
                   type="button"
-                  onClick={() => void handleInstall()}
+                  onClick={handleInstall}
                   className="rounded-full bg-brand-accent px-5 py-2.5 text-sm font-semibold text-brand-black shadow-[0_0_24px_rgba(200,169,110,0.4)]"
                 >
-                  {canInstall ? "Install App" : "Download App"}
+                  {ctaLabel}
                 </button>
                 <button
                   type="button"
@@ -130,7 +143,7 @@ export default function InstallExperience() {
       {!isInstalled && (
         <motion.button
           type="button"
-          onClick={() => void handleInstall()}
+          onClick={handleInstall}
           animate={{ y: [0, -6, 0] }}
           transition={{ repeat: Infinity, duration: 2.8, ease: "easeInOut" }}
           className={cn(
@@ -140,7 +153,7 @@ export default function InstallExperience() {
           aria-label="Download JFF app"
         >
           <Download className="h-4 w-4 text-brand-accent" />
-          Download App
+          {platform === "ios" ? "iOS App" : platform === "android" ? "Android App" : "Download App"}
         </motion.button>
       )}
 
@@ -164,16 +177,16 @@ export default function InstallExperience() {
                 Don&apos;t Miss Exclusive JFF Deals!
               </h2>
               <p className="mt-3 text-sm text-brand-muted">
-                Download the JFF App and enjoy exclusive discounts, faster checkout, reward coins,
-                order tracking, wishlist sync, and members-only offers.
+                Download the JFF App for iPhone or Android — exclusive discounts, faster checkout,
+                reward coins, and members-only offers.
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
                 <button
                   type="button"
-                  onClick={() => void handleInstall()}
+                  onClick={handleInstall}
                   className="rounded-full bg-brand-accent px-5 py-2.5 text-sm font-semibold text-brand-black"
                 >
-                  Download Now
+                  {ctaLabel}
                 </button>
                 <button
                   type="button"
@@ -192,11 +205,15 @@ export default function InstallExperience() {
         <div className="fixed inset-x-0 bottom-[4.5rem] z-[42] px-3 lg:hidden">
           <div className="mx-auto flex max-w-lg items-center justify-between gap-3 rounded-2xl border border-white/40 bg-white/90 px-4 py-3 text-sm shadow-lg backdrop-blur-xl dark:border-white/10 dark:bg-brand-charcoal/90">
             <p className="text-xs text-brand-muted">
-              View this product in the JFF App — faster checkout &amp; extra coins.
+              {platform === "ios"
+                ? "Open in the iPhone app — faster checkout & extra coins."
+                : platform === "android"
+                  ? "Open in the Android app — faster checkout & extra coins."
+                  : "View this product in the JFF App — faster checkout & extra coins."}
             </p>
             <button
               type="button"
-              onClick={() => void handleInstall()}
+              onClick={handleInstall}
               className="shrink-0 rounded-full bg-brand-black px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white"
             >
               Open App

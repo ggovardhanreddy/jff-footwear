@@ -1,6 +1,21 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import {
+  detectClientPlatform,
+  resolveAppDownload,
+  type AppDownloadAction,
+  type ClientPlatform,
+} from "@jff/config/app-download";
+import { APP_LINKS, ROUTES } from "@/lib/constants";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -15,7 +30,10 @@ type InstallContextValue = {
   dismissedBanner: boolean;
   dismissBanner: () => void;
   promptInstall: () => Promise<"accepted" | "dismissed" | "unavailable">;
-  platform: "android" | "ios" | "desktop" | "unknown";
+  /** Smart download: store when live, else PWA / install page for detected OS */
+  openAppDownload: () => Promise<"store" | "accepted" | "dismissed" | "pwa" | "unavailable">;
+  downloadAction: AppDownloadAction;
+  platform: ClientPlatform;
   browseCount: number;
   trackProductView: () => void;
   shouldSuggestInstall: boolean;
@@ -25,25 +43,16 @@ const InstallContext = createContext<InstallContextValue | null>(null);
 const DISMISS_KEY = "jff-install-dismissed";
 const BROWSE_KEY = "jff-browse-count";
 
-function detectPlatform(): InstallContextValue["platform"] {
-  if (typeof navigator === "undefined") return "unknown";
-  const ua = navigator.userAgent;
-  if (/iPad|iPhone|iPod/.test(ua)) return "ios";
-  if (/Android/i.test(ua)) return "android";
-  if (/Macintosh|Windows|Linux/i.test(ua)) return "desktop";
-  return "unknown";
-}
-
 export function InstallProvider({ children }: { children: ReactNode }) {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isStandalone, setIsStandalone] = useState(false);
   const [dismissedBanner, setDismissedBanner] = useState(false);
   const [browseCount, setBrowseCount] = useState(0);
   /** Always "unknown" until mount — avoids SSR/client UA mismatch */
-  const [platform, setPlatform] = useState<InstallContextValue["platform"]>("unknown");
+  const [platform, setPlatform] = useState<ClientPlatform>("unknown");
 
   useEffect(() => {
-    setPlatform(detectPlatform());
+    setPlatform(detectClientPlatform());
     const standalone =
       window.matchMedia("(display-mode: standalone)").matches ||
       // @ts-expect-error iOS Safari
@@ -64,6 +73,8 @@ export function InstallProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
+  const downloadAction = useMemo(() => resolveAppDownload(platform), [platform]);
+
   const dismissBanner = useCallback(() => {
     setDismissedBanner(true);
     localStorage.setItem(DISMISS_KEY, "1");
@@ -77,6 +88,30 @@ export function InstallProvider({ children }: { children: ReactNode }) {
     return outcome;
   }, [deferredPrompt]);
 
+  const openAppDownload = useCallback(async () => {
+    const action = resolveAppDownload(platform);
+
+    // Prefer native store when published
+    if (action.kind === "store") {
+      window.location.href = action.url;
+      return "store" as const;
+    }
+
+    // Android Chrome PWA prompt when available
+    if (platform === "android" && deferredPrompt) {
+      const outcome = await promptInstall();
+      return outcome === "unavailable" ? "pwa" : outcome;
+    }
+
+    // iOS / fallback → install hub with OS-specific steps
+    if (window.location.pathname.replace(/\/$/, "") !== ROUTES.install.replace(/\/$/, "")) {
+      window.location.href = `${ROUTES.install}?platform=${platform}`;
+      return "pwa" as const;
+    }
+
+    return "unavailable" as const;
+  }, [platform, deferredPrompt, promptInstall]);
+
   const trackProductView = useCallback(() => {
     setBrowseCount((prev) => {
       const next = prev + 1;
@@ -88,7 +123,7 @@ export function InstallProvider({ children }: { children: ReactNode }) {
   const canInstall = Boolean(deferredPrompt) && !isStandalone;
   const isInstalled = isStandalone;
   const shouldSuggestInstall =
-    !isStandalone && !dismissedBanner && (browseCount >= 5 || canInstall);
+    !isStandalone && !dismissedBanner && (browseCount >= 5 || canInstall || APP_LINKS.storesLive);
 
   return (
     <InstallContext.Provider
@@ -100,6 +135,8 @@ export function InstallProvider({ children }: { children: ReactNode }) {
         dismissedBanner,
         dismissBanner,
         promptInstall,
+        openAppDownload,
+        downloadAction,
         platform,
         browseCount,
         trackProductView,

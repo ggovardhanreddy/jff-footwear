@@ -11,6 +11,7 @@
     "./pricing-config": "./src/pricing-config.ts",
     "./pincode-config": "./src/pincode-config.ts",
     "./app-remote-config": "./src/app-remote-config.ts",
+    "./app-download": "./src/app-download.ts",
     "./wholesale-config": "./src/wholesale-config.ts",
     "./business-pages": "./src/business-pages.ts"
   },

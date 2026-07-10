@@ -157,15 +157,15 @@ export default function ShopHomeClient({
             Crafted comfort. Every step.
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-sm text-white/65">
-            Install the JFF app experience as a PWA for faster shopping, extra coins, and early
-            access to new collections — free on your home screen.
+            Available for iPhone and Android. We detect your phone automatically and open the right
+            download — App Store, Google Play, or free home-screen install.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               href={ROUTES.install}
               className="rounded-full bg-brand-accent px-7 py-3.5 text-sm font-semibold text-brand-black shadow-[0_0_28px_rgba(200,169,110,0.4)]"
             >
-              Get the JFF App
+              Download for your phone
             </Link>
             <Link
               href={ROUTES.brand}

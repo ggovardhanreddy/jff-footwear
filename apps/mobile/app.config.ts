@@ -34,7 +34,17 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: "com.jfffootwear.app",
+    buildNumber: "1",
     associatedDomains: ["applinks:jffstores.com", "applinks:www.jffstores.com"],
+    infoPlist: {
+      UIBackgroundModes: ["remote-notification"],
+      NSLocationWhenInUseUsageDescription:
+        "JFF uses your location to estimate delivery times for your orders.",
+      CFBundleDisplayName: getAppName(),
+    },
+    config: {
+      usesNonExemptEncryption: false,
+    },
   },
   android: {
     adaptiveIcon: {
@@ -42,6 +52,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundColor: "#2563eb",
     },
     package: "com.jfffootwear.app",
+    versionCode: 1,
+    permissions: ["RECEIVE_BOOT_COMPLETED", "VIBRATE"],
+    ...(process.env.GOOGLE_SERVICES_JSON
+      ? { googleServicesFile: process.env.GOOGLE_SERVICES_JSON }
+      : {}),
     intentFilters: [
       {
         action: "VIEW",
@@ -66,6 +81,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       {
         icon: "./assets/icon.png",
         color: "#2563eb",
+      },
+    ],
+    [
+      "expo-location",
+      {
+        locationWhenInUsePermission:
+          "Allow JFF Footwear to use your location for delivery estimates.",
       },
     ],
   ],

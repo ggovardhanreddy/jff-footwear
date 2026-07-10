@@ -19,9 +19,9 @@ export const DEFAULT_APP_REMOTE_CONFIG: AppRemoteConfig = {
   minimumSupportedVersion: "1.0.0",
   latestVersion: "1.0.0",
   forceUpdate: false,
+  /** Replace with real App Store URL after first iOS submit */
   iosStoreUrl: "https://apps.apple.com/app/jff-footwear/id0000000000",
-  androidStoreUrl:
-    "https://play.google.com/store/apps/details?id=com.jfffootwear.app",
+  androidStoreUrl: "https://play.google.com/store/apps/details?id=com.jfffootwear.app",
 };
 
 /** Relative path served by the website CDN */

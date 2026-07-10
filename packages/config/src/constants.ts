@@ -107,12 +107,21 @@ export const JFF_COINS = {
   ],
 } as const;
 
-/** App store / deep-link placeholders (PWA-first until store accounts exist). */
+/**
+ * Native store + deep-link targets.
+ * Flip `storesLive` to true after the first App Store / Play release.
+ * Until then the website auto-detects iOS/Android and installs the free PWA.
+ */
 export const APP_LINKS = {
-  playStore: "",
-  appStore: "",
+  playStore: "https://play.google.com/store/apps/details?id=com.jfffootwear.app",
+  /** Replace id0000000000 with the real App Store Connect ID after first submit */
+  appStore: "https://apps.apple.com/app/jff-footwear/id0000000000",
+  /** Apple App Store numeric ID for smart banners (empty until published) */
+  iosAppId: "",
   deepLinkScheme: "jff://",
   installPath: "/install",
+  /** Set true once both store listings are public */
+  storesLive: false,
 } as const;
 
 /** Public social / contact links for footer & share surfaces.

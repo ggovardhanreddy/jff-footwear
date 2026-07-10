@@ -4,4 +4,5 @@ export * from "./shipping";
 export * from "./pricing-config";
 export * from "./pincode-config";
 export * from "./app-remote-config";
+export * from "./app-download";
 export * from "./wholesale-config";
