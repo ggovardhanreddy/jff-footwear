@@ -23,12 +23,12 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
-    "eslint": "^9.17.0",
+    "eslint": "^10.7.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
-    "prettier": "^3.4.2",
+    "prettier": "^3.9.5",
     "turbo": "^2.3.3",
-    "typescript": "^5.7.2"
+    "typescript": "^7.0.2"
   },
   "lint-staged": {
     "apps/web/**/*.{ts,tsx,js,jsx}": [
