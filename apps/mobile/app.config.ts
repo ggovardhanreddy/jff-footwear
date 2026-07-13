@@ -3,7 +3,11 @@ import { ExpoConfig, ConfigContext } from "expo/config";
 const IS_DEV = process.env.APP_VARIANT === "development";
 const IS_PREVIEW = process.env.APP_VARIANT === "preview";
 
-const EAS_PROJECT_ID = process.env.EAS_PROJECT_ID ?? "your-eas-project-id";
+const EAS_PROJECT_ID = process.env.EAS_PROJECT_ID?.trim() || "8062a19f-d1bd-4bbc-8026-f45e2a9342b3";
+const hasValidEasProjectId =
+  !!EAS_PROJECT_ID &&
+  EAS_PROJECT_ID !== "your-eas-project-id" &&
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(EAS_PROJECT_ID);
 
 const getAppName = () => {
   if (IS_DEV) return "JFF Footwear (Dev)";
@@ -52,7 +56,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundColor: "#2563eb",
     },
     package: "com.jfffootwear.app",
-    versionCode: 1,
     permissions: ["RECEIVE_BOOT_COMPLETED", "VIBRATE"],
     ...(process.env.GOOGLE_SERVICES_JSON
       ? { googleServicesFile: process.env.GOOGLE_SERVICES_JSON }
@@ -75,7 +78,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     favicon: "./assets/favicon.png",
   },
   plugins: [
-    "expo-router",
+    [
+      "expo-router",
+      {
+        root: "./app",
+      },
+    ],
     [
       "expo-notifications",
       {
@@ -94,19 +102,27 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   experiments: {
     typedRoutes: true,
   },
-  updates: {
-    url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
-    enabled: !IS_DEV,
-    fallbackToCacheTimeout: 0,
-    checkAutomatically: "NEVER",
-  },
+  updates: hasValidEasProjectId
+    ? {
+        url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
+        enabled: !IS_DEV,
+        fallbackToCacheTimeout: 0,
+        checkAutomatically: "NEVER" as const,
+      }
+    : {
+        enabled: false,
+      },
   runtimeVersion: {
     policy: "appVersion",
   },
   extra: {
-    eas: {
-      projectId: EAS_PROJECT_ID,
-    },
+    ...(hasValidEasProjectId
+      ? {
+          eas: {
+            projectId: EAS_PROJECT_ID,
+          },
+        }
+      : {}),
     webAssetBaseUrl: process.env.EXPO_PUBLIC_WEB_ASSET_BASE_URL ?? "https://www.jffstores.com",
     remoteConfigUrl: process.env.EXPO_PUBLIC_REMOTE_CONFIG_URL ?? undefined,
   },
