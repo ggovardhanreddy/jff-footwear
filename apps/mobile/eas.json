@@ -9,21 +9,26 @@
       "distribution": "internal",
       "channel": "development",
       "env": {
-        "APP_VARIANT": "development"
+        "APP_VARIANT": "development",
+        "EAS_PROJECT_ID": "8062a19f-d1bd-4bbc-8026-f45e2a9342b3"
       }
     },
     "preview": {
       "distribution": "internal",
       "channel": "preview",
       "env": {
-        "APP_VARIANT": "preview"
+        "APP_VARIANT": "preview",
+        "EAS_PROJECT_ID": "8062a19f-d1bd-4bbc-8026-f45e2a9342b3",
+        "EXPO_PUBLIC_WEB_ASSET_BASE_URL": "https://www.jffstores.com"
       }
     },
     "production": {
       "autoIncrement": true,
       "channel": "production",
       "env": {
-        "APP_VARIANT": "production"
+        "APP_VARIANT": "production",
+        "EAS_PROJECT_ID": "8062a19f-d1bd-4bbc-8026-f45e2a9342b3",
+        "EXPO_PUBLIC_WEB_ASSET_BASE_URL": "https://www.jffstores.com"
       }
     }
   },

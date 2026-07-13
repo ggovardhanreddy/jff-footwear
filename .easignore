@@ -1,0 +1,43 @@
+# EAS upload ignore — keep mobile + shared packages only
+# Note: when .easignore exists, EAS does not use .gitignore
+
+# Dependencies (reinstalled on EAS builders)
+node_modules/
+**/node_modules/
+
+# Website / GitHub Pages (huge; not needed for native builds)
+docs/
+apps/web/
+apps/web/**
+
+# Local / tooling
+.git/
+.github/
+.turbo/
+.vercel/
+coverage/
+dist/
+build/
+.next/
+out/
+**/.expo/
+**/dist/
+**/.turbo/
+
+# Docs & backend not required for Expo binary
+project-docs/
+supabase/
+*.md
+!apps/mobile/**/*.md
+
+# Env / secrets / OS
+.env
+.env.*
+!.env.example
+.DS_Store
+*.pem
+*.log
+npm-debug.log*
+
+# Large media that mobile loads from CDN
+apps/mobile/assets/**/*.mp4
