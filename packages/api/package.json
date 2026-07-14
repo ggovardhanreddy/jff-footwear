@@ -20,9 +20,9 @@
     "@jff/config": "*",
     "@jff/types": "*",
     "@jff/utils": "*",
-    "@supabase/supabase-js": "^2.49.1"
+    "@supabase/supabase-js": "^2.110.5"
   },
   "devDependencies": {
-    "typescript": "^5.7.2"
+    "typescript": "^7.0.2"
   }
 }
