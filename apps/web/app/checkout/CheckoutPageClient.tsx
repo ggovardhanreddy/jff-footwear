@@ -37,6 +37,7 @@ import { calculateOrderSummary } from "@/lib/pricing";
 import { CHECKOUT_EYEBROW, CHECKOUT_SECTION_TITLE } from "@/lib/checkout-styles";
 import { checkoutPanelReveal, CHECKOUT_MOTION_GPU } from "@/lib/checkout-motion";
 import { ROUTES } from "@/lib/constants";
+import { trackCommerce } from "@/lib/analytics";
 import { buildOrderWhatsAppUrl } from "@/lib/whatsapp-order";
 import { buildLoginUrl } from "@/lib/auth-redirect";
 import { cn } from "@/lib/utils";
@@ -182,6 +183,7 @@ export default function CheckoutPageClient() {
               payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
             });
+            trackCommerce("purchase", { payment_method: "razorpay", value: summary.grandTotal });
             setShowSuccess(true);
             clearCart();
             coupon.remove();
@@ -255,6 +257,7 @@ export default function CheckoutPageClient() {
       return;
     }
     setSubmitError("");
+    trackCommerce("begin_checkout", { item_count: items.length });
     setStep("review");
   };
 
@@ -300,6 +303,7 @@ export default function CheckoutPageClient() {
         try {
           saveDefaultAddress(address);
           await persistOrder("cod");
+          trackCommerce("purchase", { payment_method: "cod", value: summary.grandTotal });
           setShowSuccess(true);
           clearCart();
           coupon.remove();
@@ -343,6 +347,7 @@ export default function CheckoutPageClient() {
     });
 
     setShowConfirmModal(false);
+    trackCommerce("purchase", { payment_method: "whatsapp", value: summary.grandTotal });
     setShowSuccess(true);
     const delay = reduced ? 0 : 900;
     window.setTimeout(() => {

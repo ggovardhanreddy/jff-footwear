@@ -2,12 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { PRICING_CONFIG } from "@/lib/pricing-config";
-import {
-  getCouponLabel,
-  isValidCouponCode,
-  resolveCouponDiscount,
-} from "@/lib/pricing";
+import { getCouponLabel, isValidCouponCode, resolveCouponDiscount } from "@/lib/pricing";
 import { readStorage, writeStorage } from "@/lib/storage";
+import { trackCommerce } from "@/lib/analytics";
 
 const COUPON_STORAGE_KEY = "jff-coupon";
 
@@ -51,6 +48,7 @@ export function useCoupon(cartSellingTotal = 0) {
     }
 
     const label = getCouponLabel(code);
+    trackCommerce("coupon_applied", { coupon: code });
     setAppliedCode(code);
     setIsSuccess(true);
     setMessage(`${label} applied successfully!`);
@@ -72,6 +70,7 @@ export function useCoupon(cartSellingTotal = 0) {
       }
       if (!isValidCouponCode(normalized)) return;
       setInput(normalized);
+      trackCommerce("coupon_applied", { coupon: normalized });
       setAppliedCode(normalized);
       setIsSuccess(true);
       setMessage(`${getCouponLabel(normalized)} applied successfully!`);
@@ -79,9 +78,7 @@ export function useCoupon(cartSellingTotal = 0) {
     [remove]
   );
 
-  const discount = appliedCode
-    ? resolveCouponDiscount(appliedCode, cartSellingTotal)
-    : 0;
+  const discount = appliedCode ? resolveCouponDiscount(appliedCode, cartSellingTotal) : 0;
 
   return {
     input,

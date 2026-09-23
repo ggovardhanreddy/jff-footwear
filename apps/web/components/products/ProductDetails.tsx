@@ -9,6 +9,7 @@ import ColorSelector from "./ColorSelector";
 import SizeSelector from "./SizeSelector";
 import QuantitySelector from "@/components/QuantitySelector";
 import PriceCard from "@/components/pricing/PriceCard";
+import { ProductSocialProofLines } from "@/components/products/ProductSocialProof";
 import { WishlistButton, ProductActions, StickyProductBar } from "@/components/features";
 import { FlipText } from "@/components/premium";
 import { useCart } from "@/context/CartContext";
@@ -108,6 +109,9 @@ export default function ProductDetails({
             <p className="mt-3 text-sm text-brand-muted">
               {product.gender} · {product.color !== "Standard" ? product.color : "All Colors"}
             </p>
+            <div className="mt-3">
+              <ProductSocialProofLines slug={product.slug} variant="detail" />
+            </div>
           </div>
           <WishlistButton product={product} />
         </div>

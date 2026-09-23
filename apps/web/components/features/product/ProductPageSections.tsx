@@ -48,11 +48,7 @@ export default function ProductPageSections({ product }: ProductPageSectionsProp
           />
         )}
         <ProductCarousel title="Trending Products" products={trending} />
-        <ProductCarousel
-          title="Recently Purchased"
-          subtitle="Popular with buyers"
-          products={getRecentlyPurchasedPlaceholder(4)}
-        />
+        <ProductCarousel title="More styles" products={getRecentlyPurchasedPlaceholder(4)} />
         <RecentlyViewedStrip excludeSlug={product.slug} />
       </div>
     </>

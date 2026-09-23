@@ -9,7 +9,8 @@
     "./supabase": "./src/supabase.ts",
     "./types": "./src/types.ts",
     "./coins": "./src/coins.ts",
-    "./realtime": "./src/realtime.ts"
+    "./realtime": "./src/realtime.ts",
+    "./social-proof": "./src/social-proof.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

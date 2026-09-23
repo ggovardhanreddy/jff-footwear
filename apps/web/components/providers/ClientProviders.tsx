@@ -9,6 +9,7 @@ import { ToastProvider } from "@/context/ToastContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { CompareProvider } from "@/context/CompareContext";
 import { SearchHistoryProvider } from "@/context/SearchHistoryContext";
+import { SocialProofProvider } from "@/context/SocialProofContext";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { LocationProvider } from "@/context/LocationContext";
@@ -32,10 +33,12 @@ export default function ClientProviders({ children }: { children: React.ReactNod
                     <RecentlyViewedProvider>
                       <CompareProvider>
                         <SearchHistoryProvider>
-                          {children}
-                          <AppShell />
-                          <MobileShopNav />
-                          <InstallExperience />
+                          <SocialProofProvider>
+                            {children}
+                            <AppShell />
+                            <MobileShopNav />
+                            <InstallExperience />
+                          </SocialProofProvider>
                         </SearchHistoryProvider>
                       </CompareProvider>
                     </RecentlyViewedProvider>

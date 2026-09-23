@@ -5,3 +5,4 @@ export * from "./whatsapp-order";
 export * from "./version";
 export * from "./wholesale";
 export * from "./deep-links";
+export * from "./social-proof";

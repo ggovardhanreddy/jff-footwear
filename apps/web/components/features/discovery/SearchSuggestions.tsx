@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, Clock, TrendingUp, Mic, ScanLine } from "lucide-react";
+import { Search, Clock, TrendingUp, Mic } from "lucide-react";
 import { POPULAR_SEARCHES } from "@/data/popular-searches";
 import { useSearchHistory } from "@/context/SearchHistoryContext";
 import { ROUTES } from "@/lib/constants";
+import { trackCommerce } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 interface SearchSuggestionsProps {
@@ -21,6 +22,7 @@ export default function SearchSuggestions({ className, onSelect }: SearchSuggest
     const trimmed = q.trim();
     if (!trimmed) return;
     add(trimmed);
+    trackCommerce("search", { search_term: trimmed });
     onSelect?.(trimmed);
     window.location.href = `${ROUTES.search}?q=${encodeURIComponent(trimmed)}`;
   };
@@ -74,14 +76,6 @@ export default function SearchSuggestions({ className, onSelect }: SearchSuggest
             }}
           >
             <Mic className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            className="rounded-lg p-2 text-brand-muted hover:bg-black/5"
-            aria-label="Scan barcode (coming soon)"
-            title="Barcode scanner — coming soon"
-          >
-            <ScanLine className="h-4 w-4" />
           </button>
         </div>
       </form>

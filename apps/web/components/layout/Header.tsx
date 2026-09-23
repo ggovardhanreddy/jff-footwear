@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ShoppingBag, Heart, Bell, User, MapPin, Coins, Search } from "lucide-react";
+import { Menu, X, ShoppingBag, Heart, Bell, User, MapPin, Coins } from "lucide-react";
 import { COMPANY, ROUTES } from "@/lib/constants";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/context/CartContext";
@@ -13,7 +13,7 @@ import { useWishlist } from "@/context/WishlistContext";
 import { useAuth } from "@/context/AuthContext";
 import { useLocation } from "@/context/LocationContext";
 import { ThemeSwitcher } from "@/components/features";
-import NavSearch from "@/components/nav/NavSearch";
+import CatalogSearch from "@/components/nav/CatalogSearch";
 import { SpotlightNavbar } from "@/components/premium";
 import { formatCoins } from "@jff/api/coins";
 import { cn } from "@/lib/utils";
@@ -24,6 +24,7 @@ const DESKTOP_NAV = [
   { href: "/products?gender=Kids", label: "Kids" },
   { href: "/products?new=1", label: "New Arrivals" },
   { href: "/collections/best-sellers", label: "Best Sellers" },
+  { href: "/#offers", label: "Offers" },
   { href: ROUTES.wholesale, label: "Wholesale" },
 ] as const;
 
@@ -120,7 +121,7 @@ export default function Header() {
   return (
     <SpotlightNavbar
       hideOnScroll={false}
-      overlay={pathname === "/"}
+      overlay={false}
       below={
         <>
           <AnimatePresence>
@@ -174,7 +175,7 @@ export default function Header() {
                       key="nav-backdrop"
                       type="button"
                       aria-label="Close menu"
-                      className="fixed inset-0 z-40 bg-black/35 xl:hidden"
+                      className="fixed inset-0 z-40 bg-black/35 lg:hidden"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
@@ -194,7 +195,7 @@ export default function Header() {
                       animate={{ x: 0 }}
                       exit={{ x: "100%" }}
                       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                      className="fixed bottom-0 right-0 top-16 z-40 w-full max-w-md overflow-y-auto border-l border-black/10 bg-[#f6f3ee]/95 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#12100e]/95 xl:hidden"
+                      className="fixed bottom-0 right-0 top-16 z-40 w-full max-w-md overflow-y-auto border-l border-black/10 bg-[#f6f3ee]/95 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#12100e]/95 lg:hidden"
                     >
                       <nav
                         className="container-custom flex flex-col gap-2 py-8"
@@ -213,6 +214,13 @@ export default function Header() {
                             <MapPin className="h-3.5 w-3.5 text-brand-accent" />
                             {location}
                           </button>
+                          <Link
+                            href={ROUTES.notifications}
+                            className="flex items-center gap-1.5 rounded-full border border-black/10 px-3 py-2 text-xs dark:border-white/15"
+                          >
+                            <Bell className="h-3.5 w-3.5" />
+                            Notifications
+                          </Link>
                           <Link
                             href={ROUTES.accountRewards}
                             className="flex items-center gap-1.5 rounded-full bg-brand-accent/15 px-3 py-2 text-xs font-semibold"
@@ -251,89 +259,36 @@ export default function Header() {
     >
       <div
         className={cn(
-          "container-custom flex items-center justify-between gap-3 transition-[height] duration-500",
-          scrolled ? "h-14 md:h-16" : "h-16 md:h-[4.5rem]"
+          "container-custom flex items-center gap-2 transition-[height] duration-500 sm:gap-3",
+          scrolled ? "h-14" : "h-16"
         )}
       >
-        <div className="flex min-w-0 items-center gap-3 md:gap-5">
-          <Link
-            href="/"
-            className="focus-ring relative z-10 flex shrink-0 items-center gap-2 rounded-lg"
-          >
-            <BrandLogo
-              alt=""
-              width={52}
-              height={52}
-              priority
-              className={cn(scrolled ? "h-11 w-11 md:h-12 md:w-12" : "h-12 w-12 md:h-14 md:w-14")}
-            />
-            <span className="font-display text-lg font-semibold tracking-[0.22em] text-brand-black dark:text-white">
-              JFF
-            </span>
-          </Link>
+        <Link
+          href="/"
+          className="focus-ring relative z-10 flex shrink-0 items-center gap-2 rounded-lg"
+        >
+          <BrandLogo
+            alt=""
+            width={52}
+            height={52}
+            priority
+            className={cn(scrolled ? "h-10 w-10" : "h-11 w-11")}
+          />
+          <span className="font-display text-lg font-semibold tracking-[0.22em] text-brand-black dark:text-white">
+            JFF
+          </span>
+        </Link>
 
-          <div className="hidden min-w-0 items-center gap-2 lg:flex">
-            <button
-              type="button"
-              onClick={() => {
-                setLocationDraft(location);
-                setEditingLocation(true);
-              }}
-              className="focus-ring flex max-w-[200px] items-center gap-1.5 rounded-full border border-black/[0.06] bg-white/60 px-3 py-1.5 text-left backdrop-blur dark:border-white/10 dark:bg-white/5"
-              aria-label="Change delivery location"
-            >
-              <MapPin className="h-3.5 w-3.5 shrink-0 text-brand-accent" />
-              <span className="truncate text-[11px] font-medium text-brand-black dark:text-white">
-                {detecting ? "Detecting…" : location}
-              </span>
-            </button>
+        <CatalogSearch />
 
-            <Link
-              href={ROUTES.accountRewards}
-              className="focus-ring flex items-center gap-1.5 rounded-full border border-brand-accent/30 bg-brand-accent/10 px-3 py-1.5 text-[11px] font-semibold text-brand-black dark:text-brand-accent"
-            >
-              <Coins className="h-3.5 w-3.5" />
-              {formatCoins(coinBalance)} Coins
-            </Link>
-          </div>
-        </div>
-
-        <nav className="hidden items-center gap-3 xl:flex xl:gap-4" aria-label="Primary navigation">
-          {DESKTOP_NAV.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "link-underline rounded-sm text-[10px] font-semibold uppercase tracking-widest transition-colors 2xl:text-xs",
-                isActive(link.href)
-                  ? "text-brand-accent"
-                  : "text-brand-black hover:text-brand-accent dark:text-white/90"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-0.5 sm:gap-1">
-          <div className="hidden md:block">
-            <NavSearch showSolid />
-          </div>
-          <Link
-            href={ROUTES.search}
-            className="focus-ring inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-brand-black dark:text-white md:hidden"
-            aria-label="Search"
-          >
-            <Search className="h-5 w-5" />
-          </Link>
-
-          <div className="hidden md:flex">
+        <div className="flex shrink-0 items-center">
+          <div className="hidden lg:flex">
             <ThemeSwitcher compact />
           </div>
 
           <Link
             href={ROUTES.wishlist}
-            className="focus-ring relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white"
+            className="focus-ring relative hidden min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white sm:inline-flex"
             aria-label={`Wishlist, ${wishlistCount} items`}
           >
             <Heart className="h-5 w-5" />
@@ -346,7 +301,7 @@ export default function Header() {
 
           <Link
             href={ROUTES.notifications}
-            className="focus-ring relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white"
+            className="focus-ring relative hidden min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white md:inline-flex"
             aria-label={`Notifications, ${unreadNotifications} unread`}
           >
             <Bell className="h-5 w-5" />
@@ -372,7 +327,7 @@ export default function Header() {
 
           <Link
             href={user ? ROUTES.account : ROUTES.login}
-            className="focus-ring inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white"
+            className="focus-ring hidden min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white sm:inline-flex"
             aria-label={user ? "Account" : "Sign in"}
           >
             <User className="h-5 w-5" />
@@ -381,7 +336,7 @@ export default function Header() {
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="focus-ring relative z-10 inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-lg border border-black/10 px-2.5 text-brand-black dark:border-white/20 dark:text-white xl:hidden"
+            className="focus-ring relative z-10 inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-lg border border-black/10 px-2.5 text-brand-black dark:border-white/20 dark:text-white lg:hidden"
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
             aria-controls={menuId}
@@ -390,6 +345,47 @@ export default function Header() {
           </button>
         </div>
       </div>
+
+      <nav
+        className="hidden border-t border-black/[0.05] dark:border-white/10 lg:block"
+        aria-label="Shop categories"
+      >
+        <div className="container-custom flex h-11 items-center gap-5 overflow-x-auto">
+          <button
+            type="button"
+            onClick={() => {
+              setLocationDraft(location);
+              setEditingLocation(true);
+            }}
+            className="focus-ring flex max-w-[180px] shrink-0 items-center gap-1.5 text-left text-[11px] font-medium"
+            aria-label="Change delivery location"
+          >
+            <MapPin className="h-3.5 w-3.5 shrink-0 text-brand-accent" />
+            <span className="truncate">{detecting ? "Detecting…" : location}</span>
+          </button>
+          <Link
+            href={ROUTES.accountRewards}
+            className="focus-ring inline-flex shrink-0 items-center gap-1.5 text-[11px] font-semibold text-brand-black dark:text-brand-accent"
+          >
+            <Coins className="h-3.5 w-3.5" />
+            {formatCoins(coinBalance)} Coins
+          </Link>
+          {DESKTOP_NAV.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "focus-ring shrink-0 rounded-sm text-[11px] font-semibold uppercase tracking-[0.14em]",
+                isActive(link.href)
+                  ? "text-brand-accent"
+                  : "text-brand-black hover:text-brand-accent dark:text-white/90"
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
     </SpotlightNavbar>
   );
 }

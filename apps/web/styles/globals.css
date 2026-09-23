@@ -121,7 +121,7 @@
   }
 
   .page-shell {
-    @apply pt-[4.5rem] pb-20 md:pt-24 lg:pb-0;
+    @apply pb-20 pt-20 lg:pb-0 lg:pt-32;
   }
 
   .page-header {

@@ -21,16 +21,23 @@ export function filterProducts(products: Product[], filters: ProductFilters): Pr
   let result = [...products];
 
   if (filters.search) {
-    const query = filters.search.toLowerCase();
-    result = result.filter(
-      (p) =>
-        p.name.toLowerCase().includes(query) ||
-        p.description.toLowerCase().includes(query) ||
-        p.category.toLowerCase().includes(query) ||
-        p.material.toLowerCase().includes(query) ||
-        p.gender.toLowerCase().includes(query) ||
-        p.color.toLowerCase().includes(query)
-    );
+    const tokens = filters.search.toLowerCase().split(/\s+/).filter(Boolean);
+    result = result.filter((p) => {
+      const haystack = [
+        p.name,
+        p.description,
+        p.category,
+        p.material,
+        p.gender,
+        p.color,
+        p.slug,
+        p.id,
+        p.sizes.join(" "),
+      ]
+        .join(" ")
+        .toLowerCase();
+      return tokens.every((token) => haystack.includes(token));
+    });
   }
 
   if (filters.category) {

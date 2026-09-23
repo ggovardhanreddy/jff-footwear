@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Coins, Share2, ShoppingBag } from "lucide-react";
 import { ProductCardShell, ProductCardImage, ProductCardBadges, ProductCardMeta } from "./card";
 import PriceCard from "@/components/pricing/PriceCard";
+import { ProductSocialProofLines } from "@/components/products/ProductSocialProof";
 import { WishlistButton } from "@/components/features";
 import { COLOR_MAP } from "@/lib/constants";
 import { getProductMainImage, shareProduct } from "@/lib/utils";
@@ -30,6 +31,7 @@ export default function ProductCard({
   const mainImage = getProductMainImage(product);
   const productHref = `/products/${product.slug}`;
   const pricing = getProductPricing(product);
+  const discountPercent = pricing.mrp > 0 ? Math.round((pricing.discount / pricing.mrp) * 100) : 0;
   const coins = coinsEarnedForProduct(product);
   const { show: showToast } = useToast();
   const { addItem } = useCart();
@@ -57,6 +59,7 @@ export default function ProductCard({
           category={product.category}
           material={product.material}
           gender={product.gender}
+          discountLabel={discountPercent > 0 ? `${discountPercent}% OFF` : undefined}
         />
         <div className="absolute right-3 top-3 z-20 flex flex-col gap-2">
           <WishlistButton product={product} size="sm" />
@@ -83,7 +86,7 @@ export default function ProductCard({
       </div>
 
       <Link href={productHref} className="block">
-        <div className="space-y-5 border-t border-white/50 bg-white/50 px-6 py-6 backdrop-blur-md dark:border-white/10 dark:bg-brand-dark/50 md:px-7 md:py-7">
+        <div className="space-y-3 border-t border-white/50 bg-white/50 px-3 py-3 backdrop-blur-md dark:border-white/10 dark:bg-brand-dark/50 md:space-y-4 md:px-5 md:py-5">
           <ProductCardMeta
             gender={product.gender}
             category={product.category}
@@ -91,9 +94,11 @@ export default function ProductCard({
           />
 
           <div className="space-y-3">
-            <h3 className="font-display text-xl font-semibold leading-snug tracking-tight text-brand-black transition-colors duration-300 group-hover:text-brand-accent dark:text-white">
+            <h3 className="line-clamp-2 font-display text-sm font-semibold leading-snug tracking-tight text-brand-black transition-colors duration-300 group-hover:text-brand-accent dark:text-white md:text-lg">
               {product.name}
             </h3>
+
+            <ProductSocialProofLines slug={product.slug} />
 
             <PriceCard pricing={pricing} variant="compact" />
 
@@ -126,7 +131,7 @@ export default function ProductCard({
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-2 border-t border-black/[0.05] pt-5 dark:border-white/10">
+          <div className="flex items-center justify-between gap-2 border-t border-black/[0.05] pt-3 dark:border-white/10">
             <button
               type="button"
               onClick={(e) => {

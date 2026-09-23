@@ -12,11 +12,7 @@ export type ProductCategory =
   | "House"
   | "Outdoor";
 
-export type Material =
-  | "EVA"
-  | "PVC"
-  | "Rubber"
-  | "Memory Foam";
+export type Material = "EVA" | "PVC" | "Rubber" | "Memory Foam";
 
 export type ProductColor =
   | "Black"
@@ -61,9 +57,7 @@ export interface DeliveryAddress {
   isDefault: boolean;
 }
 
-export type DeliveryAddressErrors = Partial<
-  Record<keyof DeliveryAddress, string>
->;
+export type DeliveryAddressErrors = Partial<Record<keyof DeliveryAddress, string>>;
 
 export interface GeolocationAddress {
   area: string;
@@ -139,6 +133,57 @@ export interface Product {
   featured: boolean;
   newArrival: boolean;
   price?: number;
+  /** Present only when calculated from stored reviews or wishlists. */
+  socialProof?: ProductSocialProof | null;
+}
+
+/** Star counts for 1 through 5. Missing keys mean zero. */
+export interface ReviewDistribution {
+  1: number;
+  2: number;
+  3: number;
+  4: number;
+  5: number;
+}
+
+/**
+ * Aggregated product proof. `source: "demo"` is sample data and must be labeled
+ * as such. Production displays use `database` only.
+ */
+export interface ProductSocialProof {
+  ratingAverage: number | null;
+  ratingCount: number;
+  reviewCount: number;
+  wishlistCount: number;
+  reviewDistribution: ReviewDistribution;
+  verifiedReviewCount: number;
+  helpfulReviewCount: number;
+  source: "database" | "demo";
+}
+
+/** API row calculated from reviews and wishlists. */
+export interface ProductSocialProofApi {
+  product_slug: string;
+  rating_average: number | null;
+  rating_count: number;
+  review_count: number;
+  wishlist_count: number;
+  review_distribution: ReviewDistribution;
+  verified_review_count: number;
+  helpful_review_count: number;
+}
+
+export interface CustomerReview {
+  id: string;
+  productSlug: string;
+  authorName: string;
+  rating: number;
+  title: string;
+  body: string;
+  createdAt: string;
+  verifiedPurchase: boolean;
+  helpfulCount: number;
+  imageUrl?: string;
 }
 
 export interface ProductFilters {

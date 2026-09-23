@@ -9,6 +9,7 @@ interface ProductCardBadgesProps {
   category?: string;
   material?: string;
   gender?: string;
+  discountLabel?: string;
 }
 
 export default function ProductCardBadges({
@@ -17,11 +18,17 @@ export default function ProductCardBadges({
   category,
   material,
   gender,
+  discountLabel,
 }: ProductCardBadgesProps) {
   const hasMeta = category || material || gender;
 
   return (
     <div className="absolute left-5 top-5 z-20 flex max-w-[calc(100%-5rem)] flex-col gap-2">
+      {discountLabel ? (
+        <Badge variant="accent" className="rounded-full px-3.5 shadow-sm">
+          {discountLabel}
+        </Badge>
+      ) : null}
       {newArrival && (
         <motion.div
           initial={{ opacity: 0, x: -12, scale: 0.9 }}

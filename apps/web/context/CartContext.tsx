@@ -11,6 +11,7 @@ import {
 } from "react";
 import { getProductPricing } from "@/lib/pricing";
 import { getProductMainImage } from "@/lib/utils";
+import { trackCommerce } from "@/lib/analytics";
 import type { CartItem, Product } from "@/types";
 
 const STORAGE_KEY = "jff-cart";
@@ -36,11 +37,7 @@ function buildCartItemId(slug: string, size: number): string {
   return `${slug}-${size}`;
 }
 
-function createCartItem({
-  product,
-  size,
-  quantity,
-}: AddToCartParams): CartItem {
+function createCartItem({ product, size, quantity }: AddToCartParams): CartItem {
   return {
     id: buildCartItemId(product.slug, size),
     productId: product.id,
@@ -81,14 +78,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items, hydrated]);
 
   const addItem = useCallback(({ product, size, quantity }: AddToCartParams) => {
+    trackCommerce("add_to_cart", { item_id: product.slug, quantity, size });
     const id = buildCartItemId(product.slug, size);
     setItems((prev) => {
       const existing = prev.find((item) => item.id === id);
       if (existing) {
         return prev.map((item) =>
-          item.id === id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
+          item.id === id ? { ...item, quantity: item.quantity + quantity } : item
         );
       }
       return [...prev, createCartItem({ product, size, quantity })];
@@ -96,6 +92,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const removeItem = useCallback((id: string) => {
+    trackCommerce("remove_from_cart", { item_id: id });
     setItems((prev) => prev.filter((item) => item.id !== id));
   }, []);
 
@@ -104,17 +101,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setItems((prev) => prev.filter((item) => item.id !== id));
       return;
     }
-    setItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
+    setItems((prev) => prev.map((item) => (item.id === id ? { ...item, quantity } : item)));
   }, []);
 
   const clearCart = useCallback(() => setItems([]), []);
 
-  const itemCount = useMemo(
-    () => items.reduce((sum, item) => sum + item.quantity, 0),
-    [items]
-  );
+  const itemCount = useMemo(() => items.reduce((sum, item) => sum + item.quantity, 0), [items]);
 
   const value = useMemo(
     () => ({

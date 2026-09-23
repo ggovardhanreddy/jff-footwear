@@ -7,12 +7,8 @@ import ProductGrid from "@/components/products/ProductGrid";
 import SearchBar from "@/components/ui/SearchBar";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Breadcrumb from "@/components/Breadcrumb";
-import {
-  FlashSaleBanner,
-  ProductCarousel,
-  QuickViewModal,
-  SearchSuggestions,
-} from "@/components/features";
+import { ProductCarousel, QuickViewModal, SearchSuggestions } from "@/components/features";
+import { trackCommerce } from "@/lib/analytics";
 import {
   getFeaturedProducts,
   getNewArrivals,
@@ -95,8 +91,6 @@ export default function ProductsPageClient({ products, filterOptions }: Products
         ]}
       />
 
-      <FlashSaleBanner className="mb-12" />
-
       <ProductCarousel
         title="Trending Products"
         products={getTrendingProducts(6)}
@@ -124,7 +118,11 @@ export default function ProductsPageClient({ products, filterOptions }: Products
         <div className="flex items-center gap-3">
           <select
             value={filters.sort}
-            onChange={(e) => setFilters({ ...filters, sort: e.target.value as never })}
+            onChange={(e) => {
+              const sort = e.target.value;
+              setFilters({ ...filters, sort: sort as never });
+              trackCommerce("sort_used", { sort });
+            }}
             className="input-field w-auto py-3"
             aria-label="Sort products"
           >
@@ -154,7 +152,10 @@ export default function ProductsPageClient({ products, filterOptions }: Products
           <h3 className="mb-4 text-sm font-semibold uppercase tracking-widest">Filters</h3>
           <ProductFilterSidebar
             filters={filters}
-            onChange={setFilters}
+            onChange={(next) => {
+              setFilters(next);
+              trackCommerce("filter_used");
+            }}
             filterOptions={filterOptions}
           />
         </aside>

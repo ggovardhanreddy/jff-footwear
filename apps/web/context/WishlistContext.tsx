@@ -12,6 +12,7 @@ import {
 import { readStorage, writeStorage } from "@/lib/storage";
 import { getProductPricing } from "@/lib/pricing";
 import { getProductMainImage } from "@/lib/utils";
+import { trackCommerce } from "@/lib/analytics";
 import type { CartItem, Product } from "@/types";
 
 const STORAGE_KEY = "jff-wishlist";
@@ -65,18 +66,20 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     writeStorage(STORAGE_KEY, items);
   }, [items, hydrated]);
 
-  const isWishlisted = useCallback(
-    (slug: string) => items.some((i) => i.slug === slug),
+  const isWishlisted = useCallback((slug: string) => items.some((i) => i.slug === slug), [items]);
+
+  const toggle = useCallback(
+    (product: Product) => {
+      const exists = items.some((i) => i.slug === product.slug);
+      trackCommerce("wishlist", { item_id: product.slug, action: exists ? "remove" : "add" });
+      setItems((prev) => {
+        const exists = prev.some((i) => i.slug === product.slug);
+        if (exists) return prev.filter((i) => i.slug !== product.slug);
+        return [toWishlistItem(product), ...prev];
+      });
+    },
     [items]
   );
-
-  const toggle = useCallback((product: Product) => {
-    setItems((prev) => {
-      const exists = prev.some((i) => i.slug === product.slug);
-      if (exists) return prev.filter((i) => i.slug !== product.slug);
-      return [toWishlistItem(product), ...prev];
-    });
-  }, []);
 
   const remove = useCallback((slug: string) => {
     setItems((prev) => prev.filter((i) => i.slug !== slug));
@@ -96,9 +99,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     [items, isWishlisted, toggle, remove, clear]
   );
 
-  return (
-    <WishlistContext.Provider value={value}>{children}</WishlistContext.Provider>
-  );
+  return <WishlistContext.Provider value={value}>{children}</WishlistContext.Provider>;
 }
 
 export function useWishlist(): WishlistContextValue {
