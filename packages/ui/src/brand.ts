@@ -18,8 +18,8 @@ export const brandLight = {
   glass: "rgba(255, 255, 255, 0.72)",
   glassBorder: "rgba(255, 255, 255, 0.5)",
   glassStrong: "rgba(255, 255, 255, 0.88)",
-  atmosphere: ["#f8fafc", "#ffffff", "#faf8f5"] as const,
-  gradient: "linear-gradient(135deg, #f8fafc 0%, #ffffff 45%, #faf8f5 100%)",
+  atmosphere: ["#f6f3ee", "#fffcf8", "#efeae3"] as const,
+  gradient: "linear-gradient(165deg, #f6f3ee 0%, #fffcf8 48%, #efe6da 100%)",
   liquidGradient: "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 40%, #c8a96e 100%)",
 } as const;
 
@@ -41,8 +41,8 @@ export const brandDark = {
   glass: "rgba(12, 12, 12, 0.72)",
   glassBorder: "rgba(255, 255, 255, 0.12)",
   glassStrong: "rgba(18, 18, 18, 0.88)",
-  atmosphere: ["#0a0a0a", "#121212", "#1a1612"] as const,
-  gradient: "linear-gradient(135deg, #0a0a0a 0%, #121212 45%, #1a1612 100%)",
+  atmosphere: ["#0c0b0a", "#141210", "#1c1916"] as const,
+  gradient: "linear-gradient(165deg, #0c0b0a 0%, #141210 52%, #1c1916 100%)",
   liquidGradient: "linear-gradient(135deg, #0a0a0a 0%, #1f1a14 50%, #d4b87a 100%)",
 } as const;
 

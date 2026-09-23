@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, Coins, MessageCircle, ShoppingBag, Sparkles, Zap } from "lucide-react";
+import { Check, Coins, MessageCircle, ShoppingBag, Zap } from "lucide-react";
 import Button from "@/components/ui/Button";
 import SuccessBurst from "@/components/motion/SuccessBurst";
 import ColorSelector from "./ColorSelector";
@@ -126,17 +126,6 @@ export default function ProductDetails({
             In stock
           </span>
         </div>
-
-        <button
-          type="button"
-          className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-brand-accent/40 bg-brand-accent/5 px-4 py-3 text-sm font-medium text-brand-muted transition hover:border-brand-accent hover:text-brand-black dark:hover:text-white"
-          onClick={() =>
-            show("AR View coming soon — open in the JFF app for immersive try-on.", "info")
-          }
-        >
-          <Sparkles className="h-4 w-4 text-brand-accent" />
-          AR View (placeholder)
-        </button>
 
         <p className="text-body leading-relaxed">{product.description}</p>
 

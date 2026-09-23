@@ -17,10 +17,7 @@ export function slugify(text: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
-export function filterProducts(
-  products: Product[],
-  filters: ProductFilters
-): Product[] {
+export function filterProducts(products: Product[], filters: ProductFilters): Product[] {
   let result = [...products];
 
   if (filters.search) {
@@ -45,7 +42,12 @@ export function filterProducts(
   }
 
   if (filters.gender) {
-    result = result.filter((p) => p.gender === filters.gender);
+    result = result.filter((p) => {
+      if (filters.gender === "Men" || filters.gender === "Women") {
+        return p.gender === filters.gender || p.gender === "Unisex";
+      }
+      return p.gender === filters.gender;
+    });
   }
 
   if (filters.color) {
@@ -65,32 +67,23 @@ export function filterProducts(
   }
 
   if (filters.trending) {
-    result = result.filter(
-      (p) => p.featured || p.newArrival
-    );
+    result = result.filter((p) => p.featured || p.newArrival);
   }
 
   if (filters.minPrice !== "") {
     const min = Number(filters.minPrice);
-    result = result.filter(
-      (p) => getProductPricing(p).sellingPrice >= min
-    );
+    result = result.filter((p) => getProductPricing(p).sellingPrice >= min);
   }
 
   if (filters.maxPrice !== "") {
     const max = Number(filters.maxPrice);
-    result = result.filter(
-      (p) => getProductPricing(p).sellingPrice <= max
-    );
+    result = result.filter((p) => getProductPricing(p).sellingPrice <= max);
   }
 
   return sortProducts(result, filters.sort);
 }
 
-export function sortProducts(
-  products: Product[],
-  sort: SortOption
-): Product[] {
+export function sortProducts(products: Product[], sort: SortOption): Product[] {
   const sorted = [...products];
 
   switch (sort) {
@@ -100,19 +93,16 @@ export function sortProducts(
       return sorted.sort((a, b) => Number(b.featured) - Number(a.featured));
     case "trending":
       return sorted.sort((a, b) => {
-        const score = (p: Product) =>
-          (p.featured ? 2 : 0) + (p.newArrival ? 1 : 0);
+        const score = (p: Product) => (p.featured ? 2 : 0) + (p.newArrival ? 1 : 0);
         return score(b) - score(a);
       });
     case "price-low":
       return sorted.sort(
-        (a, b) =>
-          getProductPricing(a).sellingPrice - getProductPricing(b).sellingPrice
+        (a, b) => getProductPricing(a).sellingPrice - getProductPricing(b).sellingPrice
       );
     case "price-high":
       return sorted.sort(
-        (a, b) =>
-          getProductPricing(b).sellingPrice - getProductPricing(a).sellingPrice
+        (a, b) => getProductPricing(b).sellingPrice - getProductPricing(a).sellingPrice
       );
     case "name":
       return sorted.sort((a, b) => a.name.localeCompare(b.name));
@@ -121,18 +111,11 @@ export function sortProducts(
   }
 }
 
-export function getProductBySlug(
-  products: Product[],
-  slug: string
-): Product | undefined {
+export function getProductBySlug(products: Product[], slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
 }
 
-export function getRelatedProducts(
-  products: Product[],
-  product: Product,
-  limit = 4
-): Product[] {
+export function getRelatedProducts(products: Product[], product: Product, limit = 4): Product[] {
   return products
     .filter(
       (p) =>
@@ -144,10 +127,7 @@ export function getRelatedProducts(
     .slice(0, limit);
 }
 
-export function getColorVariants(
-  products: Product[],
-  product: Product
-): ColorVariant[] {
+export function getColorVariants(products: Product[], product: Product): ColorVariant[] {
   const variants = products.filter(
     (p) =>
       p.gender === product.gender &&
@@ -184,9 +164,7 @@ export function getProductFeatures(product: Product): string[] {
   ];
 }
 
-export function getProductSpecifications(
-  product: Product
-): ProductSpecification[] {
+export function getProductSpecifications(product: Product): ProductSpecification[] {
   return [
     { label: "Brand", value: "JFF Footwear" },
     { label: "Gender", value: product.gender },
@@ -230,9 +208,7 @@ export function buildWhatsAppUrl(params: {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
-export function cn(
-  ...classes: (string | boolean | undefined | null)[]
-): string {
+export function cn(...classes: (string | boolean | undefined | null)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -251,10 +227,7 @@ export function productHasDisplayImages(images: string[]): boolean {
   return getGalleryImages(images).length > 0;
 }
 
-export async function shareProduct(
-  product: Product,
-  url: string
-): Promise<void> {
+export async function shareProduct(product: Product, url: string): Promise<void> {
   const shareData = {
     title: product.name,
     text: product.description,

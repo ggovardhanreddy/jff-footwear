@@ -1,183 +1,189 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Link from "next/link";
-import ShopHeroCarousel from "@/components/shop/ShopHeroCarousel";
-import ProductRail, { EmptyContinueHint } from "@/components/shop/ProductRail";
-import JffSpotlight from "@/components/shop/JffSpotlight";
-import DiscountsForYou from "@/components/shop/DiscountsForYou";
-import WidestCollection from "@/components/shop/WidestCollection";
+import { useState } from "react";
 import ProductCard from "@/components/products/ProductCard";
 import { QuickViewModal } from "@/components/features";
-import { useRecentlyViewed } from "@/context/RecentlyViewedContext";
-import { useWishlist } from "@/context/WishlistContext";
-import { useAuth } from "@/context/AuthContext";
-import { ROUTES } from "@/lib/constants";
-import type { HeroSlide } from "@/components/shop/ShopHeroCarousel";
+import Newsletter from "@/components/Newsletter";
+import ImmersiveHero from "@/components/home/ImmersiveHero";
+import CategoryStage, { type CategoryCard } from "@/components/home/CategoryStage";
+import BrandDepth from "@/components/home/BrandDepth";
+import BestSellersCarousel from "@/components/home/BestSellersCarousel";
+import ShopByStyle, { type StyleCard } from "@/components/home/ShopByStyle";
+import WhyJff from "@/components/home/WhyJff";
+import WholesaleBand from "@/components/home/WholesaleBand";
+import ReviewsBand from "@/components/home/ReviewsBand";
+import SectionIntro from "@/components/home/SectionIntro";
+import { getProductMainImage } from "@/lib/utils";
 import type { Product } from "@/types";
 
-type Props = {
-  heroSlides: HeroSlide[];
-  suggested: Product[];
-  youMayLike: Product[];
-  mustHave: Product[];
-  newAdditions: Product[];
-  topSelection: Product[];
-  allProducts: Product[];
+type ShopHomeClientProps = {
+  products: Product[];
 };
 
-export default function ShopHomeClient({
-  heroSlides,
-  suggested,
-  youMayLike,
-  mustHave,
-  newAdditions,
-  topSelection,
-  allProducts,
-}: Props) {
-  const { items: recentSlugs } = useRecentlyViewed();
-  const { items: wishlist } = useWishlist();
-  const { profile, user } = useAuth();
+export default function ShopHomeClient({ products }: ShopHomeClientProps) {
   const [quickView, setQuickView] = useState<Product | null>(null);
+  const withImages = products.filter((product) => product.images.length > 0);
+  const pool = withImages.length ? withImages : products;
 
-  const recentProducts = useMemo(() => {
-    const map = new Map(allProducts.map((p) => [p.slug, p]));
-    return recentSlugs
-      .map((item) => map.get(item.slug))
-      .filter((p): p is Product => Boolean(p))
-      .slice(0, 10);
-  }, [allProducts, recentSlugs]);
+  const hero = uniqueProducts([
+    pool.find((product) => product.featured),
+    pool.find((product) => product.gender === "Women"),
+    pool.find((product) => product.gender === "Men"),
+    ...pool,
+  ]).slice(0, 3);
 
-  const personalized = useMemo(() => {
-    if (!wishlist.length) return suggested;
-    const wishSet = new Set(wishlist.map((w) => w.slug));
-    const wishProduct = allProducts.find((w) => wishSet.has(w.slug));
-    const fromWishCats = wishProduct
-      ? allProducts.filter(
-          (p) =>
-            (p.category === wishProduct.category || p.gender === wishProduct.gender) &&
-            !wishSet.has(p.slug)
-        )
-      : [];
-    return (fromWishCats.length ? fromWishCats : suggested).slice(0, 10);
-  }, [allProducts, suggested, wishlist]);
+  const newArrivals = products.filter((product) => product.newArrival).slice(0, 8);
+  const featured = products.filter((product) => product.featured);
+  const bestSellers = (featured.length >= 4 ? featured : pool).slice(0, 8);
+  const storyProduct = pool[3] ?? pool[0] ?? null;
 
-  const displayName = profile?.full_name?.split(" ")[0] || user?.email?.split("@")[0] || undefined;
+  const categories: CategoryCard[] = [
+    categoryCard("Men", "/products?gender=Men", products, "/images/categories/men.svg"),
+    categoryCard("Women", "/products?gender=Women", products, "/images/categories/women.svg"),
+    categoryCard("Kids", "/products?gender=Kids", products, "/images/categories/kids.svg"),
+  ];
+
+  const styles: StyleCard[] = [
+    styleCard(
+      "Casual",
+      "/products?category=Regular",
+      products,
+      (p) => p.category === "Regular",
+      "/images/categories/regular.svg"
+    ),
+    styleCard(
+      "Daily Wear",
+      "/products?material=EVA",
+      products,
+      (p) => p.material === "EVA",
+      "/images/categories/regular.svg"
+    ),
+    styleCard(
+      "Comfort",
+      "/products?category=Orthopedic",
+      products,
+      (p) => p.category === "Orthopedic",
+      "/images/categories/orthopedic.svg"
+    ),
+    styleCard(
+      "Trending",
+      "/collections/trending",
+      products,
+      (p) => p.featured || p.newArrival,
+      "/images/categories/fashion.svg"
+    ),
+    styleCard(
+      "Kids",
+      "/products?gender=Kids",
+      products,
+      (p) => p.gender === "Kids",
+      "/images/categories/kids.svg"
+    ),
+    styleCard(
+      "Orthopedic",
+      "/products?category=Orthopedic",
+      products,
+      (p) => p.category === "Orthopedic",
+      "/images/categories/orthopedic.svg"
+    ),
+    styleCard(
+      "Bathroom",
+      "/products?category=Bathroom",
+      products,
+      (p) => p.category === "Bathroom",
+      "/images/categories/bathroom.svg"
+    ),
+    styleCard(
+      "Memory Foam",
+      "/products?material=Memory Foam",
+      products,
+      (p) => p.material === "Memory Foam",
+      "/images/categories/women.svg"
+    ),
+  ];
 
   return (
-    <div className="page-shell relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(200,169,110,0.12),transparent_50%),radial-gradient(ellipse_at_bottom_right,rgba(37,99,235,0.06),transparent_45%)]" />
+    <div className="overflow-x-clip pb-24">
+      <ImmersiveHero products={hero} imageFor={getProductMainImage} />
+      <CategoryStage categories={categories} />
 
-      <div className="container-custom space-y-16 pb-16 md:space-y-24 md:pb-24">
-        <ShopHeroCarousel slides={heroSlides} />
-
-        <section className="space-y-6">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <h2 className="font-display text-2xl font-semibold tracking-tight text-brand-black dark:text-white md:text-3xl">
-                Still looking for these?
-              </h2>
-              <p className="mt-1.5 text-sm text-brand-muted md:text-base">
-                Hi {displayName || "there"}, continue where you left off.
-              </p>
+      <section className="container-custom py-8 md:py-12" aria-labelledby="new-collection-heading">
+        <div id="new-collection-heading">
+          <SectionIntro
+            eyebrow="Just in"
+            title="New collection"
+            description="Latest pairs from the live catalogue. Prices show MRP, the current price, and the discount."
+            href="/products?new=1"
+            cta="Shop new arrivals"
+          />
+        </div>
+        <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 [scrollbar-width:none] md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden">
+          {(newArrivals.length ? newArrivals : pool.slice(0, 8)).map((product, index) => (
+            <div key={product.slug} className="w-[78%] shrink-0 snap-start sm:w-[46%] md:w-[320px]">
+              <ProductCard product={product} index={index} onQuickView={setQuickView} />
             </div>
-            <Link
-              href={ROUTES.recentlyViewed}
-              className="rounded-full border border-black/10 bg-white/70 px-5 py-2.5 text-xs font-semibold uppercase tracking-widest backdrop-blur dark:border-white/15 dark:bg-white/5"
-            >
-              Continue Shopping
-            </Link>
-          </div>
-          {recentProducts.length ? (
-            <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-2 md:mx-0 md:gap-6 md:px-0">
-              {recentProducts.map((product, index) => (
-                <div key={product.slug} className="w-[78vw] shrink-0 sm:w-[46vw] md:w-[280px]">
-                  <ProductCard product={product} index={index} onQuickView={setQuickView} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <EmptyContinueHint name={displayName} />
-          )}
-        </section>
+          ))}
+        </div>
+      </section>
 
-        <ProductRail
-          title="Suggested For You"
-          subtitle="Personalized from your browsing, wishlist, and what’s trending at JFF."
-          products={personalized}
-          href={ROUTES.products}
-          onQuickView={setQuickView}
-        />
-
-        <JffSpotlight />
-
-        <ProductRail
-          title="You May Like"
-          subtitle="Smooth picks matched to your taste — tap the heart to save."
-          products={youMayLike}
-          href={ROUTES.products}
-          onQuickView={setQuickView}
-        />
-
-        <DiscountsForYou />
-
-        <ProductRail
-          title="Must Have Deals"
-          subtitle="Best-selling JFF pairs with limited stock energy."
-          products={mustHave}
-          href={ROUTES.products}
-          large
-          onQuickView={setQuickView}
-        />
-
-        <ProductRail
-          title="JFF New Additions"
-          subtitle="Latest arrivals with a fresh reveal — shop what’s new."
-          products={newAdditions}
-          href={`${ROUTES.products}?new=1`}
-          ctaLabel="New arrivals"
-          onQuickView={setQuickView}
-        />
-
-        <WidestCollection />
-
-        <ProductRail
-          title="Top Selection"
-          subtitle="Customer favorites and highest-purchased JFF styles today."
-          products={topSelection}
-          href={ROUTES.products}
-          onQuickView={setQuickView}
-        />
-
-        <section className="overflow-hidden rounded-[2rem] border border-black/[0.06] bg-brand-black px-6 py-12 text-center text-white dark:border-white/10 md:px-12 md:py-16">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-accent">
-            Experience JFF
-          </p>
-          <h2 className="mx-auto mt-3 max-w-2xl font-display text-3xl font-semibold md:text-4xl">
-            Crafted comfort. Every step.
-          </h2>
-          <p className="mx-auto mt-3 max-w-lg text-sm text-white/65">
-            Available for iPhone and Android. We detect your phone automatically and open the right
-            download — App Store, Google Play, or free home-screen install.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              href={ROUTES.install}
-              className="rounded-full bg-brand-accent px-7 py-3.5 text-sm font-semibold text-brand-black shadow-[0_0_28px_rgba(200,169,110,0.4)]"
-            >
-              Download for your phone
-            </Link>
-            <Link
-              href={ROUTES.brand}
-              className="rounded-full border border-white/25 px-7 py-3.5 text-sm font-semibold text-white"
-            >
-              Brand story
-            </Link>
-          </div>
-        </section>
-      </div>
-
+      {storyProduct ? (
+        <BrandDepth product={storyProduct} image={getProductMainImage(storyProduct)} />
+      ) : null}
+      <BestSellersCarousel products={bestSellers} onQuickView={setQuickView} />
+      <ShopByStyle styles={styles} />
+      <WhyJff />
+      <WholesaleBand />
+      <ReviewsBand />
+      <Newsletter />
       {quickView ? <QuickViewModal product={quickView} onClose={() => setQuickView(null)} /> : null}
     </div>
   );
+}
+
+function uniqueProducts(list: Array<Product | undefined>): Product[] {
+  const seen = new Set<string>();
+  const result: Product[] = [];
+  for (const product of list) {
+    if (!product || seen.has(product.slug)) continue;
+    seen.add(product.slug);
+    result.push(product);
+  }
+  return result;
+}
+
+function categoryCard(
+  name: "Men" | "Women" | "Kids",
+  href: string,
+  products: Product[],
+  fallback: string
+): CategoryCard {
+  const matches = products.filter((product) =>
+    name === "Kids"
+      ? product.gender === "Kids"
+      : product.gender === name || product.gender === "Unisex"
+  );
+  const visual = matches.find((product) => product.images.length > 0);
+  return {
+    name,
+    href,
+    image: visual ? getProductMainImage(visual) : fallback,
+    count: matches.length,
+    note:
+      matches.length > 0 ? `${matches.length} styles` : "No kids styles in the current catalogue",
+  };
+}
+
+function styleCard(
+  name: string,
+  href: string,
+  products: Product[],
+  match: (product: Product) => boolean,
+  fallback: string
+): StyleCard {
+  const visual = products.find((product) => match(product) && product.images.length > 0);
+  return {
+    name,
+    href,
+    image: visual ? getProductMainImage(visual) : fallback,
+  };
 }

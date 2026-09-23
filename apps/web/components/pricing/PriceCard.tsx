@@ -9,26 +9,20 @@ interface PriceCardProps {
   className?: string;
 }
 
-export default function PriceCard({
-  pricing,
-  variant = "full",
-  className,
-}: PriceCardProps) {
+export default function PriceCard({ pricing, variant = "full", className }: PriceCardProps) {
   const { mrp, discount, sellingPrice } = pricing;
 
   if (variant === "compact") {
     return (
       <div className={cn("space-y-1", className)}>
         <div className="flex flex-wrap items-baseline gap-2">
-          <span className="font-display text-lg font-bold text-brand-black">
+          <span className="font-display text-lg font-bold text-brand-black dark:text-[#f4f0ea]">
             {formatINR(sellingPrice)}
           </span>
-          <span className="text-sm text-brand-muted line-through">
-            {formatINR(mrp)}
-          </span>
-          {discount > 0 && (
-            <span className="text-xs font-semibold text-emerald-600">
-              {formatINRSigned(-discount)}
+          <span className="text-sm text-brand-muted line-through">MRP {formatINR(mrp)}</span>
+          {discount > 0 && mrp > 0 && (
+            <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+              {Math.round((discount / mrp) * 100)}% off
             </span>
           )}
         </div>
@@ -58,9 +52,7 @@ export default function PriceCard({
           <p className="text-xs font-semibold uppercase tracking-widest text-brand-muted">
             Discount
           </p>
-          <p className="text-lg font-semibold text-emerald-600">
-            {formatINRSigned(-discount)}
-          </p>
+          <p className="text-lg font-semibold text-emerald-600">{formatINRSigned(-discount)}</p>
         </div>
       )}
 

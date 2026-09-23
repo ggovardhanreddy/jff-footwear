@@ -54,13 +54,13 @@ export default function BrandAtmosphere() {
             animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
             transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -left-32 top-20 h-96 w-96 rounded-full opacity-40 blur-3xl dark:opacity-25"
-            style={{ background: resolved === "dark" ? "#3b82f6" : "#93c5fd" }}
+            style={{ background: resolved === "dark" ? "#3a2e24" : "#e7d7c3" }}
           />
           <motion.div
             animate={{ x: [0, -24, 0], y: [0, 16, 0] }}
             transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -right-24 bottom-32 h-80 w-80 rounded-full opacity-30 blur-3xl dark:opacity-20"
-            style={{ background: resolved === "dark" ? "#6366f1" : "#bfdbfe" }}
+            style={{ background: resolved === "dark" ? "#2a2420" : "#f3e6d4" }}
           />
         </>
       ) : null}

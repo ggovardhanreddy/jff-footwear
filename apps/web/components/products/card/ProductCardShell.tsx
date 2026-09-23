@@ -3,7 +3,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { hoverLift, MOTION_GPU } from "@/lib/motion";
-import { useTilt } from "@/hooks/motionHooks";
 
 interface ProductCardShellProps {
   children: React.ReactNode;
@@ -17,7 +16,6 @@ export default function ProductCardShell({
   className,
 }: ProductCardShellProps) {
   const prefersReducedMotion = useReducedMotion();
-  const tilt = useTilt(8);
 
   return (
     <motion.article
@@ -33,14 +31,12 @@ export default function ProductCardShell({
               ease: [0.22, 1, 0.36, 1],
             }
       }
-      className={cn("group relative", MOTION_GPU, className)}
+      data-cursor="view"
+      className={cn("group relative [perspective:1200px]", MOTION_GPU, className)}
     >
       <motion.div
         {...hoverLift(prefersReducedMotion)}
-        onMouseMove={tilt.onMouseMove}
-        onMouseLeave={tilt.onMouseLeave}
-        style={tilt.style}
-        className="luxury-card group relative overflow-hidden rounded-[28px] border border-white/60 bg-white/70 shadow-[0_12px_40px_-16px_rgba(0,0,0,0.12)] backdrop-blur-xl transition-[box-shadow,background-color] duration-500 group-hover:bg-white/85 group-hover:shadow-[0_24px_56px_-20px_rgba(0,0,0,0.16)]"
+        className="luxury-card group relative overflow-hidden rounded-[28px] border border-black/[0.06] bg-[#fffcf8] shadow-[0_16px_40px_-20px_rgba(40,28,16,0.18)] transition-[box-shadow,transform] duration-500 group-hover:shadow-[0_28px_60px_-24px_rgba(40,28,16,0.28)] dark:border-white/10 dark:bg-[#1c1916] dark:shadow-[0_18px_44px_-20px_rgba(0,0,0,0.65)]"
       >
         {/* Reflection sweep */}
         <span

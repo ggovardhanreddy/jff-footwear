@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect, useId, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { BrandLogo } from "@/components/brand";
-import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ShoppingBag, Heart, Bell, User, MapPin, Coins, Search } from "lucide-react";
-import { COMPANY, ROUTES, SPOTLIGHT_NAV } from "@/lib/constants";
+import { COMPANY, ROUTES } from "@/lib/constants";
+import { usePathname } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useAuth } from "@/context/AuthContext";
@@ -17,18 +18,39 @@ import { SpotlightNavbar } from "@/components/premium";
 import { formatCoins } from "@jff/api/coins";
 import { cn } from "@/lib/utils";
 
+const DESKTOP_NAV = [
+  { href: "/products?gender=Men", label: "Men" },
+  { href: "/products?gender=Women", label: "Women" },
+  { href: "/products?gender=Kids", label: "Kids" },
+  { href: "/products?new=1", label: "New Arrivals" },
+  { href: "/collections/best-sellers", label: "Best Sellers" },
+  { href: ROUTES.wholesale, label: "Wholesale" },
+] as const;
+
+const MOBILE_NAV = [
+  ...DESKTOP_NAV,
+  { href: ROUTES.about, label: "About JFF" },
+  { href: ROUTES.contact, label: "Contact" },
+] as const;
+
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [editingLocation, setEditingLocation] = useState(false);
   const [locationDraft, setLocationDraft] = useState("");
   const pathname = usePathname();
+  const [query, setQuery] = useState("");
+  const [portalReady, setPortalReady] = useState(false);
   const { itemCount } = useCart();
   const { count: wishlistCount } = useWishlist();
   const { coinBalance, unreadNotifications, user } = useAuth();
   const { location, detecting, setLocation, detectLocation } = useLocation();
   const menuId = useId();
   const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setPortalReady(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -39,6 +61,7 @@ export default function Header() {
 
   useEffect(() => {
     setIsOpen(false);
+    setQuery(window.location.search.replace(/^\?/, ""));
   }, [pathname]);
 
   useEffect(() => {
@@ -82,13 +105,22 @@ export default function Header() {
   };
 
   const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
-    return pathname === href || pathname.startsWith(`${href.split("?")[0]}`);
+    const [path, expectedQuery = ""] = href.split("?");
+    if (path === "/") return pathname === "/";
+    if (pathname !== path) return false;
+    if (!expectedQuery) return true;
+    const expected = new URLSearchParams(expectedQuery);
+    const current = new URLSearchParams(query);
+    for (const [key, value] of expected) {
+      if (current.get(key) !== value) return false;
+    }
+    return true;
   };
 
   return (
     <SpotlightNavbar
-      hideOnScroll
+      hideOnScroll={false}
+      overlay={pathname === "/"}
       below={
         <>
           <AnimatePresence>
@@ -134,68 +166,86 @@ export default function Header() {
             )}
           </AnimatePresence>
 
-          <AnimatePresence>
-            {isOpen && (
-              <motion.div
-                ref={menuRef}
-                id={menuId}
-                role="dialog"
-                aria-modal="true"
-                aria-label="Mobile navigation menu"
-                onKeyDown={handleMenuKeyDown}
-                initial={{ opacity: 0, y: -16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -16 }}
-                transition={{ duration: 0.28 }}
-                className="fixed inset-0 z-40 overflow-y-auto bg-white/95 pt-20 backdrop-blur-2xl dark:bg-brand-charcoal/95 xl:hidden"
-              >
-                <nav
-                  className="container-custom flex flex-col gap-2 py-8"
-                  aria-label="Mobile navigation"
-                >
-                  <div className="mb-4 flex flex-wrap gap-2 px-2">
-                    <button
+          {portalReady
+            ? createPortal(
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.button
+                      key="nav-backdrop"
                       type="button"
-                      onClick={() => {
-                        setLocationDraft(location);
-                        setEditingLocation(true);
-                        setIsOpen(false);
-                      }}
-                      className="flex items-center gap-1.5 rounded-full border border-black/10 px-3 py-2 text-xs dark:border-white/15"
-                    >
-                      <MapPin className="h-3.5 w-3.5 text-brand-accent" />
-                      {location}
-                    </button>
-                    <Link
-                      href={ROUTES.accountRewards}
-                      className="flex items-center gap-1.5 rounded-full bg-brand-accent/15 px-3 py-2 text-xs font-semibold"
-                    >
-                      <Coins className="h-3.5 w-3.5" />
-                      {formatCoins(coinBalance)} Coins
-                    </Link>
-                  </div>
-                  {SPOTLIGHT_NAV.map((link, i) => (
+                      aria-label="Close menu"
+                      className="fixed inset-0 z-40 bg-black/35 xl:hidden"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onClick={() => setIsOpen(false)}
+                    />
+                  )}
+                  {isOpen && (
                     <motion.div
-                      key={link.href}
-                      initial={{ opacity: 0, x: -16 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.04 }}
+                      key="nav-panel"
+                      ref={menuRef}
+                      id={menuId}
+                      role="dialog"
+                      aria-modal="true"
+                      aria-label="Mobile navigation menu"
+                      onKeyDown={handleMenuKeyDown}
+                      initial={{ x: "100%" }}
+                      animate={{ x: 0 }}
+                      exit={{ x: "100%" }}
+                      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                      className="fixed bottom-0 right-0 top-16 z-40 w-full max-w-md overflow-y-auto border-l border-black/10 bg-[#f6f3ee]/95 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-[#12100e]/95 xl:hidden"
                     >
-                      <Link
-                        href={link.href}
-                        className="focus-ring block rounded-xl px-2 py-3 font-display text-2xl font-bold uppercase tracking-wider text-brand-black dark:text-white"
+                      <nav
+                        className="container-custom flex flex-col gap-2 py-8"
+                        aria-label="Mobile navigation"
                       >
-                        {link.label}
-                      </Link>
+                        <div className="mb-4 flex flex-wrap gap-2 px-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setLocationDraft(location);
+                              setEditingLocation(true);
+                              setIsOpen(false);
+                            }}
+                            className="flex items-center gap-1.5 rounded-full border border-black/10 px-3 py-2 text-xs dark:border-white/15"
+                          >
+                            <MapPin className="h-3.5 w-3.5 text-brand-accent" />
+                            {location}
+                          </button>
+                          <Link
+                            href={ROUTES.accountRewards}
+                            className="flex items-center gap-1.5 rounded-full bg-brand-accent/15 px-3 py-2 text-xs font-semibold"
+                          >
+                            <Coins className="h-3.5 w-3.5" />
+                            {formatCoins(coinBalance)} Coins
+                          </Link>
+                        </div>
+                        {MOBILE_NAV.map((link, i) => (
+                          <motion.div
+                            key={link.href}
+                            initial={{ opacity: 0, x: -16 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: i * 0.04 }}
+                          >
+                            <Link
+                              href={link.href}
+                              className="focus-ring block rounded-xl px-2 py-3 font-display text-2xl font-bold uppercase tracking-wider text-brand-black dark:text-white"
+                            >
+                              {link.label}
+                            </Link>
+                          </motion.div>
+                        ))}
+                        <div className="mt-4 px-2">
+                          <ThemeSwitcher />
+                        </div>
+                      </nav>
                     </motion.div>
-                  ))}
-                  <div className="mt-4 px-2">
-                    <ThemeSwitcher />
-                  </div>
-                </nav>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  )}
+                </AnimatePresence>,
+                document.body
+              )
+            : null}
         </>
       }
     >
@@ -211,12 +261,15 @@ export default function Header() {
             className="focus-ring relative z-10 flex shrink-0 items-center gap-2 rounded-lg"
           >
             <BrandLogo
-              alt={COMPANY.fullName}
+              alt=""
               width={52}
               height={52}
               priority
               className={cn(scrolled ? "h-11 w-11 md:h-12 md:w-12" : "h-12 w-12 md:h-14 md:w-14")}
             />
+            <span className="font-display text-lg font-semibold tracking-[0.22em] text-brand-black dark:text-white">
+              JFF
+            </span>
           </Link>
 
           <div className="hidden min-w-0 items-center gap-2 lg:flex">
@@ -246,7 +299,7 @@ export default function Header() {
         </div>
 
         <nav className="hidden items-center gap-3 xl:flex xl:gap-4" aria-label="Primary navigation">
-          {SPOTLIGHT_NAV.map((link) => (
+          {DESKTOP_NAV.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -268,7 +321,7 @@ export default function Header() {
           </div>
           <Link
             href={ROUTES.search}
-            className="focus-ring rounded-lg p-2.5 text-brand-black dark:text-white md:hidden"
+            className="focus-ring inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-brand-black dark:text-white md:hidden"
             aria-label="Search"
           >
             <Search className="h-5 w-5" />
@@ -280,7 +333,7 @@ export default function Header() {
 
           <Link
             href={ROUTES.wishlist}
-            className="focus-ring relative rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white"
+            className="focus-ring relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white"
             aria-label={`Wishlist, ${wishlistCount} items`}
           >
             <Heart className="h-5 w-5" />
@@ -293,7 +346,7 @@ export default function Header() {
 
           <Link
             href={ROUTES.notifications}
-            className="focus-ring relative rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white"
+            className="focus-ring relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white"
             aria-label={`Notifications, ${unreadNotifications} unread`}
           >
             <Bell className="h-5 w-5" />
@@ -306,7 +359,7 @@ export default function Header() {
 
           <Link
             href={ROUTES.cart}
-            className="focus-ring relative rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white"
+            className="focus-ring relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white"
             aria-label={`Cart, ${itemCount} items`}
           >
             <ShoppingBag className="h-5 w-5" />
@@ -319,7 +372,7 @@ export default function Header() {
 
           <Link
             href={user ? ROUTES.account : ROUTES.login}
-            className="focus-ring rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white"
+            className="focus-ring inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-brand-black transition-colors hover:text-brand-accent dark:text-white"
             aria-label={user ? "Account" : "Sign in"}
           >
             <User className="h-5 w-5" />
@@ -328,7 +381,7 @@ export default function Header() {
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="focus-ring relative z-10 flex items-center gap-1.5 rounded-lg border border-black/10 px-2.5 py-2 text-brand-black dark:border-white/20 dark:text-white xl:hidden"
+            className="focus-ring relative z-10 inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-lg border border-black/10 px-2.5 text-brand-black dark:border-white/20 dark:text-white xl:hidden"
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
             aria-controls={menuId}

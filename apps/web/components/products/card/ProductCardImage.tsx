@@ -31,10 +31,7 @@ export default function ProductCardImage({
       )}
     >
       {!loaded && (
-        <div
-          className="skeleton-shimmer absolute inset-0 z-10 bg-neutral-100"
-          aria-hidden
-        />
+        <div className="skeleton-shimmer absolute inset-0 z-10 bg-neutral-100" aria-hidden />
       )}
 
       <div className="relative h-full w-full overflow-hidden">
@@ -45,7 +42,6 @@ export default function ProductCardImage({
           priority={priority}
           loading={priority ? undefined : "lazy"}
           onLoad={() => setLoaded(true)}
-          onLoadingComplete={() => setLoaded(true)}
           onError={() => {
             if (!useSoldOut) {
               setUseSoldOut(true);

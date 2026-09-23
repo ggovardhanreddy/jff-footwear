@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
-import { products, getFeaturedProducts, getLatestProducts } from "@/data";
+import { products } from "@/data";
 import { createMetadata } from "@/lib/seo";
-import { buildHeroSlides } from "@/lib/shop-home";
-import { assetPath } from "@/lib/paths";
 import ShopHomeClient from "@/components/shop/ShopHomeClient";
 
 export const metadata: Metadata = createMetadata({
-  title: "Premium Slippers | Shop JFF",
+  title: "Step Into Your Style",
   description:
-    "Shop premium JFF slippers — men, women, kids. Earn JFF Coins, exclusive offers, and crafted comfort from Rayachoty, Andhra Pradesh.",
+    "Comfort, style and everyday footwear designed for every step. Shop JFF slippers for men, women, and kids. Made in Rayachoty, Andhra Pradesh since 2021. Wholesale and retail.",
   path: "/",
-  keywords: ["JFF slippers", "premium footwear India", "buy slippers online", "JFF coins"],
+  keywords: [
+    "JFF slippers",
+    "JFF footwear",
+    "buy slippers online India",
+    "wholesale slippers Rayachoty",
+  ],
 });
 
 export default function HomePage() {
@@ -26,31 +29,5 @@ export default function HomePage() {
     );
   }
 
-  const featured = getFeaturedProducts();
-  const latest = getLatestProducts(10);
-  const withImages = products.filter((p) => p.images.length > 0);
-  const pool = withImages.length ? withImages : products;
-
-  const heroSlides = buildHeroSlides(pool).map((slide) => ({
-    ...slide,
-    image: assetPath(slide.image),
-  }));
-
-  const suggested = (featured.length ? featured : pool).slice(0, 10);
-  const youMayLike = [...pool].reverse().slice(0, 10);
-  const mustHave = (featured.length ? featured : pool).slice(0, 8);
-  const newAdditions = (latest.length ? latest : pool).slice(0, 10);
-  const topSelection = pool.slice(0, 10);
-
-  return (
-    <ShopHomeClient
-      heroSlides={heroSlides}
-      suggested={suggested}
-      youMayLike={youMayLike}
-      mustHave={mustHave}
-      newAdditions={newAdditions}
-      topSelection={topSelection}
-      allProducts={products}
-    />
-  );
+  return <ShopHomeClient products={products} />;
 }

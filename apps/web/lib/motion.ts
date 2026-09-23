@@ -103,4 +103,4 @@ export const buttonMotion = (reduced: boolean | null) => ({
 
 /** Image zoom inside a group-hover card */
 export const IMAGE_ZOOM_CLASS =
-  "transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06] motion-gpu";
+  "transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-2 group-hover:scale-[1.05] motion-gpu";

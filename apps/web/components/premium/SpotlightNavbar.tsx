@@ -9,6 +9,8 @@ type SpotlightNavbarProps = {
   className?: string;
   below?: ReactNode;
   hideOnScroll?: boolean;
+  /** Transparent until the page scrolls. Used over the homepage hero. */
+  overlay?: boolean;
 };
 
 /**
@@ -21,6 +23,7 @@ export default function SpotlightNavbar({
   className,
   below,
   hideOnScroll = true,
+  overlay = false,
 }: SpotlightNavbarProps) {
   const reduced = useReducedMotion();
   const [hidden, setHidden] = useState(false);
@@ -85,8 +88,10 @@ export default function SpotlightNavbar({
         spotlightY.set(e.clientY - rect.top);
       }}
       className={cn(
-        "fixed top-0 z-50 w-full border-b border-black/[0.06] bg-white/80 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.08)] backdrop-blur-2xl backdrop-saturate-150 transition-[box-shadow] duration-500 dark:border-white/10 dark:bg-brand-charcoal/75 dark:shadow-glass",
-        scrolled && "md:shadow-[0_4px_24px_-8px_rgba(0,0,0,0.1)]",
+        "fixed top-0 z-50 w-full transition-[background-color,box-shadow,border-color,backdrop-filter] duration-500",
+        overlay && !scrolled
+          ? "border-b border-transparent bg-transparent shadow-none"
+          : "border-b border-black/[0.06] bg-[#f6f3ee]/80 shadow-[0_8px_32px_-16px_rgba(40,28,16,0.18)] backdrop-blur-xl backdrop-saturate-150 dark:border-white/10 dark:bg-[#0c0b0a]/75 dark:shadow-glass",
         className
       )}
       suppressHydrationWarning
