@@ -69,7 +69,7 @@ jobs:
           NEXT_PUBLIC_SITE_URL: https://www.jffstores.com
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "deps: refresh web and mobile packages"
           title: "deps: auto-refresh package versions"
