@@ -26,7 +26,7 @@ jobs:
     name: Roll Back EAS Update
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-node
       - run: npm ci
       - uses: expo/expo-github-action@v8
